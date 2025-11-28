@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Users, Bed, Bath, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import propertiesHero from "@/assets/properties-hero.jpg";
 
 interface Property {
@@ -22,6 +23,7 @@ interface Property {
 }
 
 const Properties = () => {
+  const { t } = useTranslation();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
@@ -74,11 +76,8 @@ const Properties = () => {
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl sm:text-6xl font-heading font-bold text-white mb-4">
-            Luxury Villas
+            {t('properties.hero')}
           </h1>
-          <p className="text-xl text-white/90">
-            Discover our handpicked collection of stunning properties
-          </p>
         </div>
       </section>
 
@@ -91,21 +90,21 @@ const Properties = () => {
               onClick={() => setFilter("all")}
               className="transition-smooth"
             >
-              All Locations
+              {t('properties.filter.all')}
             </Button>
             <Button
               variant={filter === "jaco" ? "default" : "outline"}
               onClick={() => setFilter("jaco")}
               className="transition-smooth"
             >
-              Jaco
+              {t('properties.filter.jaco')}
             </Button>
             <Button
               variant={filter === "la_fortuna" ? "default" : "outline"}
               onClick={() => setFilter("la_fortuna")}
               className="transition-smooth"
             >
-              La Fortuna
+              {t('properties.filter.laFortuna')}
             </Button>
           </div>
         </div>
@@ -160,21 +159,21 @@ const Properties = () => {
                     <div className="flex items-center gap-4 mb-6 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        <span>Sleeps {property.sleeps}</span>
+                        <span>{t('properties.sleeps', { count: property.sleeps })}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Bed className="w-4 h-4" />
-                        <span>{property.bedrooms} Beds</span>
+                        <span>{t('properties.bedrooms', { count: property.bedrooms })}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Bath className="w-4 h-4" />
-                        <span>{property.bathrooms} Baths</span>
+                        <span>{t('properties.bathrooms', { count: property.bathrooms })}</span>
                       </div>
                     </div>
 
                     <Link to={`/booking?property=${property.id}`}>
                       <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
-                        Request This Villa
+                        {t('properties.requestTrip')}
                       </Button>
                     </Link>
                   </CardContent>

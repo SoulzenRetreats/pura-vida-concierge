@@ -1,0 +1,166 @@
+{
+  "nav": {
+    "properties": "Properties",
+    "experiences": "Experiences",
+    "tripTypes": "Trip Types",
+    "planMyTrip": "Plan My Trip"
+  },
+  "footer": {
+    "description": "Creating unforgettable luxury group vacation experiences in Costa Rica's most beautiful destinations.",
+    "quickLinks": "Quick Links",
+    "bookNow": "Book Now",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "copyright": "© {{year}} Pura Vida Concierge. All rights reserved."
+  },
+  "home": {
+    "hero": {
+      "title": "Luxury Group Vacations in Costa Rica",
+      "subtitle": "Experience personalized concierge services in stunning villas",
+      "viewProperties": "View Properties"
+    },
+    "features": {
+      "title": "Why Choose Pura Vida",
+      "villas": {
+        "title": "Luxury Villas",
+        "description": "Stunning properties in Jaco and La Fortuna with modern amenities"
+      },
+      "experiences": {
+        "title": "Group Experiences",
+        "description": "Private chefs, tours, transportation, and adventure activities"
+      },
+      "locations": {
+        "title": "Prime Locations",
+        "description": "Access to beaches, rainforests, and natural hot springs"
+      },
+      "service": {
+        "title": "White-Glove Service",
+        "description": "Personalized concierge handling every detail of your stay"
+      }
+    },
+    "cta": {
+      "title": "Ready for Your Pura Vida Adventure?",
+      "subtitle": "Let us create the perfect Costa Rican getaway for your group",
+      "button": "Request a Customized Itinerary"
+    }
+  },
+  "properties": {
+    "hero": "Our Properties",
+    "filter": {
+      "all": "All Locations",
+      "jaco": "Jaco",
+      "laFortuna": "La Fortuna"
+    },
+    "loading": "Loading properties...",
+    "noProperties": "No Properties Available",
+    "sleeps": "Sleeps {{count}}",
+    "bedrooms": "{{count}} Bedrooms",
+    "bathrooms": "{{count}} Bathrooms",
+    "requestTrip": "Request a Trip"
+  },
+  "experiences": {
+    "hero": "Experiences & Services",
+    "filter": {
+      "all": "All Services",
+      "chef": "Private Chef",
+      "transportation": "Transportation",
+      "adventure": "Adventure",
+      "spa": "Spa",
+      "tours": "Tours",
+      "celebrations": "Celebrations",
+      "other": "Other"
+    },
+    "loading": "Loading services...",
+    "noServices": "No Services Available",
+    "priceRange": "Price Range: {{range}}"
+  },
+  "tripTypes": {
+    "hero": {
+      "title": "Perfect for Every Celebration",
+      "subtitle": "Whether you're celebrating a milestone or seeking adventure with friends and family, we specialize in creating unforgettable group experiences in Costa Rica."
+    },
+    "types": {
+      "birthdays": {
+        "title": "Birthdays",
+        "description": "Celebrate another trip around the sun with an unforgettable birthday getaway in paradise"
+      },
+      "anniversaries": {
+        "title": "Anniversaries",
+        "description": "Mark your milestone with a romantic escape surrounded by Costa Rica's natural beauty"
+      },
+      "celebrations": {
+        "title": "Celebrations",
+        "description": "Any special occasion deserves a special place - let us help you celebrate in style"
+      },
+      "bachelor": {
+        "title": "Bachelor/Bachelorette",
+        "description": "Send off the bride or groom with an adventure-filled weekend they'll never forget"
+      },
+      "family": {
+        "title": "Family Trips",
+        "description": "Create lasting memories with multi-generational family vacations everyone will cherish"
+      },
+      "corporate": {
+        "title": "Corporate Groups",
+        "description": "Team building retreats and corporate events in stunning tropical settings"
+      }
+    },
+    "cta": {
+      "title": "Ready to Plan Your Group Getaway?",
+      "subtitle": "Tell us about your vision and we'll handle all the details",
+      "button": "Start Planning"
+    }
+  },
+  "booking": {
+    "title": "Plan Your Trip",
+    "steps": {
+      "dates": "Dates & Guests",
+      "property": "Choose Property",
+      "services": "Add Services",
+      "contact": "Your Details"
+    },
+    "step1": {
+      "checkIn": "Check-in Date",
+      "checkOut": "Check-out Date",
+      "guests": "Number of Guests",
+      "guestsPlaceholder": "How many guests?"
+    },
+    "step2": {
+      "title": "Select a Property",
+      "needHelp": "I need help choosing",
+      "loading": "Loading properties...",
+      "sleeps": "Sleeps {{count}}",
+      "bedrooms": "{{count}} Bedrooms",
+      "bathrooms": "{{count}} Bathrooms"
+    },
+    "step3": {
+      "title": "Add Services",
+      "optional": "(Optional)",
+      "loading": "Loading services...",
+      "priceRange": "{{range}}"
+    },
+    "step4": {
+      "title": "Contact Information",
+      "name": "Full Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "notes": "Special Requests or Notes",
+      "notesPlaceholder": "Tell us about any special requests, dietary restrictions, or questions..."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit Request",
+      "submitting": "Submitting..."
+    },
+    "messages": {
+      "success": "Booking request submitted successfully! We'll be in touch soon.",
+      "error": "Failed to submit booking request. Please try again."
+    }
+  }
+}
