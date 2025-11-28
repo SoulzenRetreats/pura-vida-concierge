@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Calendar, Users, Home, Sparkles, Check, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 const bookingSchema = z.object({
@@ -24,6 +25,7 @@ const bookingSchema = z.object({
 });
 
 const Booking = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -116,9 +118,7 @@ const Booking = () => {
         if (servicesError) throw servicesError;
       }
 
-      toast.success("Booking request submitted successfully!", {
-        description: "We'll be in touch within 24 hours to discuss your trip.",
-      });
+      toast.success(t('booking.messages.success'));
 
       // Reset and navigate
       setTimeout(() => {
@@ -127,13 +127,9 @@ const Booking = () => {
     } catch (error: any) {
       console.error("Error submitting booking:", error);
       if (error instanceof z.ZodError) {
-        toast.error("Please check your form inputs", {
-          description: error.errors[0]?.message || "Invalid form data",
-        });
+        toast.error(t('booking.messages.error'));
       } else {
-        toast.error("Failed to submit booking request", {
-          description: "Please try again or contact us directly.",
-        });
+        toast.error(t('booking.messages.error'));
       }
     } finally {
       setLoading(false);
@@ -148,13 +144,13 @@ const Booking = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-6 h-6 text-primary" />
-                When are you visiting?
+                {t('booking.steps.dates')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="checkIn">Check-in Date</Label>
+                  <Label htmlFor="checkIn">{t('booking.step1.checkIn')}</Label>
                   <Input
                     id="checkIn"
                     type="date"
@@ -167,7 +163,7 @@ const Booking = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="checkOut">Check-out Date</Label>
+                  <Label htmlFor="checkOut">{t('booking.step1.checkOut')}</Label>
                   <Input
                     id="checkOut"
                     type="date"
@@ -181,7 +177,7 @@ const Booking = () => {
                 </div>
               </div>
               <div>
-                <Label htmlFor="guestCount">Number of Guests</Label>
+                <Label htmlFor="guestCount">{t('booking.step1.guests')}</Label>
                 <Input
                   id="guestCount"
                   type="number"
@@ -193,6 +189,7 @@ const Booking = () => {
                       guestCount: parseInt(e.target.value) || 1,
                     })
                   }
+                  placeholder={t('booking.step1.guestsPlaceholder')}
                   required
                 />
               </div>
@@ -206,7 +203,7 @@ const Booking = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Home className="w-6 h-6 text-primary" />
-                Choose Your Villa
+                {t('booking.step2.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -219,7 +216,7 @@ const Booking = () => {
                   }
                 />
                 <Label htmlFor="needHelp" className="cursor-pointer flex-1">
-                  I need help choosing the perfect property
+                  {t('booking.step2.needHelp')}
                 </Label>
               </div>
 
@@ -248,8 +245,7 @@ const Booking = () => {
                         <div className="flex-1">
                           <h4 className="font-semibold mb-1">{property.name}</h4>
                           <p className="text-sm text-muted-foreground mb-2">
-                            Sleeps {property.sleeps} · {property.bedrooms} Beds ·{" "}
-                            {property.bathrooms} Baths
+                            {t('booking.step2.sleeps', { count: property.sleeps })} · {t('booking.step2.bedrooms', { count: property.bedrooms })} · {t('booking.step2.bathrooms', { count: property.bathrooms })}
                           </p>
                           <p className="text-xs text-muted-foreground line-clamp-2">
                             {property.description}
@@ -273,7 +269,7 @@ const Booking = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-primary" />
-                Select Add-On Services
+                {t('booking.step3.title')} {t('booking.step3.optional')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -296,7 +292,7 @@ const Booking = () => {
                         </p>
                         {service.price_range && (
                           <p className="text-sm font-medium text-accent">
-                            {service.price_range}
+                            {t('booking.step3.priceRange', { range: service.price_range })}
                           </p>
                         )}
                       </div>
@@ -318,24 +314,25 @@ const Booking = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-6 h-6 text-primary" />
-                Your Contact Information
+                {t('booking.step4.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name">{t('booking.step4.name')}</Label>
                 <Input
                   id="name"
                   value={formData.customerName}
                   onChange={(e) =>
                     setFormData({ ...formData, customerName: e.target.value })
                   }
+                  placeholder={t('booking.step4.namePlaceholder')}
                   required
                   maxLength={100}
                 />
               </div>
               <div>
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">{t('booking.step4.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -343,12 +340,13 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, customerEmail: e.target.value })
                   }
+                  placeholder={t('booking.step4.emailPlaceholder')}
                   required
                   maxLength={255}
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{t('booking.step4.phone')}</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -356,11 +354,12 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, customerPhone: e.target.value })
                   }
+                  placeholder={t('booking.step4.phonePlaceholder')}
                   maxLength={20}
                 />
               </div>
               <div>
-                <Label htmlFor="notes">Special Requests or Notes</Label>
+                <Label htmlFor="notes">{t('booking.step4.notes')}</Label>
                 <Textarea
                   id="notes"
                   value={formData.specialNotes}
@@ -369,7 +368,7 @@ const Booking = () => {
                   }
                   rows={4}
                   maxLength={1000}
-                  placeholder="Tell us about your celebration, dietary restrictions, accessibility needs, or any special requests..."
+                  placeholder={t('booking.step4.notesPlaceholder')}
                 />
               </div>
             </CardContent>
@@ -389,10 +388,10 @@ const Booking = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
-              Plan Your Perfect Trip
+              {t('booking.title')}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Step {step} of 4 - {["Dates & Guests", "Villa Selection", "Add-On Services", "Contact Info"][step - 1]}
+              Step {step} of 4 - {[t('booking.steps.dates'), t('booking.steps.property'), t('booking.steps.services'), t('booking.steps.contact')][step - 1]}
             </p>
           </div>
 
@@ -432,7 +431,7 @@ const Booking = () => {
               onClick={() => setStep(Math.max(1, step - 1))}
               disabled={step === 1 || loading}
             >
-              Back
+              {t('booking.buttons.back')}
             </Button>
             {step < 4 ? (
               <Button
@@ -440,7 +439,7 @@ const Booking = () => {
                 className="gradient-secondary"
                 disabled={loading}
               >
-                Continue
+                {t('booking.buttons.next')}
               </Button>
             ) : (
               <Button
@@ -451,10 +450,10 @@ const Booking = () => {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Submitting...
+                    {t('booking.buttons.submitting')}
                   </>
                 ) : (
-                  "Submit Request"
+                  t('booking.buttons.submit')
                 )}
               </Button>
             )}

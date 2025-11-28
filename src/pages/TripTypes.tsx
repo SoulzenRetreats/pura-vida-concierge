@@ -4,49 +4,46 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Cake, Heart, Users, Briefcase, Baby, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const TripTypes = () => {
+  const { t } = useTranslation();
+  
   const tripTypes = [
     {
       icon: Cake,
-      title: "Birthday Celebrations",
-      description:
-        "Make milestone birthdays unforgettable with private villas, gourmet dining, and curated experiences designed to wow your guests.",
+      title: t('tripTypes.types.birthdays.title'),
+      description: t('tripTypes.types.birthdays.description'),
       color: "bg-accent/10 text-accent",
     },
     {
       icon: Heart,
-      title: "Anniversaries",
-      description:
-        "Celebrate love in paradise with romantic settings, couples' spa treatments, sunset cruises, and intimate dinners under the stars.",
+      title: t('tripTypes.types.anniversaries.title'),
+      description: t('tripTypes.types.anniversaries.description'),
       color: "bg-secondary/10 text-secondary",
     },
     {
       icon: Sparkles,
-      title: "Special Celebrations",
-      description:
-        "From retirement parties to graduation trips, we create memorable experiences for life's most important moments.",
+      title: t('tripTypes.types.celebrations.title'),
+      description: t('tripTypes.types.celebrations.description'),
       color: "bg-primary/10 text-primary",
     },
     {
       icon: Users,
-      title: "Bachelor & Bachelorette Alternatives",
-      description:
-        "Skip the typical party destinations. Experience Costa Rica with adventure tours, beach clubs, private chefs, and unforgettable nights.",
+      title: t('tripTypes.types.bachelor.title'),
+      description: t('tripTypes.types.bachelor.description'),
       color: "bg-accent/10 text-accent",
     },
     {
       icon: Baby,
-      title: "Family Trips",
-      description:
-        "Multi-generational vacations made easy with spacious villas, kid-friendly activities, and services that keep everyone happy.",
+      title: t('tripTypes.types.family.title'),
+      description: t('tripTypes.types.family.description'),
       color: "bg-secondary/10 text-secondary",
     },
     {
       icon: Briefcase,
-      title: "Corporate Groups",
-      description:
-        "Team building and corporate retreats with premium accommodations, meeting spaces, and activities that inspire collaboration.",
+      title: t('tripTypes.types.corporate.title'),
+      description: t('tripTypes.types.corporate.description'),
       color: "bg-primary/10 text-primary",
     },
   ];
@@ -59,13 +56,10 @@ const TripTypes = () => {
       <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-5xl sm:text-6xl font-heading font-bold mb-6">
-            Every Occasion Deserves
-            <br />
-            <span className="text-primary">the Pura Vida Treatment</span>
+            {t('tripTypes.hero.title')}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Whether you're celebrating a milestone or just gathering loved ones,
-            we'll create the perfect Costa Rica experience for your group.
+            {t('tripTypes.hero.subtitle')}
           </p>
         </div>
       </section>
@@ -100,17 +94,17 @@ const TripTypes = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-primary-light text-primary-foreground">
         <div className="container mx-auto text-center max-w-4xl">
           <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-6">
-            Let's Start Planning Your Perfect Trip
+            {t('tripTypes.cta.title')}
           </h2>
           <p className="text-xl mb-8 text-primary-foreground/90">
-            Tell us about your group and what you're celebrating. We'll handle the rest.
+            {t('tripTypes.cta.subtitle')}
           </p>
           <Link to="/booking">
             <Button
               size="lg"
               className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-12 py-6 shadow-luxury"
             >
-              Request a Customized Itinerary
+              {t('tripTypes.cta.button')}
             </Button>
           </Link>
         </div>

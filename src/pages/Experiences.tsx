@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import servicesHero from "@/assets/services-hero.jpg";
 
 interface Service {
@@ -17,6 +18,7 @@ interface Service {
 }
 
 const Experiences = () => {
+  const { t } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
@@ -56,13 +58,13 @@ const Experiences = () => {
   };
 
   const categories = [
-    { value: "all", label: "All Experiences" },
-    { value: "chef", label: "Private Chef" },
-    { value: "transportation", label: "Transportation" },
-    { value: "adventure", label: "Adventure Tours" },
-    { value: "spa", label: "Spa & Wellness" },
-    { value: "tours", label: "Tours" },
-    { value: "celebrations", label: "Celebrations" },
+    { value: "all", label: t('experiences.filter.all') },
+    { value: "chef", label: t('experiences.filter.chef') },
+    { value: "transportation", label: t('experiences.filter.transportation') },
+    { value: "adventure", label: t('experiences.filter.adventure') },
+    { value: "spa", label: t('experiences.filter.spa') },
+    { value: "tours", label: t('experiences.filter.tours') },
+    { value: "celebrations", label: t('experiences.filter.celebrations') },
   ];
 
   return (
@@ -82,11 +84,8 @@ const Experiences = () => {
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl sm:text-6xl font-heading font-bold text-white mb-4">
-            Curated Experiences
+            {t('experiences.hero')}
           </h1>
-          <p className="text-xl text-white/90">
-            White-glove services to elevate your Costa Rica adventure
-          </p>
         </div>
       </section>
 
@@ -154,7 +153,7 @@ const Experiences = () => {
                     </p>
                     {service.price_range && (
                       <p className="text-sm font-medium text-accent">
-                        {service.price_range}
+                        {t('experiences.priceRange', { range: service.price_range })}
                       </p>
                     )}
                   </CardContent>

@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Sparkles, Users, MapPin, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-main.jpg";
 
 const Home = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -23,13 +26,10 @@ const Home = () => {
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            Luxury Group Vacations
-            <br />
-            <span className="text-accent">in Costa Rica</span>
+            {t('home.hero.title')}
           </h1>
           <p className="text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            Experience Jaco and La Fortuna like never before with our curated villas
-            and white-glove concierge services
+            {t('home.hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
             <Link to="/booking">
@@ -37,7 +37,7 @@ const Home = () => {
                 size="lg"
                 className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-8 py-6 shadow-luxury"
               >
-                Plan My Trip
+                {t('nav.planMyTrip')}
               </Button>
             </Link>
             <Link to="/properties">
@@ -46,7 +46,7 @@ const Home = () => {
                 variant="outline"
                 className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 transition-smooth text-lg px-8 py-6"
               >
-                View Properties
+                {t('home.hero.viewProperties')}
               </Button>
             </Link>
           </div>
@@ -57,7 +57,7 @@ const Home = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
           <h2 className="text-4xl sm:text-5xl font-heading font-bold text-center mb-16">
-            Your VIP Costa Rica Experience
+            {t('home.features.title')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -66,11 +66,10 @@ const Home = () => {
                 <Sparkles className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-xl font-heading font-semibold mb-3">
-                Luxury Villas
+                {t('home.features.villas.title')}
               </h3>
               <p className="text-muted-foreground">
-                Handpicked properties with stunning views, modern amenities, and
-                unparalleled comfort
+                {t('home.features.villas.description')}
               </p>
             </div>
 
@@ -79,10 +78,10 @@ const Home = () => {
                 <Users className="w-8 h-8 text-secondary" />
               </div>
               <h3 className="text-xl font-heading font-semibold mb-3">
-                Group Experiences
+                {t('home.features.experiences.title')}
               </h3>
               <p className="text-muted-foreground">
-                Perfect for celebrations, family gatherings, and corporate retreats
+                {t('home.features.experiences.description')}
               </p>
             </div>
 
@@ -91,10 +90,10 @@ const Home = () => {
                 <MapPin className="w-8 h-8 text-accent" />
               </div>
               <h3 className="text-xl font-heading font-semibold mb-3">
-                Prime Locations
+                {t('home.features.locations.title')}
               </h3>
               <p className="text-muted-foreground">
-                Jaco beaches and La Fortuna rainforest - the best Costa Rica offers
+                {t('home.features.locations.description')}
               </p>
             </div>
 
@@ -103,10 +102,10 @@ const Home = () => {
                 <Heart className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-xl font-heading font-semibold mb-3">
-                White-Glove Service
+                {t('home.features.service.title')}
               </h3>
               <p className="text-muted-foreground">
-                Private chefs, transportation, tours, and personalized experiences
+                {t('home.features.service.description')}
               </p>
             </div>
           </div>
@@ -117,17 +116,17 @@ const Home = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-primary-light text-primary-foreground">
         <div className="container mx-auto text-center max-w-4xl">
           <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-6">
-            Ready for Your Pura Vida Adventure?
+            {t('home.cta.title')}
           </h2>
           <p className="text-xl mb-8 text-primary-foreground/90">
-            Let us create a customized itinerary tailored to your group's dreams and desires
+            {t('home.cta.subtitle')}
           </p>
           <Link to="/booking">
             <Button
               size="lg"
               className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-12 py-6 shadow-luxury"
             >
-              Request a Customized Itinerary
+              {t('home.cta.button')}
             </Button>
           </Link>
         </div>

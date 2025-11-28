@@ -1,0 +1,166 @@
+{
+  "nav": {
+    "properties": "Propiedades",
+    "experiences": "Experiencias",
+    "tripTypes": "Tipos de Viaje",
+    "planMyTrip": "Planifica Mi Viaje"
+  },
+  "footer": {
+    "description": "Creando experiencias de vacaciones grupales de lujo inolvidables en los destinos más hermosos de Costa Rica.",
+    "quickLinks": "Enlaces Rápidos",
+    "bookNow": "Reservar Ahora",
+    "contact": "Contacto",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "location": "Ubicación",
+    "copyright": "© {{year}} Pura Vida Concierge. Todos los derechos reservados."
+  },
+  "home": {
+    "hero": {
+      "title": "Vacaciones Grupales de Lujo en Costa Rica",
+      "subtitle": "Experimenta servicios de conserje personalizados en villas impresionantes",
+      "viewProperties": "Ver Propiedades"
+    },
+    "features": {
+      "title": "Por Qué Elegir Pura Vida",
+      "villas": {
+        "title": "Villas de Lujo",
+        "description": "Propiedades impresionantes en Jacó y La Fortuna con comodidades modernas"
+      },
+      "experiences": {
+        "title": "Experiencias Grupales",
+        "description": "Chefs privados, tours, transporte y actividades de aventura"
+      },
+      "locations": {
+        "title": "Ubicaciones Premium",
+        "description": "Acceso a playas, selvas tropicales y aguas termales naturales"
+      },
+      "service": {
+        "title": "Servicio de Primera Clase",
+        "description": "Conserje personalizado manejando cada detalle de tu estadía"
+      }
+    },
+    "cta": {
+      "title": "¿Listo para Tu Aventura Pura Vida?",
+      "subtitle": "Déjanos crear la escapada perfecta a Costa Rica para tu grupo",
+      "button": "Solicitar un Itinerario Personalizado"
+    }
+  },
+  "properties": {
+    "hero": "Nuestras Propiedades",
+    "filter": {
+      "all": "Todas las Ubicaciones",
+      "jaco": "Jacó",
+      "laFortuna": "La Fortuna"
+    },
+    "loading": "Cargando propiedades...",
+    "noProperties": "No Hay Propiedades Disponibles",
+    "sleeps": "Capacidad {{count}}",
+    "bedrooms": "{{count}} Habitaciones",
+    "bathrooms": "{{count}} Baños",
+    "requestTrip": "Solicitar un Viaje"
+  },
+  "experiences": {
+    "hero": "Experiencias y Servicios",
+    "filter": {
+      "all": "Todos los Servicios",
+      "chef": "Chef Privado",
+      "transportation": "Transporte",
+      "adventure": "Aventura",
+      "spa": "Spa",
+      "tours": "Tours",
+      "celebrations": "Celebraciones",
+      "other": "Otro"
+    },
+    "loading": "Cargando servicios...",
+    "noServices": "No Hay Servicios Disponibles",
+    "priceRange": "Rango de Precio: {{range}}"
+  },
+  "tripTypes": {
+    "hero": {
+      "title": "Perfecto para Cada Celebración",
+      "subtitle": "Ya sea que estés celebrando un hito o buscando aventura con amigos y familia, nos especializamos en crear experiencias grupales inolvidables en Costa Rica."
+    },
+    "types": {
+      "birthdays": {
+        "title": "Cumpleaños",
+        "description": "Celebra otra vuelta al sol con una escapada de cumpleaños inolvidable en el paraíso"
+      },
+      "anniversaries": {
+        "title": "Aniversarios",
+        "description": "Marca tu hito con una escapada romántica rodeada de la belleza natural de Costa Rica"
+      },
+      "celebrations": {
+        "title": "Celebraciones",
+        "description": "Cualquier ocasión especial merece un lugar especial - déjanos ayudarte a celebrar con estilo"
+      },
+      "bachelor": {
+        "title": "Despedidas",
+        "description": "Despide al novio o novia con un fin de semana lleno de aventuras que nunca olvidarán"
+      },
+      "family": {
+        "title": "Viajes Familiares",
+        "description": "Crea recuerdos duraderos con vacaciones familiares multigeneracionales que todos apreciarán"
+      },
+      "corporate": {
+        "title": "Grupos Corporativos",
+        "description": "Retiros de team building y eventos corporativos en impresionantes entornos tropicales"
+      }
+    },
+    "cta": {
+      "title": "¿Listo para Planificar Tu Escapada Grupal?",
+      "subtitle": "Cuéntanos sobre tu visión y nosotros nos encargaremos de todos los detalles",
+      "button": "Comenzar a Planificar"
+    }
+  },
+  "booking": {
+    "title": "Planifica Tu Viaje",
+    "steps": {
+      "dates": "Fechas y Huéspedes",
+      "property": "Elegir Propiedad",
+      "services": "Agregar Servicios",
+      "contact": "Tus Datos"
+    },
+    "step1": {
+      "checkIn": "Fecha de Llegada",
+      "checkOut": "Fecha de Salida",
+      "guests": "Número de Huéspedes",
+      "guestsPlaceholder": "¿Cuántos huéspedes?"
+    },
+    "step2": {
+      "title": "Selecciona una Propiedad",
+      "needHelp": "Necesito ayuda para elegir",
+      "loading": "Cargando propiedades...",
+      "sleeps": "Capacidad {{count}}",
+      "bedrooms": "{{count}} Habitaciones",
+      "bathrooms": "{{count}} Baños"
+    },
+    "step3": {
+      "title": "Agregar Servicios",
+      "optional": "(Opcional)",
+      "loading": "Cargando servicios...",
+      "priceRange": "{{range}}"
+    },
+    "step4": {
+      "title": "Información de Contacto",
+      "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "phone": "Número de Teléfono",
+      "phonePlaceholder": "+506 1234-5678",
+      "notes": "Solicitudes Especiales o Notas",
+      "notesPlaceholder": "Cuéntanos sobre cualquier solicitud especial, restricciones dietéticas o preguntas..."
+    },
+    "buttons": {
+      "next": "Siguiente",
+      "back": "Atrás",
+      "submit": "Enviar Solicitud",
+      "submitting": "Enviando..."
+    },
+    "messages": {
+      "success": "¡Solicitud de reserva enviada con éxito! Nos pondremos en contacto pronto.",
+      "error": "Error al enviar la solicitud de reserva. Por favor, inténtalo de nuevo."
+    }
+  }
+}
