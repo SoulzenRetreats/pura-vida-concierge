@@ -160,7 +160,8 @@
     },
     "messages": {
       "success": "Booking request submitted successfully! We'll be in touch soon.",
-      "error": "Failed to submit booking request. Please try again."
+      "error": "Failed to submit booking request. Please try again.",
+      "rateLimited": "Too many requests. Please try again later."
     }
   }
 }
