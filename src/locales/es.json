@@ -160,7 +160,8 @@
     },
     "messages": {
       "success": "¡Solicitud de reserva enviada con éxito! Nos pondremos en contacto pronto.",
-      "error": "Error al enviar la solicitud de reserva. Por favor, inténtalo de nuevo."
+      "error": "Error al enviar la solicitud de reserva. Por favor, inténtalo de nuevo.",
+      "rateLimited": "Demasiadas solicitudes. Por favor, inténtalo más tarde."
     }
   }
 }

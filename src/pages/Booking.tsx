@@ -45,6 +45,7 @@ const Booking = () => {
     customerEmail: "",
     customerPhone: "",
     specialNotes: "",
+    honeypot: "", // Hidden honeypot field for bot detection
   });
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const Booking = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Validate form data
+      // Validate form data client-side first
       const validatedData = bookingSchema.parse({
         customerName: formData.customerName,
         customerEmail: formData.customerEmail,
@@ -85,37 +86,35 @@ const Booking = () => {
         specialNotes: formData.specialNotes,
       });
 
-      // Create booking
-      const { data: booking, error: bookingError } = await supabase
-        .from("bookings")
-        .insert({
-          property_id: formData.propertyId || null,
-          customer_name: validatedData.customerName,
-          customer_email: validatedData.customerEmail,
-          customer_phone: validatedData.customerPhone || null,
-          check_in: validatedData.checkIn,
-          check_out: validatedData.checkOut,
-          guest_count: validatedData.guestCount,
-          special_notes: validatedData.specialNotes || null,
-          status: "new_request",
-        })
-        .select()
-        .single();
+      // Submit via rate-limited edge function
+      const response = await supabase.functions.invoke("submit-booking", {
+        body: {
+          customerName: validatedData.customerName,
+          customerEmail: validatedData.customerEmail,
+          customerPhone: validatedData.customerPhone || null,
+          checkIn: validatedData.checkIn,
+          checkOut: validatedData.checkOut,
+          guestCount: validatedData.guestCount,
+          specialNotes: validatedData.specialNotes || null,
+          propertyId: formData.propertyId || null,
+          selectedServices: formData.selectedServices,
+          honeypot: formData.honeypot, // Send honeypot for bot detection
+        },
+      });
 
-      if (bookingError) throw bookingError;
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to submit booking");
+      }
 
-      // Add selected services
-      if (formData.selectedServices.length > 0 && booking) {
-        const { error: servicesError } = await supabase
-          .from("booking_services")
-          .insert(
-            formData.selectedServices.map((serviceId) => ({
-              booking_id: booking.id,
-              service_id: serviceId,
-            }))
-          );
+      const data = response.data;
 
-        if (servicesError) throw servicesError;
+      if (data.error) {
+        if (data.code === "RATE_LIMIT_EXCEEDED") {
+          toast.error(t('booking.messages.rateLimited') || "Too many requests. Please try again later.");
+        } else {
+          toast.error(data.error);
+        }
+        return;
       }
 
       toast.success(t('booking.messages.success'));
@@ -369,6 +368,19 @@ const Booking = () => {
                   rows={4}
                   maxLength={1000}
                   placeholder={t('booking.step4.notesPlaceholder')}
+                />
+              </div>
+              {/* Honeypot field - hidden from users, bots will fill it */}
+              <div className="absolute -left-[9999px]" aria-hidden="true">
+                <Input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.honeypot}
+                  onChange={(e) =>
+                    setFormData({ ...formData, honeypot: e.target.value })
+                  }
                 />
               </div>
             </CardContent>
