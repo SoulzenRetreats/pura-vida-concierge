@@ -115,9 +115,11 @@
   },
   "booking": {
     "title": "Planifica Tu Viaje",
+    "stepOf": "Paso {{current}} de {{total}}",
     "steps": {
-      "dates": "Fechas y Huéspedes",
-      "property": "Elegir Propiedad",
+      "dates": "Fechas y Presupuesto",
+      "location": "Ubicación",
+      "preferences": "Preferencias",
       "services": "Agregar Servicios",
       "contact": "Tus Datos"
     },
@@ -125,23 +127,41 @@
       "checkIn": "Fecha de Llegada",
       "checkOut": "Fecha de Salida",
       "guests": "Número de Huéspedes",
-      "guestsPlaceholder": "¿Cuántos huéspedes?"
+      "guestsPlaceholder": "¿Cuántos huéspedes?",
+      "budget": "Rango de Presupuesto",
+      "budgetPlaceholder": "Selecciona tu presupuesto",
+      "serviceDates": "Fecha(s) del Servicio",
+      "serviceDatesPlaceholder": "ej., 20 Dic, 21 Dic noche",
+      "preferredTime": "Horario Preferido",
+      "preferredTimePlaceholder": "Selecciona horario preferido"
     },
     "step2": {
-      "title": "Selecciona una Propiedad",
-      "needHelp": "Necesito ayuda para elegir",
-      "loading": "Cargando propiedades...",
+      "title": "Ubicación y Propiedad",
+      "location": "¿Dónde te hospedas?",
+      "locationPlaceholder": "Ingresa la dirección de tu Airbnb, hotel o venue...",
+      "locationHint": "Proporciona la dirección o nombre de tu alojamiento",
+      "needHelp": "Necesito ayuda para encontrar alojamiento",
+      "orSelectProperty": "O selecciona una de nuestras propiedades:",
       "sleeps": "Capacidad {{count}}",
       "bedrooms": "{{count}} Habitaciones",
       "bathrooms": "{{count}} Baños"
     },
     "step3": {
-      "title": "Agregar Servicios",
-      "optional": "(Opcional)",
-      "loading": "Cargando servicios...",
-      "priceRange": "{{range}}"
+      "title": "Ocasión y Preferencias",
+      "occasion": "¿Cuál es la ocasión?",
+      "occasionPlaceholder": "Selecciona tipo de ocasión",
+      "vibe": "¿Qué ambiente buscas?",
+      "dietary": "Preferencias Dietéticas",
+      "dietaryPlaceholder": "Vegetariano, vegano, alergias, etc.",
+      "surprises": "¿Elementos sorpresa a planificar?",
+      "surprisesPlaceholder": "Pastel de cumpleaños, decoraciones especiales, propuestas..."
     },
     "step4": {
+      "title": "Agregar Servicios",
+      "optional": "(Opcional)",
+      "priceRange": "{{range}}"
+    },
+    "step5": {
       "title": "Información de Contacto",
       "name": "Nombre Completo",
       "namePlaceholder": "Tu nombre",
@@ -149,8 +169,33 @@
       "emailPlaceholder": "tu@correo.com",
       "phone": "Número de Teléfono",
       "phonePlaceholder": "+506 1234-5678",
-      "notes": "Solicitudes Especiales o Notas",
-      "notesPlaceholder": "Cuéntanos sobre cualquier solicitud especial, restricciones dietéticas o preguntas..."
+      "notes": "Notas Adicionales",
+      "notesPlaceholder": "¿Algún otro detalle que debamos saber?"
+    },
+    "preferredTimes": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "evening": "Noche",
+      "flexible": "Flexible"
+    },
+    "occasions": {
+      "birthday": "Cumpleaños",
+      "anniversary": "Aniversario",
+      "bachelor": "Despedida de Soltero",
+      "bachelorette": "Despedida de Soltera",
+      "wedding": "Boda",
+      "family_trip": "Viaje Familiar",
+      "corporate": "Evento Corporativo",
+      "celebration": "Celebración",
+      "other": "Otro"
+    },
+    "vibes": {
+      "relaxed": "Relajado",
+      "adventurous": "Aventurero",
+      "romantic": "Romántico",
+      "party": "Fiesta",
+      "wellness": "Bienestar",
+      "cultural": "Cultural"
     },
     "buttons": {
       "next": "Siguiente",

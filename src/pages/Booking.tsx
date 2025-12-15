@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Users, Home, Sparkles, Check, Loader2 } from "lucide-react";
+import { Calendar, Users, Home, Sparkles, Check, Loader2, DollarSign, MapPin, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
@@ -21,8 +22,47 @@ const bookingSchema = z.object({
   checkIn: z.string().min(1, "Check-in date is required"),
   checkOut: z.string().min(1, "Check-out date is required"),
   guestCount: z.number().min(1, "At least 1 guest required").max(100),
+  budgetRange: z.string().min(1, "Budget range is required"),
+  serviceDates: z.string().min(1, "Service dates are required"),
+  locationDetails: z.string().min(1, "Location is required").max(500),
   specialNotes: z.string().max(1000).optional(),
 });
+
+const BUDGET_RANGES = [
+  "$1,000 - $2,500",
+  "$2,500 - $5,000",
+  "$5,000 - $10,000",
+  "$10,000 - $25,000",
+  "$25,000+",
+];
+
+const OCCASION_TYPES = [
+  "birthday",
+  "anniversary",
+  "bachelor",
+  "bachelorette",
+  "wedding",
+  "family_trip",
+  "corporate",
+  "celebration",
+  "other",
+];
+
+const PREFERRED_TIMES = [
+  "morning",
+  "afternoon",
+  "evening",
+  "flexible",
+];
+
+const VIBE_OPTIONS = [
+  "relaxed",
+  "adventurous",
+  "romantic",
+  "party",
+  "wellness",
+  "cultural",
+];
 
 const Booking = () => {
   const { t } = useTranslation();
@@ -35,17 +75,30 @@ const Booking = () => {
 
   // Form data
   const [formData, setFormData] = useState({
+    // Step 1: Dates & Budget
     checkIn: "",
     checkOut: "",
     guestCount: 4,
+    budgetRange: "",
+    serviceDates: "",
+    preferredTime: "",
+    // Step 2: Property & Location
     propertyId: searchParams.get("property") || "",
     needHelp: false,
+    locationDetails: "",
+    // Step 3: Occasion & Preferences
+    occasionType: "",
+    dietaryPreferences: "",
+    vibePreferences: [] as string[],
+    surpriseElements: "",
+    // Step 4: Services
     selectedServices: [] as string[],
+    // Step 5: Contact
     customerName: "",
     customerEmail: "",
     customerPhone: "",
     specialNotes: "",
-    honeypot: "", // Hidden honeypot field for bot detection
+    honeypot: "",
   });
 
   useEffect(() => {
@@ -72,6 +125,15 @@ const Booking = () => {
     }));
   };
 
+  const handleVibeToggle = (vibe: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      vibePreferences: prev.vibePreferences.includes(vibe)
+        ? prev.vibePreferences.filter((v) => v !== vibe)
+        : [...prev.vibePreferences, vibe],
+    }));
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -83,6 +145,9 @@ const Booking = () => {
         checkIn: formData.checkIn,
         checkOut: formData.checkOut,
         guestCount: formData.guestCount,
+        budgetRange: formData.budgetRange,
+        serviceDates: formData.serviceDates,
+        locationDetails: formData.locationDetails,
         specialNotes: formData.specialNotes,
       });
 
@@ -95,10 +160,18 @@ const Booking = () => {
           checkIn: validatedData.checkIn,
           checkOut: validatedData.checkOut,
           guestCount: validatedData.guestCount,
+          budgetRange: validatedData.budgetRange,
+          serviceDates: validatedData.serviceDates,
+          preferredTime: formData.preferredTime || null,
+          locationDetails: validatedData.locationDetails,
+          occasionType: formData.occasionType || null,
+          dietaryPreferences: formData.dietaryPreferences || null,
+          vibePreferences: formData.vibePreferences.join(", ") || null,
+          surpriseElements: formData.surpriseElements || null,
           specialNotes: validatedData.specialNotes || null,
           propertyId: formData.propertyId || null,
           selectedServices: formData.selectedServices,
-          honeypot: formData.honeypot, // Send honeypot for bot detection
+          honeypot: formData.honeypot,
         },
       });
 
@@ -126,12 +199,30 @@ const Booking = () => {
     } catch (error: any) {
       console.error("Error submitting booking:", error);
       if (error instanceof z.ZodError) {
-        toast.error(t('booking.messages.error'));
+        const firstError = error.errors[0];
+        toast.error(firstError?.message || t('booking.messages.error'));
       } else {
         toast.error(t('booking.messages.error'));
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const canProceedToNextStep = () => {
+    switch (step) {
+      case 1:
+        return formData.checkIn && formData.checkOut && formData.guestCount >= 1 && formData.budgetRange && formData.serviceDates;
+      case 2:
+        return formData.locationDetails || formData.needHelp;
+      case 3:
+        return true; // Optional step
+      case 4:
+        return true; // Optional step
+      case 5:
+        return formData.customerName && formData.customerEmail;
+      default:
+        return true;
     }
   };
 
@@ -175,22 +266,77 @@ const Booking = () => {
                   />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="guestCount">{t('booking.step1.guests')}</Label>
-                <Input
-                  id="guestCount"
-                  type="number"
-                  min="1"
-                  value={formData.guestCount}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      guestCount: parseInt(e.target.value) || 1,
-                    })
-                  }
-                  placeholder={t('booking.step1.guestsPlaceholder')}
-                  required
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="guestCount">{t('booking.step1.guests')} *</Label>
+                  <Input
+                    id="guestCount"
+                    type="number"
+                    min="1"
+                    value={formData.guestCount}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        guestCount: parseInt(e.target.value) || 1,
+                      })
+                    }
+                    placeholder={t('booking.step1.guestsPlaceholder')}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="budgetRange">{t('booking.step1.budget')} *</Label>
+                  <Select
+                    value={formData.budgetRange}
+                    onValueChange={(value) => setFormData({ ...formData, budgetRange: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('booking.step1.budgetPlaceholder')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BUDGET_RANGES.map((range) => (
+                        <SelectItem key={range} value={range}>
+                          {range}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="serviceDates">{t('booking.step1.serviceDates')} *</Label>
+                  <Input
+                    id="serviceDates"
+                    type="text"
+                    value={formData.serviceDates}
+                    onChange={(e) =>
+                      setFormData({ ...formData, serviceDates: e.target.value })
+                    }
+                    placeholder={t('booking.step1.serviceDatesPlaceholder')}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="preferredTime">{t('booking.step1.preferredTime')}</Label>
+                  <Select
+                    value={formData.preferredTime}
+                    onValueChange={(value) => setFormData({ ...formData, preferredTime: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('booking.step1.preferredTimePlaceholder')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PREFERRED_TIMES.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {t(`booking.preferredTimes.${time}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -201,11 +347,29 @@ const Booking = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Home className="w-6 h-6 text-primary" />
+                <MapPin className="w-6 h-6 text-primary" />
                 {t('booking.step2.title')}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              <div>
+                <Label htmlFor="locationDetails">{t('booking.step2.location')} *</Label>
+                <Textarea
+                  id="locationDetails"
+                  value={formData.locationDetails}
+                  onChange={(e) =>
+                    setFormData({ ...formData, locationDetails: e.target.value })
+                  }
+                  placeholder={t('booking.step2.locationPlaceholder')}
+                  rows={3}
+                  maxLength={500}
+                  required
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  {t('booking.step2.locationHint')}
+                </p>
+              </div>
+
               <div className="flex items-center space-x-2 p-4 border rounded-lg cursor-pointer hover:bg-muted transition-smooth">
                 <Checkbox
                   id="needHelp"
@@ -219,44 +383,49 @@ const Booking = () => {
                 </Label>
               </div>
 
-              {!formData.needHelp && (
-                <div className="grid grid-cols-1 gap-4">
-                  {properties.map((property) => (
-                    <div
-                      key={property.id}
-                      className={`p-4 border rounded-lg cursor-pointer transition-smooth ${
-                        formData.propertyId === property.id
-                          ? "border-primary bg-primary/5"
-                          : "hover:bg-muted"
-                      }`}
-                      onClick={() =>
-                        setFormData({ ...formData, propertyId: property.id })
-                      }
-                    >
-                      <div className="flex items-start gap-4">
-                        {property.photos[0] && (
-                          <img
-                            src={property.photos[0]}
-                            alt={property.name}
-                            className="w-24 h-24 object-cover rounded-lg"
-                          />
-                        )}
-                        <div className="flex-1">
-                          <h4 className="font-semibold mb-1">{property.name}</h4>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {t('booking.step2.sleeps', { count: property.sleeps })} · {t('booking.step2.bedrooms', { count: property.bedrooms })} · {t('booking.step2.bathrooms', { count: property.bathrooms })}
-                          </p>
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {property.description}
-                          </p>
+              {!formData.needHelp && properties.length > 0 && (
+                <>
+                  <div className="text-sm text-muted-foreground">
+                    {t('booking.step2.orSelectProperty')}
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {properties.map((property) => (
+                      <div
+                        key={property.id}
+                        className={`p-4 border rounded-lg cursor-pointer transition-smooth ${
+                          formData.propertyId === property.id
+                            ? "border-primary bg-primary/5"
+                            : "hover:bg-muted"
+                        }`}
+                        onClick={() =>
+                          setFormData({ ...formData, propertyId: property.id })
+                        }
+                      >
+                        <div className="flex items-start gap-4">
+                          {property.photos?.[0] && (
+                            <img
+                              src={property.photos[0]}
+                              alt={property.name}
+                              className="w-24 h-24 object-cover rounded-lg"
+                            />
+                          )}
+                          <div className="flex-1">
+                            <h4 className="font-semibold mb-1">{property.name}</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {t('booking.step2.sleeps', { count: property.sleeps })} · {t('booking.step2.bedrooms', { count: property.bedrooms })} · {t('booking.step2.bathrooms', { count: property.bathrooms })}
+                            </p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {property.description}
+                            </p>
+                          </div>
+                          {formData.propertyId === property.id && (
+                            <Check className="w-6 h-6 text-primary flex-shrink-0" />
+                          )}
                         </div>
-                        {formData.propertyId === property.id && (
-                          <Check className="w-6 h-6 text-primary flex-shrink-0" />
-                        )}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
@@ -267,8 +436,87 @@ const Booking = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
+                <Heart className="w-6 h-6 text-primary" />
+                {t('booking.step3.title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label htmlFor="occasionType">{t('booking.step3.occasion')}</Label>
+                <Select
+                  value={formData.occasionType}
+                  onValueChange={(value) => setFormData({ ...formData, occasionType: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('booking.step3.occasionPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {OCCASION_TYPES.map((occasion) => (
+                      <SelectItem key={occasion} value={occasion}>
+                        {t(`booking.occasions.${occasion}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>{t('booking.step3.vibe')}</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                  {VIBE_OPTIONS.map((vibe) => (
+                    <div
+                      key={vibe}
+                      className={`p-3 border rounded-lg cursor-pointer text-center transition-smooth ${
+                        formData.vibePreferences.includes(vibe)
+                          ? "border-primary bg-primary/5"
+                          : "hover:bg-muted"
+                      }`}
+                      onClick={() => handleVibeToggle(vibe)}
+                    >
+                      <span className="text-sm">{t(`booking.vibes.${vibe}`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="dietaryPreferences">{t('booking.step3.dietary')}</Label>
+                <Textarea
+                  id="dietaryPreferences"
+                  value={formData.dietaryPreferences}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dietaryPreferences: e.target.value })
+                  }
+                  placeholder={t('booking.step3.dietaryPlaceholder')}
+                  rows={2}
+                  maxLength={500}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="surpriseElements">{t('booking.step3.surprises')}</Label>
+                <Textarea
+                  id="surpriseElements"
+                  value={formData.surpriseElements}
+                  onChange={(e) =>
+                    setFormData({ ...formData, surpriseElements: e.target.value })
+                  }
+                  placeholder={t('booking.step3.surprisesPlaceholder')}
+                  rows={2}
+                  maxLength={500}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 4:
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-primary" />
-                {t('booking.step3.title')} {t('booking.step3.optional')}
+                {t('booking.step4.title')} {t('booking.step4.optional')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -291,7 +539,7 @@ const Booking = () => {
                         </p>
                         {service.price_range && (
                           <p className="text-sm font-medium text-accent">
-                            {t('booking.step3.priceRange', { range: service.price_range })}
+                            {t('booking.step4.priceRange', { range: service.price_range })}
                           </p>
                         )}
                       </div>
@@ -307,31 +555,31 @@ const Booking = () => {
           </Card>
         );
 
-      case 4:
+      case 5:
         return (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-6 h-6 text-primary" />
-                {t('booking.step4.title')}
+                {t('booking.step5.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label htmlFor="name">{t('booking.step4.name')}</Label>
+                <Label htmlFor="name">{t('booking.step5.name')} *</Label>
                 <Input
                   id="name"
                   value={formData.customerName}
                   onChange={(e) =>
                     setFormData({ ...formData, customerName: e.target.value })
                   }
-                  placeholder={t('booking.step4.namePlaceholder')}
+                  placeholder={t('booking.step5.namePlaceholder')}
                   required
                   maxLength={100}
                 />
               </div>
               <div>
-                <Label htmlFor="email">{t('booking.step4.email')}</Label>
+                <Label htmlFor="email">{t('booking.step5.email')} *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -339,13 +587,13 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, customerEmail: e.target.value })
                   }
-                  placeholder={t('booking.step4.emailPlaceholder')}
+                  placeholder={t('booking.step5.emailPlaceholder')}
                   required
                   maxLength={255}
                 />
               </div>
               <div>
-                <Label htmlFor="phone">{t('booking.step4.phone')}</Label>
+                <Label htmlFor="phone">{t('booking.step5.phone')}</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -353,12 +601,12 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, customerPhone: e.target.value })
                   }
-                  placeholder={t('booking.step4.phonePlaceholder')}
+                  placeholder={t('booking.step5.phonePlaceholder')}
                   maxLength={20}
                 />
               </div>
               <div>
-                <Label htmlFor="notes">{t('booking.step4.notes')}</Label>
+                <Label htmlFor="notes">{t('booking.step5.notes')}</Label>
                 <Textarea
                   id="notes"
                   value={formData.specialNotes}
@@ -367,7 +615,7 @@ const Booking = () => {
                   }
                   rows={4}
                   maxLength={1000}
-                  placeholder={t('booking.step4.notesPlaceholder')}
+                  placeholder={t('booking.step5.notesPlaceholder')}
                 />
               </div>
               {/* Honeypot field - hidden from users, bots will fill it */}
@@ -392,6 +640,14 @@ const Booking = () => {
     }
   };
 
+  const stepLabels = [
+    t('booking.steps.dates'),
+    t('booking.steps.location'),
+    t('booking.steps.preferences'),
+    t('booking.steps.services'),
+    t('booking.steps.contact'),
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -403,13 +659,13 @@ const Booking = () => {
               {t('booking.title')}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Step {step} of 4 - {[t('booking.steps.dates'), t('booking.steps.property'), t('booking.steps.services'), t('booking.steps.contact')][step - 1]}
+              {t('booking.stepOf', { current: step, total: 5 })} - {stepLabels[step - 1]}
             </p>
           </div>
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center mb-12">
-            {[1, 2, 3, 4].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <div key={s} className="flex items-center">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-smooth ${
@@ -422,9 +678,9 @@ const Booking = () => {
                 >
                   {s < step ? <Check className="w-5 h-5" /> : s}
                 </div>
-                {s < 4 && (
+                {s < 5 && (
                   <div
-                    className={`w-16 h-1 mx-2 transition-smooth ${
+                    className={`w-12 h-1 mx-1 transition-smooth ${
                       s < step ? "bg-primary" : "bg-muted"
                     }`}
                   />
@@ -445,11 +701,11 @@ const Booking = () => {
             >
               {t('booking.buttons.back')}
             </Button>
-            {step < 4 ? (
+            {step < 5 ? (
               <Button
                 onClick={() => setStep(step + 1)}
                 className="gradient-secondary"
-                disabled={loading}
+                disabled={loading || !canProceedToNextStep()}
               >
                 {t('booking.buttons.next')}
               </Button>
@@ -457,7 +713,7 @@ const Booking = () => {
               <Button
                 onClick={handleSubmit}
                 className="gradient-secondary"
-                disabled={loading}
+                disabled={loading || !canProceedToNextStep()}
               >
                 {loading ? (
                   <>
