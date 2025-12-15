@@ -115,9 +115,11 @@
   },
   "booking": {
     "title": "Plan Your Trip",
+    "stepOf": "Step {{current}} of {{total}}",
     "steps": {
-      "dates": "Dates & Guests",
-      "property": "Choose Property",
+      "dates": "Dates & Budget",
+      "location": "Location",
+      "preferences": "Preferences",
       "services": "Add Services",
       "contact": "Your Details"
     },
@@ -125,23 +127,41 @@
       "checkIn": "Check-in Date",
       "checkOut": "Check-out Date",
       "guests": "Number of Guests",
-      "guestsPlaceholder": "How many guests?"
+      "guestsPlaceholder": "How many guests?",
+      "budget": "Budget Range",
+      "budgetPlaceholder": "Select your budget",
+      "serviceDates": "Service Date(s)",
+      "serviceDatesPlaceholder": "e.g., Dec 20, Dec 21 evening",
+      "preferredTime": "Preferred Time",
+      "preferredTimePlaceholder": "Select preferred time"
     },
     "step2": {
-      "title": "Select a Property",
-      "needHelp": "I need help choosing",
-      "loading": "Loading properties...",
+      "title": "Location & Property",
+      "location": "Where are you staying?",
+      "locationPlaceholder": "Enter your Airbnb, hotel, or venue address...",
+      "locationHint": "Provide the address or name of your accommodation",
+      "needHelp": "I need help finding accommodation",
+      "orSelectProperty": "Or select one of our properties:",
       "sleeps": "Sleeps {{count}}",
       "bedrooms": "{{count}} Bedrooms",
       "bathrooms": "{{count}} Bathrooms"
     },
     "step3": {
-      "title": "Add Services",
-      "optional": "(Optional)",
-      "loading": "Loading services...",
-      "priceRange": "{{range}}"
+      "title": "Occasion & Preferences",
+      "occasion": "What's the occasion?",
+      "occasionPlaceholder": "Select occasion type",
+      "vibe": "What vibe are you going for?",
+      "dietary": "Dietary Preferences",
+      "dietaryPlaceholder": "Vegetarian, vegan, allergies, etc.",
+      "surprises": "Any surprise elements to plan?",
+      "surprisesPlaceholder": "Birthday cake, special decorations, proposals..."
     },
     "step4": {
+      "title": "Add Services",
+      "optional": "(Optional)",
+      "priceRange": "{{range}}"
+    },
+    "step5": {
       "title": "Contact Information",
       "name": "Full Name",
       "namePlaceholder": "Your name",
@@ -149,8 +169,33 @@
       "emailPlaceholder": "your@email.com",
       "phone": "Phone Number",
       "phonePlaceholder": "+1 (555) 000-0000",
-      "notes": "Special Requests or Notes",
-      "notesPlaceholder": "Tell us about any special requests, dietary restrictions, or questions..."
+      "notes": "Additional Notes",
+      "notesPlaceholder": "Any other details we should know..."
+    },
+    "preferredTimes": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "flexible": "Flexible"
+    },
+    "occasions": {
+      "birthday": "Birthday",
+      "anniversary": "Anniversary",
+      "bachelor": "Bachelor Party",
+      "bachelorette": "Bachelorette Party",
+      "wedding": "Wedding",
+      "family_trip": "Family Trip",
+      "corporate": "Corporate Event",
+      "celebration": "Celebration",
+      "other": "Other"
+    },
+    "vibes": {
+      "relaxed": "Relaxed",
+      "adventurous": "Adventurous",
+      "romantic": "Romantic",
+      "party": "Party",
+      "wellness": "Wellness",
+      "cultural": "Cultural"
     },
     "buttons": {
       "next": "Next",

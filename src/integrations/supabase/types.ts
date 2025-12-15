@@ -17,16 +17,19 @@ export type Database = {
       booking_services: {
         Row: {
           booking_id: string
+          price: number | null
           service_id: string
           vendor_id: string | null
         }
         Insert: {
           booking_id: string
+          price?: number | null
           service_id: string
           vendor_id?: string | null
         }
         Update: {
           booking_id?: string
+          price?: number | null
           service_id?: string
           vendor_id?: string | null
         }
@@ -56,49 +59,73 @@ export type Database = {
       }
       bookings: {
         Row: {
+          budget_range: string | null
           check_in: string
           check_out: string
           created_at: string | null
           customer_email: string
           customer_name: string
           customer_phone: string | null
+          dietary_preferences: string | null
           guest_count: number
           id: string
           internal_notes: string | null
+          location_details: string | null
+          occasion_type: string | null
+          preferred_time: string | null
           property_id: string | null
+          service_dates: string | null
           special_notes: string | null
           status: Database["public"]["Enums"]["booking_status"] | null
+          surprise_elements: string | null
           updated_at: string | null
+          vibe_preferences: string | null
         }
         Insert: {
+          budget_range?: string | null
           check_in: string
           check_out: string
           created_at?: string | null
           customer_email: string
           customer_name: string
           customer_phone?: string | null
+          dietary_preferences?: string | null
           guest_count: number
           id?: string
           internal_notes?: string | null
+          location_details?: string | null
+          occasion_type?: string | null
+          preferred_time?: string | null
           property_id?: string | null
+          service_dates?: string | null
           special_notes?: string | null
           status?: Database["public"]["Enums"]["booking_status"] | null
+          surprise_elements?: string | null
           updated_at?: string | null
+          vibe_preferences?: string | null
         }
         Update: {
+          budget_range?: string | null
           check_in?: string
           check_out?: string
           created_at?: string | null
           customer_email?: string
           customer_name?: string
           customer_phone?: string | null
+          dietary_preferences?: string | null
           guest_count?: number
           id?: string
           internal_notes?: string | null
+          location_details?: string | null
+          occasion_type?: string | null
+          preferred_time?: string | null
           property_id?: string | null
+          service_dates?: string | null
           special_notes?: string | null
           status?: Database["public"]["Enums"]["booking_status"] | null
+          surprise_elements?: string | null
           updated_at?: string | null
+          vibe_preferences?: string | null
         }
         Relationships: [
           {
@@ -181,6 +208,53 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revenue_splits: {
+        Row: {
+          booking_id: string
+          calculated_at: string | null
+          concierge_share_amount: number | null
+          concierge_share_percentage: number | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          total_charged: number | null
+          updated_at: string | null
+          vendor_cost: number | null
+        }
+        Insert: {
+          booking_id: string
+          calculated_at?: string | null
+          concierge_share_amount?: number | null
+          concierge_share_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          total_charged?: number | null
+          updated_at?: string | null
+          vendor_cost?: number | null
+        }
+        Update: {
+          booking_id?: string
+          calculated_at?: string | null
+          concierge_share_amount?: number | null
+          concierge_share_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          total_charged?: number | null
+          updated_at?: string | null
+          vendor_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_splits_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]

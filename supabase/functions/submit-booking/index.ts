@@ -29,7 +29,6 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
 }
 
 function getClientIP(req: Request): string {
-  // Try various headers for client IP
   const forwardedFor = req.headers.get("x-forwarded-for");
   if (forwardedFor) {
     return forwardedFor.split(",")[0].trim();
@@ -75,24 +74,31 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     
-    // Validate required fields
+    // Extract all fields including new ones
     const { 
       customerName, 
       customerEmail, 
       customerPhone, 
       checkIn, 
       checkOut, 
-      guestCount, 
+      guestCount,
+      budgetRange,
+      serviceDates,
+      preferredTime,
+      locationDetails,
+      occasionType,
+      dietaryPreferences,
+      vibePreferences,
+      surpriseElements,
       specialNotes, 
       propertyId, 
       selectedServices,
-      honeypot // Honeypot field for bot detection
+      honeypot
     } = body;
 
     // Bot detection via honeypot
     if (honeypot) {
       console.log(`Bot detected (honeypot triggered) from IP: ${clientIP}`);
-      // Return success to not reveal bot detection, but don't process
       return new Response(
         JSON.stringify({ success: true, bookingId: "fake-id" }),
         { 
@@ -132,12 +138,34 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate new required fields
+    if (!budgetRange || typeof budgetRange !== "string" || budgetRange.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Budget range is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!serviceDates || typeof serviceDates !== "string" || serviceDates.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Service dates are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!locationDetails || typeof locationDetails !== "string" || locationDetails.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Location details are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Create Supabase client with service role for inserting
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Create booking
+    // Create booking with extended fields
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
@@ -148,6 +176,14 @@ Deno.serve(async (req) => {
         check_in: checkIn,
         check_out: checkOut,
         guest_count: guestCount,
+        budget_range: budgetRange.trim(),
+        service_dates: serviceDates.trim(),
+        preferred_time: preferredTime?.trim() || null,
+        location_details: locationDetails.trim(),
+        occasion_type: occasionType?.trim() || null,
+        dietary_preferences: dietaryPreferences?.substring(0, 500) || null,
+        vibe_preferences: vibePreferences?.substring(0, 200) || null,
+        surprise_elements: surpriseElements?.substring(0, 500) || null,
         special_notes: specialNotes?.substring(0, 1000) || null,
         status: "new_request",
       })
