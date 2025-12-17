@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -16,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel } from "lucide-react";
+import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, "Check-in date is required"),
@@ -26,7 +28,8 @@ const bookingSchema = z.object({
   tripFocus: z.string().min(1, "Please select your trip focus"),
   accommodationStatus: z.string().min(1, "Please select accommodation status"),
   stayingLocation: z.string().optional(),
-  vibePreferences: z.array(z.string()),
+  occasionType: z.string().optional(),
+  serviceInterests: z.array(z.string()),
   vision: z.string().optional(),
   customerName: z.string().min(1, "Name is required").max(100),
   customerEmail: z.string().email("Invalid email").max(255),
@@ -45,19 +48,21 @@ const ACCOMMODATION_OPTIONS = [
   { value: "need_recommendations", labelKey: "accommodationOptions.needRecommendations" },
 ];
 
-const VIBE_OPTIONS = [
-  "relaxing",
-  "adventure", 
-  "gastronomy",
-  "family",
-  "nature",
-  "spa",
-  "party",
+const OCCASION_OPTIONS = [
+  "vacation",
+  "honeymoon",
+  "anniversary",
+  "birthday",
+  "bachelor_bachelorette",
+  "corporate",
+  "wedding",
+  "other",
 ];
 
 const Booking = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -69,7 +74,8 @@ const Booking = () => {
     tripFocus: "",
     accommodationStatus: "",
     stayingLocation: "",
-    vibePreferences: [] as string[],
+    occasionType: "",
+    serviceInterests: [] as string[],
     vision: "",
     customerName: "",
     customerEmail: "",
@@ -77,12 +83,44 @@ const Booking = () => {
     honeypot: "",
   });
 
-  const handleVibeToggle = (vibe: string) => {
+  // Fetch distinct service categories from database
+  const { data: serviceCategories, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["service-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("category")
+        .order("category");
+
+      if (error) throw error;
+      // Get unique categories
+      const unique = [...new Set(data?.map((s) => s.category))] as string[];
+      return unique;
+    },
+  });
+
+  // Auto-select category from URL parameter
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam && serviceCategories?.includes(categoryParam as any)) {
+      setFormData((prev) => {
+        if (!prev.serviceInterests.includes(categoryParam)) {
+          return {
+            ...prev,
+            serviceInterests: [...prev.serviceInterests, categoryParam],
+          };
+        }
+        return prev;
+      });
+    }
+  }, [searchParams, serviceCategories]);
+
+  const handleServiceToggle = (category: string) => {
     setFormData((prev) => ({
       ...prev,
-      vibePreferences: prev.vibePreferences.includes(vibe)
-        ? prev.vibePreferences.filter((v) => v !== vibe)
-        : [...prev.vibePreferences, vibe],
+      serviceInterests: prev.serviceInterests.includes(category)
+        ? prev.serviceInterests.filter((c) => c !== category)
+        : [...prev.serviceInterests, category],
     }));
   };
 
@@ -106,7 +144,7 @@ const Booking = () => {
   const handleSubmit = async () => {
     try {
       const validated = bookingSchema.parse(formData);
-      
+
       if (formData.accommodationStatus === "have_place" && !formData.stayingLocation.trim()) {
         toast({
           title: t("booking.error.title"),
@@ -119,12 +157,18 @@ const Booking = () => {
       setLoading(true);
 
       // Map trip focus to budget range label
-      const tripFocusLabel = t(`booking.${TRIP_FOCUS_OPTIONS.find(o => o.value === formData.tripFocus)?.labelKey}`);
-      
+      const tripFocusLabel = t(`booking.${TRIP_FOCUS_OPTIONS.find((o) => o.value === formData.tripFocus)?.labelKey}`);
+
       // Map accommodation status to location details
-      const locationDetails = formData.accommodationStatus === "have_place" 
-        ? formData.stayingLocation 
-        : t("booking.step1.curatedBadge");
+      const locationDetails =
+        formData.accommodationStatus === "have_place"
+          ? formData.stayingLocation
+          : t("booking.step1.curatedBadge");
+
+      // Map service interests to translated labels
+      const serviceInterestsLabels = validated.serviceInterests
+        .map((cat) => t(`booking.serviceCategories.${cat}`))
+        .join(", ");
 
       const { data, error } = await supabase.functions.invoke("submit-booking", {
         body: {
@@ -138,9 +182,9 @@ const Booking = () => {
           serviceDates: `${validated.checkIn} to ${validated.checkOut}`,
           preferredTime: null,
           locationDetails: locationDetails,
-          occasionType: null,
+          occasionType: validated.occasionType || null,
           dietaryPreferences: null,
-          vibePreferences: validated.vibePreferences.map(v => t(`booking.vibes.${v}`)).join(", "),
+          vibePreferences: serviceInterestsLabels || null,
           surpriseElements: null,
           specialNotes: validated.vision || null,
           propertyId: null,
@@ -165,7 +209,8 @@ const Booking = () => {
           tripFocus: "",
           accommodationStatus: "",
           stayingLocation: "",
-          vibePreferences: [],
+          occasionType: "",
+          serviceInterests: [],
           vision: "",
           customerName: "",
           customerEmail: "",
@@ -338,7 +383,9 @@ const Booking = () => {
         <CardContent className="space-y-4">
           <Select
             value={formData.accommodationStatus}
-            onValueChange={(value) => setFormData({ ...formData, accommodationStatus: value, stayingLocation: "" })}
+            onValueChange={(value) =>
+              setFormData({ ...formData, accommodationStatus: value, stayingLocation: "" })
+            }
           >
             <SelectTrigger className="h-12 text-base">
               <SelectValue placeholder={t("booking.step1.accommodationPlaceholder")} />
@@ -373,9 +420,7 @@ const Booking = () => {
           {formData.accommodationStatus === "need_recommendations" && (
             <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-start gap-3">
               <Hotel className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-              <p className="text-sm text-foreground">
-                {t("booking.step1.curatedBadge")}
-              </p>
+              <p className="text-sm text-foreground">{t("booking.step1.curatedBadge")}</p>
             </div>
           )}
         </CardContent>
@@ -385,42 +430,81 @@ const Booking = () => {
 
   const renderStep2 = () => (
     <div className="space-y-6">
-      {/* Vibe Tags Section */}
+      {/* Occasion Section */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">{t("booking.step2.vibeTitle")}</CardTitle>
-          <p className="text-sm text-muted-foreground">{t("booking.step2.vibeHint")}</p>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Heart className="h-5 w-5 text-primary" />
+            {t("booking.step2.occasionTitle")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-3">
-            {VIBE_OPTIONS.map((vibe) => (
-              <button
-                key={vibe}
-                type="button"
-                onClick={() => handleVibeToggle(vibe)}
-                className={`px-5 py-3 rounded-full text-sm font-medium transition-all min-h-[48px] ${
-                  formData.vibePreferences.includes(vibe)
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                {t(`booking.vibes.${vibe}`)}
-              </button>
-            ))}
-          </div>
+          <Select
+            value={formData.occasionType}
+            onValueChange={(value) => setFormData({ ...formData, occasionType: value })}
+          >
+            <SelectTrigger className="h-12 text-base">
+              <SelectValue placeholder={t("booking.step2.occasionPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {OCCASION_OPTIONS.map((occasion) => (
+                <SelectItem key={occasion} value={occasion} className="py-3">
+                  {t(`booking.occasions.${occasion}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
-      {/* Vision Section */}
+      {/* Dynamic Service Interests Section */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">{t("booking.step2.visionTitle")}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <PartyPopper className="h-5 w-5 text-primary" />
+            {t("booking.step2.servicesTitle")}
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">{t("booking.step2.servicesHint")}</p>
+        </CardHeader>
+        <CardContent>
+          {categoriesLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-sm text-muted-foreground">
+                {t("booking.step2.servicesLoading")}
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {serviceCategories?.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => handleServiceToggle(category)}
+                  className={`px-5 py-3 rounded-full text-sm font-medium transition-all min-h-[48px] ${
+                    formData.serviceInterests.includes(category)
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  {t(`booking.serviceCategories.${category}`)}
+                </button>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Vibe & Details Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{t("booking.step2.vibeTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea
             value={formData.vision}
             onChange={(e) => setFormData({ ...formData, vision: e.target.value })}
-            placeholder={t("booking.step2.visionPlaceholder")}
+            placeholder={t("booking.step2.vibePlaceholder")}
             className="min-h-[120px] text-base resize-none"
           />
         </CardContent>
@@ -493,13 +577,15 @@ const Booking = () => {
         <div className="max-w-xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              {t("booking.title")}
-            </h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{t("booking.title")}</h1>
             {/* Progress Indicator */}
             <div className="flex items-center justify-center gap-2 mt-4">
-              <div className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 1 ? "bg-primary" : "bg-muted"}`} />
-              <div className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 2 ? "bg-primary" : "bg-muted"}`} />
+              <div
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 1 ? "bg-primary" : "bg-muted"}`}
+              />
+              <div
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 2 ? "bg-primary" : "bg-muted"}`}
+              />
             </div>
             <p className="text-sm text-muted-foreground mt-2">
               {t("booking.stepOf", { current: step, total: 2 })}
