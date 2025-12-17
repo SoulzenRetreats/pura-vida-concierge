@@ -142,10 +142,13 @@
       "needRecommendations": "Necesito recomendaciones"
     },
     "step2": {
-      "vibeTitle": "¿Cuál es tu estilo?",
-      "vibeHint": "Selecciona todos los que apliquen",
-      "visionTitle": "Cuéntanos tu visión",
-      "visionPlaceholder": "Cuéntanos sobre tu viaje ideal (necesidades dietéticas, ocasiones especiales, actividades imprescindibles, sorpresas a planear...)",
+      "occasionTitle": "¿Cuál es la Ocasión?",
+      "occasionPlaceholder": "Selecciona el tipo de ocasión",
+      "servicesTitle": "¿En qué estás interesado?",
+      "servicesHint": "Selecciona todos los que apliquen",
+      "servicesLoading": "Cargando servicios...",
+      "vibeTitle": "Cuéntanos sobre el ambiente",
+      "vibePlaceholder": "Cuéntanos más sobre el ambiente (Relajado vs. Fiesta, Necesidades dietéticas, Solicitudes específicas...)",
       "contactTitle": "¿Cómo te contactamos?",
       "name": "Nombre Completo",
       "namePlaceholder": "Tu nombre",
@@ -153,6 +156,25 @@
       "emailPlaceholder": "tu@correo.com",
       "whatsapp": "WhatsApp",
       "whatsappPlaceholder": "+506 1234-5678"
+    },
+    "occasions": {
+      "vacation": "Vacaciones",
+      "honeymoon": "Luna de Miel",
+      "anniversary": "Aniversario",
+      "birthday": "Cumpleaños",
+      "bachelor_bachelorette": "Despedida de Soltero/a",
+      "corporate": "Corporativo",
+      "wedding": "Boda",
+      "other": "Otro"
+    },
+    "serviceCategories": {
+      "chef": "Chef Privado",
+      "transportation": "Transporte",
+      "adventure": "Aventura",
+      "spa": "Spa y Bienestar",
+      "tours": "Tours",
+      "celebrations": "Celebraciones",
+      "other": "Otros Servicios"
     },
     "vibes": {
       "relaxing": "Relajante",

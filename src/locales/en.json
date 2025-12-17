@@ -142,10 +142,13 @@
       "needRecommendations": "I need recommendations"
     },
     "step2": {
-      "vibeTitle": "What's your vibe?",
-      "vibeHint": "Select all that apply",
-      "visionTitle": "Tell us your vision",
-      "visionPlaceholder": "Tell us about your ideal trip (dietary needs, special occasions, must-do activities, surprises to plan...)",
+      "occasionTitle": "What's the Occasion?",
+      "occasionPlaceholder": "Select occasion type",
+      "servicesTitle": "What are you interested in?",
+      "servicesHint": "Select all that apply",
+      "servicesLoading": "Loading services...",
+      "vibeTitle": "Tell us about the vibe",
+      "vibePlaceholder": "Tell us more about the vibe (Relaxed vs. Party, Dietary needs, Specific requests...)",
       "contactTitle": "How do we reach you?",
       "name": "Full Name",
       "namePlaceholder": "Your name",
@@ -153,6 +156,25 @@
       "emailPlaceholder": "your@email.com",
       "whatsapp": "WhatsApp",
       "whatsappPlaceholder": "+506 1234-5678"
+    },
+    "occasions": {
+      "vacation": "Vacation",
+      "honeymoon": "Honeymoon",
+      "anniversary": "Anniversary",
+      "birthday": "Birthday",
+      "bachelor_bachelorette": "Bachelor/Bachelorette",
+      "corporate": "Corporate",
+      "wedding": "Wedding",
+      "other": "Other"
+    },
+    "serviceCategories": {
+      "chef": "Private Chef",
+      "transportation": "Transportation",
+      "adventure": "Adventure",
+      "spa": "Spa & Wellness",
+      "tours": "Tours",
+      "celebrations": "Celebrations",
+      "other": "Other Services"
     },
     "vibes": {
       "relaxing": "Relaxing",
