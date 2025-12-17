@@ -138,27 +138,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Validate new required fields
-    if (!budgetRange || typeof budgetRange !== "string" || budgetRange.trim().length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Budget range is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!serviceDates || typeof serviceDates !== "string" || serviceDates.trim().length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Service dates are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!locationDetails || typeof locationDetails !== "string" || locationDetails.trim().length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Location details are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // Budget range and location details are now optional for the simplified form
+    // but we still accept them if provided
 
     // Create Supabase client with service role for inserting
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;

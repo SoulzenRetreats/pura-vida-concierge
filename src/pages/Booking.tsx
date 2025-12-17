@@ -1,129 +1,81 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Calendar, Users, Home, Sparkles, Check, Loader2, DollarSign, MapPin, Heart } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel } from "lucide-react";
 
 const bookingSchema = z.object({
-  customerName: z.string().trim().min(1, "Name is required").max(100),
-  customerEmail: z.string().trim().email("Invalid email").max(255),
-  customerPhone: z.string().trim().max(20).optional(),
   checkIn: z.string().min(1, "Check-in date is required"),
   checkOut: z.string().min(1, "Check-out date is required"),
-  guestCount: z.number().min(1, "At least 1 guest required").max(100),
-  budgetRange: z.string().min(1, "Budget range is required"),
-  serviceDates: z.string().min(1, "Service dates are required"),
-  locationDetails: z.string().min(1, "Location is required").max(500),
-  specialNotes: z.string().max(1000).optional(),
+  adults: z.number().min(1, "At least 1 adult required"),
+  kids: z.number().min(0),
+  tripFocus: z.string().min(1, "Please select your trip focus"),
+  accommodationStatus: z.string().min(1, "Please select accommodation status"),
+  stayingLocation: z.string().optional(),
+  vibePreferences: z.array(z.string()),
+  vision: z.string().optional(),
+  customerName: z.string().min(1, "Name is required").max(100),
+  customerEmail: z.string().email("Invalid email").max(255),
+  customerPhone: z.string().optional(),
 });
 
-const BUDGET_RANGES = [
-  "$1,000 - $2,500",
-  "$2,500 - $5,000",
-  "$5,000 - $10,000",
-  "$10,000 - $25,000",
-  "$25,000+",
+const TRIP_FOCUS_OPTIONS = [
+  { value: "activities", labelKey: "tripFocusOptions.activities" },
+  { value: "standard", labelKey: "tripFocusOptions.standard" },
+  { value: "premiere", labelKey: "tripFocusOptions.premiere" },
+  { value: "ultraluxe", labelKey: "tripFocusOptions.ultraluxe" },
 ];
 
-const OCCASION_TYPES = [
-  "birthday",
-  "anniversary",
-  "bachelor",
-  "bachelorette",
-  "wedding",
-  "family_trip",
-  "corporate",
-  "celebration",
-  "other",
-];
-
-const PREFERRED_TIMES = [
-  "morning",
-  "afternoon",
-  "evening",
-  "flexible",
+const ACCOMMODATION_OPTIONS = [
+  { value: "have_place", labelKey: "accommodationOptions.havePlace" },
+  { value: "need_recommendations", labelKey: "accommodationOptions.needRecommendations" },
 ];
 
 const VIBE_OPTIONS = [
-  "relaxed",
-  "adventurous",
-  "romantic",
+  "relaxing",
+  "adventure", 
+  "gastronomy",
+  "family",
+  "nature",
+  "spa",
   "party",
-  "wellness",
-  "cultural",
 ];
 
 const Booking = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [properties, setProperties] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
 
-  // Form data
   const [formData, setFormData] = useState({
-    // Step 1: Dates & Budget
     checkIn: "",
     checkOut: "",
-    guestCount: 4,
-    budgetRange: "",
-    serviceDates: "",
-    preferredTime: "",
-    // Step 2: Property & Location
-    propertyId: searchParams.get("property") || "",
-    needHelp: false,
-    locationDetails: "",
-    // Step 3: Occasion & Preferences
-    occasionType: "",
-    dietaryPreferences: "",
+    adults: 2,
+    kids: 0,
+    tripFocus: "",
+    accommodationStatus: "",
+    stayingLocation: "",
     vibePreferences: [] as string[],
-    surpriseElements: "",
-    // Step 4: Services
-    selectedServices: [] as string[],
-    // Step 5: Contact
+    vision: "",
     customerName: "",
     customerEmail: "",
     customerPhone: "",
-    specialNotes: "",
     honeypot: "",
   });
-
-  useEffect(() => {
-    fetchProperties();
-    fetchServices();
-  }, []);
-
-  const fetchProperties = async () => {
-    const { data } = await supabase.from("properties").select("*");
-    setProperties(data || []);
-  };
-
-  const fetchServices = async () => {
-    const { data } = await supabase.from("services").select("*");
-    setServices(data || []);
-  };
-
-  const handleServiceToggle = (serviceId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedServices: prev.selectedServices.includes(serviceId)
-        ? prev.selectedServices.filter((id) => id !== serviceId)
-        : [...prev.selectedServices, serviceId],
-    }));
-  };
 
   const handleVibeToggle = (vibe: string) => {
     setFormData((prev) => ({
@@ -134,600 +86,478 @@ const Booking = () => {
     }));
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      // Validate form data client-side first
-      const validatedData = bookingSchema.parse({
-        customerName: formData.customerName,
-        customerEmail: formData.customerEmail,
-        customerPhone: formData.customerPhone,
-        checkIn: formData.checkIn,
-        checkOut: formData.checkOut,
-        guestCount: formData.guestCount,
-        budgetRange: formData.budgetRange,
-        serviceDates: formData.serviceDates,
-        locationDetails: formData.locationDetails,
-        specialNotes: formData.specialNotes,
-      });
+  const handleGuestChange = (type: "adults" | "kids", delta: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [type]: Math.max(type === "adults" ? 1 : 0, prev[type] + delta),
+    }));
+  };
 
-      // Submit via rate-limited edge function
-      const response = await supabase.functions.invoke("submit-booking", {
+  const canProceedToStep2 = () => {
+    return (
+      formData.checkIn &&
+      formData.checkOut &&
+      formData.tripFocus &&
+      formData.accommodationStatus &&
+      (formData.accommodationStatus !== "have_place" || formData.stayingLocation.trim())
+    );
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const validated = bookingSchema.parse(formData);
+      
+      if (formData.accommodationStatus === "have_place" && !formData.stayingLocation.trim()) {
+        toast({
+          title: t("booking.error.title"),
+          description: t("booking.validation.locationRequired"),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setLoading(true);
+
+      // Map trip focus to budget range label
+      const tripFocusLabel = t(`booking.${TRIP_FOCUS_OPTIONS.find(o => o.value === formData.tripFocus)?.labelKey}`);
+      
+      // Map accommodation status to location details
+      const locationDetails = formData.accommodationStatus === "have_place" 
+        ? formData.stayingLocation 
+        : t("booking.step1.curatedBadge");
+
+      const { data, error } = await supabase.functions.invoke("submit-booking", {
         body: {
-          customerName: validatedData.customerName,
-          customerEmail: validatedData.customerEmail,
-          customerPhone: validatedData.customerPhone || null,
-          checkIn: validatedData.checkIn,
-          checkOut: validatedData.checkOut,
-          guestCount: validatedData.guestCount,
-          budgetRange: validatedData.budgetRange,
-          serviceDates: validatedData.serviceDates,
-          preferredTime: formData.preferredTime || null,
-          locationDetails: validatedData.locationDetails,
-          occasionType: formData.occasionType || null,
-          dietaryPreferences: formData.dietaryPreferences || null,
-          vibePreferences: formData.vibePreferences.join(", ") || null,
-          surpriseElements: formData.surpriseElements || null,
-          specialNotes: validatedData.specialNotes || null,
-          propertyId: formData.propertyId || null,
-          selectedServices: formData.selectedServices,
+          customerName: validated.customerName,
+          customerEmail: validated.customerEmail,
+          customerPhone: validated.customerPhone || null,
+          checkIn: validated.checkIn,
+          checkOut: validated.checkOut,
+          guestCount: validated.adults + validated.kids,
+          budgetRange: tripFocusLabel,
+          serviceDates: `${validated.checkIn} to ${validated.checkOut}`,
+          preferredTime: null,
+          locationDetails: locationDetails,
+          occasionType: null,
+          dietaryPreferences: null,
+          vibePreferences: validated.vibePreferences.map(v => t(`booking.vibes.${v}`)).join(", "),
+          surpriseElements: null,
+          specialNotes: validated.vision || null,
+          propertyId: null,
+          selectedServices: [],
           honeypot: formData.honeypot,
         },
       });
 
-      if (response.error) {
-        throw new Error(response.error.message || "Failed to submit booking");
-      }
+      if (error) throw error;
 
-      const data = response.data;
-
-      if (data.error) {
-        if (data.code === "RATE_LIMIT_EXCEEDED") {
-          toast.error(t('booking.messages.rateLimited') || "Too many requests. Please try again later.");
-        } else {
-          toast.error(data.error);
-        }
-        return;
-      }
-
-      toast.success(t('booking.messages.success'));
-
-      // Reset and navigate
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    } catch (error: any) {
-      console.error("Error submitting booking:", error);
-      if (error instanceof z.ZodError) {
-        const firstError = error.errors[0];
-        toast.error(firstError?.message || t('booking.messages.error'));
+      if (data?.success) {
+        toast({
+          title: t("booking.success.title"),
+          description: t("booking.success.message"),
+        });
+        // Reset form
+        setFormData({
+          checkIn: "",
+          checkOut: "",
+          adults: 2,
+          kids: 0,
+          tripFocus: "",
+          accommodationStatus: "",
+          stayingLocation: "",
+          vibePreferences: [],
+          vision: "",
+          customerName: "",
+          customerEmail: "",
+          customerPhone: "",
+          honeypot: "",
+        });
+        setStep(1);
       } else {
-        toast.error(t('booking.messages.error'));
+        throw new Error(data?.error || "Submission failed");
       }
+    } catch (error: any) {
+      console.error("Booking submission error:", error);
+      toast({
+        title: t("booking.error.title"),
+        description: error.message || t("booking.error.message"),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const canProceedToNextStep = () => {
-    switch (step) {
-      case 1:
-        return formData.checkIn && formData.checkOut && formData.guestCount >= 1 && formData.budgetRange && formData.serviceDates;
-      case 2:
-        return formData.locationDetails || formData.needHelp;
-      case 3:
-        return true; // Optional step
-      case 4:
-        return true; // Optional step
-      case 5:
-        return formData.customerName && formData.customerEmail;
-      default:
-        return true;
-    }
-  };
+  const renderStep1 = () => (
+    <div className="space-y-6">
+      {/* Dates Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Calendar className="h-5 w-5 text-primary" />
+            {t("booking.step1.dates")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">
+                {t("booking.step1.checkIn")}
+              </label>
+              <Input
+                type="date"
+                value={formData.checkIn}
+                onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
+                min={new Date().toISOString().split("T")[0]}
+                className="h-12 text-base"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">
+                {t("booking.step1.checkOut")}
+              </label>
+              <Input
+                type="date"
+                value={formData.checkOut}
+                onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
+                min={formData.checkIn || new Date().toISOString().split("T")[0]}
+                className="h-12 text-base"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-  const renderStep = () => {
-    switch (step) {
-      case 1:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-6 h-6 text-primary" />
-                {t('booking.steps.dates')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="checkIn">{t('booking.step1.checkIn')}</Label>
-                  <Input
-                    id="checkIn"
-                    type="date"
-                    value={formData.checkIn}
-                    onChange={(e) =>
-                      setFormData({ ...formData, checkIn: e.target.value })
-                    }
-                    min={new Date().toISOString().split("T")[0]}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="checkOut">{t('booking.step1.checkOut')}</Label>
-                  <Input
-                    id="checkOut"
-                    type="date"
-                    value={formData.checkOut}
-                    onChange={(e) =>
-                      setFormData({ ...formData, checkOut: e.target.value })
-                    }
-                    min={formData.checkIn || new Date().toISOString().split("T")[0]}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="guestCount">{t('booking.step1.guests')} *</Label>
-                  <Input
-                    id="guestCount"
-                    type="number"
-                    min="1"
-                    value={formData.guestCount}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        guestCount: parseInt(e.target.value) || 1,
-                      })
-                    }
-                    placeholder={t('booking.step1.guestsPlaceholder')}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="budgetRange">{t('booking.step1.budget')} *</Label>
-                  <Select
-                    value={formData.budgetRange}
-                    onValueChange={(value) => setFormData({ ...formData, budgetRange: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('booking.step1.budgetPlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BUDGET_RANGES.map((range) => (
-                        <SelectItem key={range} value={range}>
-                          {range}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="serviceDates">{t('booking.step1.serviceDates')} *</Label>
-                  <Input
-                    id="serviceDates"
-                    type="text"
-                    value={formData.serviceDates}
-                    onChange={(e) =>
-                      setFormData({ ...formData, serviceDates: e.target.value })
-                    }
-                    placeholder={t('booking.step1.serviceDatesPlaceholder')}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="preferredTime">{t('booking.step1.preferredTime')}</Label>
-                  <Select
-                    value={formData.preferredTime}
-                    onValueChange={(value) => setFormData({ ...formData, preferredTime: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('booking.step1.preferredTimePlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PREFERRED_TIMES.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {t(`booking.preferredTimes.${time}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case 2:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="w-6 h-6 text-primary" />
-                {t('booking.step2.title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Label htmlFor="locationDetails">{t('booking.step2.location')} *</Label>
-                <Textarea
-                  id="locationDetails"
-                  value={formData.locationDetails}
-                  onChange={(e) =>
-                    setFormData({ ...formData, locationDetails: e.target.value })
-                  }
-                  placeholder={t('booking.step2.locationPlaceholder')}
-                  rows={3}
-                  maxLength={500}
-                  required
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  {t('booking.step2.locationHint')}
-                </p>
-              </div>
-
-              <div className="flex items-center space-x-2 p-4 border rounded-lg cursor-pointer hover:bg-muted transition-smooth">
-                <Checkbox
-                  id="needHelp"
-                  checked={formData.needHelp}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, needHelp: checked as boolean })
-                  }
-                />
-                <Label htmlFor="needHelp" className="cursor-pointer flex-1">
-                  {t('booking.step2.needHelp')}
-                </Label>
-              </div>
-
-              {!formData.needHelp && properties.length > 0 && (
-                <>
-                  <div className="text-sm text-muted-foreground">
-                    {t('booking.step2.orSelectProperty')}
-                  </div>
-                  <div className="grid grid-cols-1 gap-4">
-                    {properties.map((property) => (
-                      <div
-                        key={property.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-smooth ${
-                          formData.propertyId === property.id
-                            ? "border-primary bg-primary/5"
-                            : "hover:bg-muted"
-                        }`}
-                        onClick={() =>
-                          setFormData({ ...formData, propertyId: property.id })
-                        }
-                      >
-                        <div className="flex items-start gap-4">
-                          {property.photos?.[0] && (
-                            <img
-                              src={property.photos[0]}
-                              alt={property.name}
-                              className="w-24 h-24 object-cover rounded-lg"
-                            />
-                          )}
-                          <div className="flex-1">
-                            <h4 className="font-semibold mb-1">{property.name}</h4>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {t('booking.step2.sleeps', { count: property.sleeps })} · {t('booking.step2.bedrooms', { count: property.bedrooms })} · {t('booking.step2.bathrooms', { count: property.bathrooms })}
-                            </p>
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              {property.description}
-                            </p>
-                          </div>
-                          {formData.propertyId === property.id && (
-                            <Check className="w-6 h-6 text-primary flex-shrink-0" />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        );
-
-      case 3:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="w-6 h-6 text-primary" />
-                {t('booking.step3.title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Label htmlFor="occasionType">{t('booking.step3.occasion')}</Label>
-                <Select
-                  value={formData.occasionType}
-                  onValueChange={(value) => setFormData({ ...formData, occasionType: value })}
+      {/* Guests Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Users className="h-5 w-5 text-primary" />
+            {t("booking.step1.guests")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">
+                {t("booking.step1.adults")}
+              </label>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12"
+                  onClick={() => handleGuestChange("adults", -1)}
+                  disabled={formData.adults <= 1}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('booking.step3.occasionPlaceholder')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {OCCASION_TYPES.map((occasion) => (
-                      <SelectItem key={occasion} value={occasion}>
-                        {t(`booking.occasions.${occasion}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="text-2xl font-semibold w-8 text-center">
+                  {formData.adults}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12"
+                  onClick={() => handleGuestChange("adults", 1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
               </div>
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">
+                {t("booking.step1.kids")}
+              </label>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12"
+                  onClick={() => handleGuestChange("kids", -1)}
+                  disabled={formData.kids <= 0}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="text-2xl font-semibold w-8 text-center">
+                  {formData.kids}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12"
+                  onClick={() => handleGuestChange("kids", 1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-              <div>
-                <Label>{t('booking.step3.vibe')}</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-                  {VIBE_OPTIONS.map((vibe) => (
-                    <div
-                      key={vibe}
-                      className={`p-3 border rounded-lg cursor-pointer text-center transition-smooth ${
-                        formData.vibePreferences.includes(vibe)
-                          ? "border-primary bg-primary/5"
-                          : "hover:bg-muted"
-                      }`}
-                      onClick={() => handleVibeToggle(vibe)}
-                    >
-                      <span className="text-sm">{t(`booking.vibes.${vibe}`)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* Trip Focus Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Sparkles className="h-5 w-5 text-primary" />
+            {t("booking.step1.tripFocus")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select
+            value={formData.tripFocus}
+            onValueChange={(value) => setFormData({ ...formData, tripFocus: value })}
+          >
+            <SelectTrigger className="h-12 text-base">
+              <SelectValue placeholder={t("booking.step1.tripFocusPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {TRIP_FOCUS_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value} className="py-3">
+                  {t(`booking.${option.labelKey}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
 
-              <div>
-                <Label htmlFor="dietaryPreferences">{t('booking.step3.dietary')}</Label>
-                <Textarea
-                  id="dietaryPreferences"
-                  value={formData.dietaryPreferences}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dietaryPreferences: e.target.value })
-                  }
-                  placeholder={t('booking.step3.dietaryPlaceholder')}
-                  rows={2}
-                  maxLength={500}
-                />
-              </div>
+      {/* Accommodation Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Hotel className="h-5 w-5 text-primary" />
+            {t("booking.step1.accommodation")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Select
+            value={formData.accommodationStatus}
+            onValueChange={(value) => setFormData({ ...formData, accommodationStatus: value, stayingLocation: "" })}
+          >
+            <SelectTrigger className="h-12 text-base">
+              <SelectValue placeholder={t("booking.step1.accommodationPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {ACCOMMODATION_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value} className="py-3">
+                  {t(`booking.${option.labelKey}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-              <div>
-                <Label htmlFor="surpriseElements">{t('booking.step3.surprises')}</Label>
-                <Textarea
-                  id="surpriseElements"
-                  value={formData.surpriseElements}
-                  onChange={(e) =>
-                    setFormData({ ...formData, surpriseElements: e.target.value })
-                  }
-                  placeholder={t('booking.step3.surprisesPlaceholder')}
-                  rows={2}
-                  maxLength={500}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case 4:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-primary" />
-                {t('booking.step4.title')} {t('booking.step4.optional')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {services.map((service) => (
-                  <div
-                    key={service.id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-smooth ${
-                      formData.selectedServices.includes(service.id)
-                        ? "border-primary bg-primary/5"
-                        : "hover:bg-muted"
-                    }`}
-                    onClick={() => handleServiceToggle(service.id)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h4 className="font-semibold mb-1">{service.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                          {service.description}
-                        </p>
-                        {service.price_range && (
-                          <p className="text-sm font-medium text-accent">
-                            {t('booking.step4.priceRange', { range: service.price_range })}
-                          </p>
-                        )}
-                      </div>
-                      <Checkbox
-                        checked={formData.selectedServices.includes(service.id)}
-                        className="ml-2"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case 5:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-6 h-6 text-primary" />
-                {t('booking.step5.title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Label htmlFor="name">{t('booking.step5.name')} *</Label>
-                <Input
-                  id="name"
-                  value={formData.customerName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, customerName: e.target.value })
-                  }
-                  placeholder={t('booking.step5.namePlaceholder')}
-                  required
-                  maxLength={100}
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">{t('booking.step5.email')} *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.customerEmail}
-                  onChange={(e) =>
-                    setFormData({ ...formData, customerEmail: e.target.value })
-                  }
-                  placeholder={t('booking.step5.emailPlaceholder')}
-                  required
-                  maxLength={255}
-                />
-              </div>
-              <div>
-                <Label htmlFor="phone">{t('booking.step5.phone')}</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.customerPhone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, customerPhone: e.target.value })
-                  }
-                  placeholder={t('booking.step5.phonePlaceholder')}
-                  maxLength={20}
-                />
-              </div>
-              <div>
-                <Label htmlFor="notes">{t('booking.step5.notes')}</Label>
-                <Textarea
-                  id="notes"
-                  value={formData.specialNotes}
-                  onChange={(e) =>
-                    setFormData({ ...formData, specialNotes: e.target.value })
-                  }
-                  rows={4}
-                  maxLength={1000}
-                  placeholder={t('booking.step5.notesPlaceholder')}
-                />
-              </div>
-              {/* Honeypot field - hidden from users, bots will fill it */}
-              <div className="absolute -left-[9999px]" aria-hidden="true">
+          {formData.accommodationStatus === "have_place" && (
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">
+                {t("booking.step1.stayingLocation")}
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="text"
-                  name="website"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  value={formData.honeypot}
-                  onChange={(e) =>
-                    setFormData({ ...formData, honeypot: e.target.value })
-                  }
+                  value={formData.stayingLocation}
+                  onChange={(e) => setFormData({ ...formData, stayingLocation: e.target.value })}
+                  placeholder={t("booking.step1.stayingLocationPlaceholder")}
+                  className="h-12 pl-10 text-base"
                 />
               </div>
-            </CardContent>
-          </Card>
-        );
+            </div>
+          )}
 
-      default:
-        return null;
-    }
-  };
+          {formData.accommodationStatus === "need_recommendations" && (
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-start gap-3">
+              <Hotel className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+              <p className="text-sm text-foreground">
+                {t("booking.step1.curatedBadge")}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
 
-  const stepLabels = [
-    t('booking.steps.dates'),
-    t('booking.steps.location'),
-    t('booking.steps.preferences'),
-    t('booking.steps.services'),
-    t('booking.steps.contact'),
-  ];
+  const renderStep2 = () => (
+    <div className="space-y-6">
+      {/* Vibe Tags Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{t("booking.step2.vibeTitle")}</CardTitle>
+          <p className="text-sm text-muted-foreground">{t("booking.step2.vibeHint")}</p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
+            {VIBE_OPTIONS.map((vibe) => (
+              <button
+                key={vibe}
+                type="button"
+                onClick={() => handleVibeToggle(vibe)}
+                className={`px-5 py-3 rounded-full text-sm font-medium transition-all min-h-[48px] ${
+                  formData.vibePreferences.includes(vibe)
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                {t(`booking.vibes.${vibe}`)}
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Vision Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{t("booking.step2.visionTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={formData.vision}
+            onChange={(e) => setFormData({ ...formData, vision: e.target.value })}
+            placeholder={t("booking.step2.visionPlaceholder")}
+            className="min-h-[120px] text-base resize-none"
+          />
+        </CardContent>
+      </Card>
+
+      {/* Contact Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{t("booking.step2.contactTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <label className="text-sm text-muted-foreground mb-1.5 block">
+              {t("booking.step2.name")} *
+            </label>
+            <Input
+              type="text"
+              value={formData.customerName}
+              onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+              placeholder={t("booking.step2.namePlaceholder")}
+              className="h-12 text-base"
+              required
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground mb-1.5 block">
+              {t("booking.step2.email")} *
+            </label>
+            <Input
+              type="email"
+              value={formData.customerEmail}
+              onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
+              placeholder={t("booking.step2.emailPlaceholder")}
+              className="h-12 text-base"
+              required
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground mb-1.5 block">
+              {t("booking.step2.whatsapp")}
+            </label>
+            <Input
+              type="tel"
+              value={formData.customerPhone}
+              onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
+              placeholder={t("booking.step2.whatsappPlaceholder")}
+              className="h-12 text-base"
+            />
+          </div>
+          {/* Honeypot field */}
+          <input
+            type="text"
+            name="website"
+            value={formData.honeypot}
+            onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+            className="absolute opacity-0 pointer-events-none"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
 
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
-              {t('booking.title')}
+      <main className="flex-1 py-8 px-4">
+        <div className="max-w-xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              {t("booking.title")}
             </h1>
-            <p className="text-xl text-muted-foreground">
-              {t('booking.stepOf', { current: step, total: 5 })} - {stepLabels[step - 1]}
+            {/* Progress Indicator */}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <div className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 1 ? "bg-primary" : "bg-muted"}`} />
+              <div className={`h-2.5 w-2.5 rounded-full transition-colors ${step >= 2 ? "bg-primary" : "bg-muted"}`} />
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {t("booking.stepOf", { current: step, total: 2 })}
             </p>
           </div>
 
-          {/* Progress Indicator */}
-          <div className="flex items-center justify-center mb-12">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <div key={s} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-smooth ${
-                    s === step
-                      ? "bg-primary text-primary-foreground"
-                      : s < step
-                      ? "bg-primary/20 text-primary"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+          {/* Form Content */}
+          <form onSubmit={(e) => e.preventDefault()}>
+            {step === 1 && renderStep1()}
+            {step === 2 && renderStep2()}
+
+            {/* Navigation Buttons */}
+            <div className="flex gap-4 mt-8">
+              {step > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep(step - 1)}
+                  className="flex-1 h-12"
                 >
-                  {s < step ? <Check className="w-5 h-5" /> : s}
-                </div>
-                {s < 5 && (
-                  <div
-                    className={`w-12 h-1 mx-1 transition-smooth ${
-                      s < step ? "bg-primary" : "bg-muted"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  {t("booking.buttons.back")}
+                </Button>
+              )}
 
-          {/* Step Content */}
-          <div className="mb-8">{renderStep()}</div>
+              {step === 1 && (
+                <Button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  disabled={!canProceedToStep2()}
+                  className="flex-1 h-12"
+                >
+                  {t("booking.buttons.next")}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={() => setStep(Math.max(1, step - 1))}
-              disabled={step === 1 || loading}
-            >
-              {t('booking.buttons.back')}
-            </Button>
-            {step < 5 ? (
-              <Button
-                onClick={() => setStep(step + 1)}
-                className="gradient-secondary"
-                disabled={loading || !canProceedToNextStep()}
-              >
-                {t('booking.buttons.next')}
-              </Button>
-            ) : (
-              <Button
-                onClick={handleSubmit}
-                className="gradient-secondary"
-                disabled={loading || !canProceedToNextStep()}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {t('booking.buttons.submitting')}
-                  </>
-                ) : (
-                  t('booking.buttons.submit')
-                )}
-              </Button>
-            )}
-          </div>
+              {step === 2 && (
+                <Button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={loading || !formData.customerName || !formData.customerEmail}
+                  className="flex-1 h-12"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("booking.buttons.submitting")}
+                    </>
+                  ) : (
+                    t("booking.buttons.submit")
+                  )}
+                </Button>
+              )}
+            </div>
+          </form>
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>

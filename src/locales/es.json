@@ -116,97 +116,69 @@
   "booking": {
     "title": "Planifica Tu Viaje",
     "stepOf": "Paso {{current}} de {{total}}",
-    "steps": {
-      "dates": "Fechas y Presupuesto",
-      "location": "Ubicación",
-      "preferences": "Preferencias",
-      "services": "Agregar Servicios",
-      "contact": "Tus Datos"
-    },
     "step1": {
-      "checkIn": "Fecha de Llegada",
-      "checkOut": "Fecha de Salida",
-      "guests": "Número de Huéspedes",
-      "guestsPlaceholder": "¿Cuántos huéspedes?",
-      "budget": "Rango de Presupuesto",
-      "budgetPlaceholder": "Selecciona tu presupuesto",
-      "serviceDates": "Fecha(s) del Servicio",
-      "serviceDatesPlaceholder": "ej., 20 Dic, 21 Dic noche",
-      "preferredTime": "Horario Preferido",
-      "preferredTimePlaceholder": "Selecciona horario preferido"
+      "dates": "¿Cuándo viajas?",
+      "checkIn": "Llegada",
+      "checkOut": "Salida",
+      "guests": "¿Quiénes vienen?",
+      "adults": "Adultos",
+      "kids": "Niños",
+      "tripFocus": "¿Qué tipo de viaje?",
+      "tripFocusPlaceholder": "Selecciona el enfoque de tu viaje",
+      "accommodation": "¿Dónde te hospedas?",
+      "accommodationPlaceholder": "Selecciona estado de alojamiento",
+      "stayingLocation": "Detalles de tu alojamiento",
+      "stayingLocationPlaceholder": "Nombre del Airbnb, hotel o dirección...",
+      "curatedBadge": "Te enviaremos una lista seleccionada de las mejores villas/hoteles."
+    },
+    "tripFocusOptions": {
+      "activities": "Solo reservar actividades ($250+)",
+      "standard": "Planificación Completa - Estándar ($1k - $5k)",
+      "premiere": "Planificación Completa - Premiere ($5k - $10k)",
+      "ultraluxe": "Ultra Lujo VIP ($10k+)"
+    },
+    "accommodationOptions": {
+      "havePlace": "Ya tengo alojamiento",
+      "needRecommendations": "Necesito recomendaciones"
     },
     "step2": {
-      "title": "Ubicación y Propiedad",
-      "location": "¿Dónde te hospedas?",
-      "locationPlaceholder": "Ingresa la dirección de tu Airbnb, hotel o venue...",
-      "locationHint": "Proporciona la dirección o nombre de tu alojamiento",
-      "needHelp": "Necesito ayuda para encontrar alojamiento",
-      "orSelectProperty": "O selecciona una de nuestras propiedades:",
-      "sleeps": "Capacidad {{count}}",
-      "bedrooms": "{{count}} Habitaciones",
-      "bathrooms": "{{count}} Baños"
-    },
-    "step3": {
-      "title": "Ocasión y Preferencias",
-      "occasion": "¿Cuál es la ocasión?",
-      "occasionPlaceholder": "Selecciona tipo de ocasión",
-      "vibe": "¿Qué ambiente buscas?",
-      "dietary": "Preferencias Dietéticas",
-      "dietaryPlaceholder": "Vegetariano, vegano, alergias, etc.",
-      "surprises": "¿Elementos sorpresa a planificar?",
-      "surprisesPlaceholder": "Pastel de cumpleaños, decoraciones especiales, propuestas..."
-    },
-    "step4": {
-      "title": "Agregar Servicios",
-      "optional": "(Opcional)",
-      "priceRange": "{{range}}"
-    },
-    "step5": {
-      "title": "Información de Contacto",
+      "vibeTitle": "¿Cuál es tu estilo?",
+      "vibeHint": "Selecciona todos los que apliquen",
+      "visionTitle": "Cuéntanos tu visión",
+      "visionPlaceholder": "Cuéntanos sobre tu viaje ideal (necesidades dietéticas, ocasiones especiales, actividades imprescindibles, sorpresas a planear...)",
+      "contactTitle": "¿Cómo te contactamos?",
       "name": "Nombre Completo",
       "namePlaceholder": "Tu nombre",
       "email": "Correo Electrónico",
       "emailPlaceholder": "tu@correo.com",
-      "phone": "Número de Teléfono",
-      "phonePlaceholder": "+506 1234-5678",
-      "notes": "Notas Adicionales",
-      "notesPlaceholder": "¿Algún otro detalle que debamos saber?"
-    },
-    "preferredTimes": {
-      "morning": "Mañana",
-      "afternoon": "Tarde",
-      "evening": "Noche",
-      "flexible": "Flexible"
-    },
-    "occasions": {
-      "birthday": "Cumpleaños",
-      "anniversary": "Aniversario",
-      "bachelor": "Despedida de Soltero",
-      "bachelorette": "Despedida de Soltera",
-      "wedding": "Boda",
-      "family_trip": "Viaje Familiar",
-      "corporate": "Evento Corporativo",
-      "celebration": "Celebración",
-      "other": "Otro"
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "+506 1234-5678"
     },
     "vibes": {
-      "relaxed": "Relajado",
-      "adventurous": "Aventurero",
-      "romantic": "Romántico",
-      "party": "Fiesta",
-      "wellness": "Bienestar",
-      "cultural": "Cultural"
+      "relaxing": "Relajante",
+      "adventure": "Aventura",
+      "gastronomy": "Gastronomía",
+      "family": "Familiar",
+      "nature": "Naturaleza",
+      "spa": "Spa",
+      "party": "Fiesta"
     },
     "buttons": {
-      "next": "Siguiente",
+      "next": "Siguiente: Personaliza tu Estilo",
       "back": "Atrás",
-      "submit": "Enviar Solicitud",
+      "submit": "Solicitar Itinerario",
       "submitting": "Enviando..."
     },
-    "messages": {
-      "success": "¡Solicitud de reserva enviada con éxito! Nos pondremos en contacto pronto.",
-      "error": "Error al enviar la solicitud de reserva. Por favor, inténtalo de nuevo.",
-      "rateLimited": "Demasiadas solicitudes. Por favor, inténtalo más tarde."
+    "success": {
+      "title": "¡Solicitud Enviada!",
+      "message": "Nos pondremos en contacto pronto para comenzar a planificar tu viaje perfecto."
+    },
+    "error": {
+      "title": "Error al Enviar",
+      "message": "Algo salió mal. Por favor, intenta de nuevo."
+    },
+    "validation": {
+      "locationRequired": "Por favor ingresa dónde te hospedas"
     }
   }
 }
