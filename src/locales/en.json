@@ -116,97 +116,69 @@
   "booking": {
     "title": "Plan Your Trip",
     "stepOf": "Step {{current}} of {{total}}",
-    "steps": {
-      "dates": "Dates & Budget",
-      "location": "Location",
-      "preferences": "Preferences",
-      "services": "Add Services",
-      "contact": "Your Details"
-    },
     "step1": {
-      "checkIn": "Check-in Date",
-      "checkOut": "Check-out Date",
-      "guests": "Number of Guests",
-      "guestsPlaceholder": "How many guests?",
-      "budget": "Budget Range",
-      "budgetPlaceholder": "Select your budget",
-      "serviceDates": "Service Date(s)",
-      "serviceDatesPlaceholder": "e.g., Dec 20, Dec 21 evening",
-      "preferredTime": "Preferred Time",
-      "preferredTimePlaceholder": "Select preferred time"
+      "dates": "When are you traveling?",
+      "checkIn": "Arrival",
+      "checkOut": "Departure",
+      "guests": "Who's coming?",
+      "adults": "Adults",
+      "kids": "Kids",
+      "tripFocus": "What kind of trip?",
+      "tripFocusPlaceholder": "Select your trip focus",
+      "accommodation": "Where are you staying?",
+      "accommodationPlaceholder": "Select accommodation status",
+      "stayingLocation": "Your accommodation details",
+      "stayingLocationPlaceholder": "Airbnb name, hotel, or address...",
+      "curatedBadge": "We'll curate a list of top villas/hotels for you."
+    },
+    "tripFocusOptions": {
+      "activities": "Just booking activities ($250+)",
+      "standard": "Full Trip Planning - Standard ($1k - $5k)",
+      "premiere": "Full Trip Planning - Premiere ($5k - $10k)",
+      "ultraluxe": "Ultra Luxe VIP ($10k+)"
+    },
+    "accommodationOptions": {
+      "havePlace": "I have a place already",
+      "needRecommendations": "I need recommendations"
     },
     "step2": {
-      "title": "Location & Property",
-      "location": "Where are you staying?",
-      "locationPlaceholder": "Enter your Airbnb, hotel, or venue address...",
-      "locationHint": "Provide the address or name of your accommodation",
-      "needHelp": "I need help finding accommodation",
-      "orSelectProperty": "Or select one of our properties:",
-      "sleeps": "Sleeps {{count}}",
-      "bedrooms": "{{count}} Bedrooms",
-      "bathrooms": "{{count}} Bathrooms"
-    },
-    "step3": {
-      "title": "Occasion & Preferences",
-      "occasion": "What's the occasion?",
-      "occasionPlaceholder": "Select occasion type",
-      "vibe": "What vibe are you going for?",
-      "dietary": "Dietary Preferences",
-      "dietaryPlaceholder": "Vegetarian, vegan, allergies, etc.",
-      "surprises": "Any surprise elements to plan?",
-      "surprisesPlaceholder": "Birthday cake, special decorations, proposals..."
-    },
-    "step4": {
-      "title": "Add Services",
-      "optional": "(Optional)",
-      "priceRange": "{{range}}"
-    },
-    "step5": {
-      "title": "Contact Information",
+      "vibeTitle": "What's your vibe?",
+      "vibeHint": "Select all that apply",
+      "visionTitle": "Tell us your vision",
+      "visionPlaceholder": "Tell us about your ideal trip (dietary needs, special occasions, must-do activities, surprises to plan...)",
+      "contactTitle": "How do we reach you?",
       "name": "Full Name",
       "namePlaceholder": "Your name",
       "email": "Email",
       "emailPlaceholder": "your@email.com",
-      "phone": "Phone Number",
-      "phonePlaceholder": "+1 (555) 000-0000",
-      "notes": "Additional Notes",
-      "notesPlaceholder": "Any other details we should know..."
-    },
-    "preferredTimes": {
-      "morning": "Morning",
-      "afternoon": "Afternoon",
-      "evening": "Evening",
-      "flexible": "Flexible"
-    },
-    "occasions": {
-      "birthday": "Birthday",
-      "anniversary": "Anniversary",
-      "bachelor": "Bachelor Party",
-      "bachelorette": "Bachelorette Party",
-      "wedding": "Wedding",
-      "family_trip": "Family Trip",
-      "corporate": "Corporate Event",
-      "celebration": "Celebration",
-      "other": "Other"
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "+506 1234-5678"
     },
     "vibes": {
-      "relaxed": "Relaxed",
-      "adventurous": "Adventurous",
-      "romantic": "Romantic",
-      "party": "Party",
-      "wellness": "Wellness",
-      "cultural": "Cultural"
+      "relaxing": "Relaxing",
+      "adventure": "Adventure",
+      "gastronomy": "Gastronomy",
+      "family": "Family",
+      "nature": "Nature",
+      "spa": "Spa",
+      "party": "Party"
     },
     "buttons": {
-      "next": "Next",
+      "next": "Next: Customize Vibe",
       "back": "Back",
-      "submit": "Submit Request",
+      "submit": "Request Itinerary",
       "submitting": "Submitting..."
     },
-    "messages": {
-      "success": "Booking request submitted successfully! We'll be in touch soon.",
-      "error": "Failed to submit booking request. Please try again.",
-      "rateLimited": "Too many requests. Please try again later."
+    "success": {
+      "title": "Request Submitted!",
+      "message": "We'll be in touch soon to start planning your perfect trip."
+    },
+    "error": {
+      "title": "Submission Failed",
+      "message": "Something went wrong. Please try again."
+    },
+    "validation": {
+      "locationRequired": "Please enter where you're staying"
     }
   }
 }
