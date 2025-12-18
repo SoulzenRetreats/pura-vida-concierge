@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { format, isPast } from "date-fns";
 import { 
   Users, 
   Shield, 
-  UserMinus, 
   Loader2, 
   AlertTriangle, 
   UserPlus, 
   Clock, 
   XCircle,
   Mail,
-  Plus
+  MoreHorizontal
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,6 +33,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   useUsersWithRoles, 
@@ -50,10 +55,17 @@ import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
+interface MergedUser {
+  user_id: string;
+  email: string;
+  created_at: string;
+  roles: Array<{ role: AppRole; created_at: string }>;
+}
+
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
-  const { data: users, isLoading } = useUsersWithRoles();
+  const { data: usersWithRoles, isLoading: isLoadingRoles } = useUsersWithRoles();
   const { data: allUsers, isLoading: isLoadingAllUsers } = useAllUsers();
   const { data: pendingInvitations, isLoading: isLoadingInvitations } = usePendingInvitations();
   const removeRole = useRemoveUserRole();
@@ -63,6 +75,37 @@ export default function AdminUsers() {
   const [revokingInvitation, setRevokingInvitation] = useState<{ id: string; email: string } | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [addRoleUser, setAddRoleUser] = useState<{ user_id: string; email: string; existingRoles: AppRole[] } | null>(null);
+
+  const isLoading = isLoadingRoles || isLoadingAllUsers;
+
+  // Merge all users with their roles into a single list
+  const mergedUsers = useMemo<MergedUser[]>(() => {
+    if (!allUsers) return [];
+
+    // Create a map of user_id -> roles from usersWithRoles
+    const rolesMap = new Map<string, Array<{ role: AppRole; created_at: string }>>();
+    
+    usersWithRoles?.forEach((userRole) => {
+      const existing = rolesMap.get(userRole.user_id) || [];
+      existing.push({ role: userRole.role, created_at: userRole.role_created_at });
+      rolesMap.set(userRole.user_id, existing);
+    });
+
+    // Merge all users with their roles
+    const merged = allUsers.map((user) => ({
+      user_id: user.user_id,
+      email: user.email,
+      created_at: user.created_at,
+      roles: rolesMap.get(user.user_id) || [],
+    }));
+
+    // Sort: users with roles first, then users without roles
+    return merged.sort((a, b) => {
+      if (a.roles.length > 0 && b.roles.length === 0) return -1;
+      if (a.roles.length === 0 && b.roles.length > 0) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  }, [allUsers, usersWithRoles]);
 
   const handleRemoveRole = () => {
     if (!removingUser) return;
@@ -95,27 +138,10 @@ export default function AdminUsers() {
     });
   };
 
-  // Group users by user_id to show all roles
-  const groupedUsers = users?.reduce((acc, user) => {
-    if (!acc[user.user_id]) {
-      acc[user.user_id] = {
-        user_id: user.user_id,
-        email: user.email,
-        roles: [],
-      };
-    }
-    acc[user.user_id].roles.push({
-      role: user.role,
-      created_at: user.role_created_at,
-    });
-    return acc;
-  }, {} as Record<string, { user_id: string; email: string; roles: Array<{ role: AppRole; created_at: string }> }>);
-
-  const userList = groupedUsers ? Object.values(groupedUsers) : [];
-  
-  // Find users without any roles
-  const userIdsWithRoles = new Set(userList.map(u => u.user_id));
-  const usersWithoutRoles = allUsers?.filter(u => !userIdsWithRoles.has(u.user_id)) || [];
+  const canRemoveRole = (userId: string, role: AppRole) => {
+    // Cannot remove own admin role
+    return !(userId === currentUser?.id && role === "admin");
+  };
 
   return (
     <div className="space-y-6">
@@ -130,14 +156,14 @@ export default function AdminUsers() {
         </Button>
       </div>
 
-      {/* User Roles Card */}
+      {/* All Users Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            {t("admin.users.userRoles")}
+            {t("admin.users.allUsers")}
           </CardTitle>
-          <CardDescription>{t("admin.users.userRolesDescription")}</CardDescription>
+          <CardDescription>{t("admin.users.allUsersDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -146,7 +172,7 @@ export default function AdminUsers() {
                 <Skeleton key={i} className="h-16 w-full" />
               ))}
             </div>
-          ) : !userList.length ? (
+          ) : !mergedUsers.length ? (
             <div className="text-center py-12 text-muted-foreground">
               {t("admin.users.noUsers")}
             </div>
@@ -155,125 +181,86 @@ export default function AdminUsers() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("admin.users.columns.email")}</TableHead>
-                  <TableHead>{t("admin.users.columns.roles")}</TableHead>
-                  <TableHead>{t("admin.users.columns.since")}</TableHead>
+                  <TableHead>{t("admin.users.columns.role")}</TableHead>
+                  <TableHead>{t("admin.users.columns.joined")}</TableHead>
                   <TableHead className="text-right">{t("admin.users.columns.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {userList.map((user) => (
+                {mergedUsers.map((user) => (
                   <TableRow key={user.user_id}>
                     <TableCell>
-                      <div className="font-medium">{user.email}</div>
-                      {user.user_id === currentUser?.id && (
-                        <span className="text-xs text-muted-foreground">{t("admin.users.you")}</span>
+                      <div className="font-medium">
+                        {user.email}
+                        {user.user_id === currentUser?.id && (
+                          <span className="text-xs text-muted-foreground ml-1">{t("admin.users.you")}</span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {user.roles.length > 0 ? (
+                        <div className="flex gap-2 flex-wrap">
+                          {user.roles.map(({ role }) => (
+                            <Badge
+                              key={role}
+                              variant={role === "admin" ? "default" : "secondary"}
+                              className="gap-1"
+                            >
+                              {role === "admin" && <Shield className="h-3 w-3" />}
+                              {t(`admin.users.roles.${role}`)}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">{t("admin.users.noRole")}</span>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2 flex-wrap">
-                        {user.roles.map(({ role }) => (
-                          <Badge
-                            key={role}
-                            variant={role === "admin" ? "default" : "secondary"}
-                            className="gap-1"
-                          >
-                            {role === "admin" && <Shield className="h-3 w-3" />}
-                            {t(`admin.users.roles.${role}`)}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {user.roles[0] && format(new Date(user.roles[0].created_at), "MMM d, yyyy")}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setAddRoleUser({
-                            user_id: user.user_id,
-                            email: user.email,
-                            existingRoles: user.roles.map(r => r.role),
-                          })}
-                        >
-                          <Plus className="h-4 w-4 mr-1" />
-                          {t("admin.users.addRoleBtn")}
-                        </Button>
-                        {user.roles.map(({ role }) => (
-                          <Button
-                            key={role}
-                            variant="ghost"
-                            size="sm"
-                            disabled={user.user_id === currentUser?.id && role === "admin"}
-                            onClick={() => setRemovingUser({ userId: user.user_id, email: user.email, role })}
-                            className="text-destructive hover:text-destructive"
-                          >
-                            <UserMinus className="h-4 w-4 mr-1" />
-                            {t("admin.users.removeRole", { role: t(`admin.users.roles.${role}`) })}
-                          </Button>
-                        ))}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Users Without Roles Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            {t("admin.users.usersWithoutRoles")}
-          </CardTitle>
-          <CardDescription>{t("admin.users.usersWithoutRolesDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoadingAllUsers ? (
-            <div className="space-y-3">
-              {[...Array(2)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : !usersWithoutRoles.length ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {t("admin.users.noUsersWithoutRoles")}
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("admin.users.columns.email")}</TableHead>
-                  <TableHead>{t("admin.users.columns.since")}</TableHead>
-                  <TableHead className="text-right">{t("admin.users.columns.actions")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {usersWithoutRoles.map((user) => (
-                  <TableRow key={user.user_id}>
-                    <TableCell>
-                      <div className="font-medium">{user.email}</div>
                     </TableCell>
                     <TableCell>
                       {format(new Date(user.created_at), "MMM d, yyyy")}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setAddRoleUser({
-                          user_id: user.user_id,
-                          email: user.email,
-                          existingRoles: [],
-                        })}
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        {t("admin.users.assignRole")}
-                      </Button>
+                      {user.roles.length === 0 ? (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => setAddRoleUser({
+                            user_id: user.user_id,
+                            email: user.email,
+                            existingRoles: [],
+                          })}
+                        >
+                          {t("admin.users.assignRole")}
+                        </Button>
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => setAddRoleUser({
+                                user_id: user.user_id,
+                                email: user.email,
+                                existingRoles: user.roles.map(r => r.role),
+                              })}
+                            >
+                              {t("admin.users.addRoleBtn")}
+                            </DropdownMenuItem>
+                            {user.roles.map(({ role }) => (
+                              <DropdownMenuItem
+                                key={role}
+                                disabled={!canRemoveRole(user.user_id, role)}
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => setRemovingUser({ userId: user.user_id, email: user.email, role })}
+                              >
+                                {t("admin.users.removeRole", { role: t(`admin.users.roles.${role}`) })}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

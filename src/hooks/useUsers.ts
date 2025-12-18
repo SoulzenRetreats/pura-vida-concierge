@@ -69,6 +69,7 @@ export function useAddUserRole() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users-with-roles"] });
+      queryClient.invalidateQueries({ queryKey: ["all-users"] });
     },
   });
 }

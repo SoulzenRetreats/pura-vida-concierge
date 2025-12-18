@@ -267,9 +267,10 @@
     "users": {
       "title": "User Management",
       "description": "Manage user roles and permissions.",
-      "userRoles": "User Roles",
-      "userRolesDescription": "View and manage roles assigned to users.",
-      "noUsers": "No users with roles found.",
+      "allUsers": "All Users",
+      "allUsersDescription": "View and manage all registered users and their roles.",
+      "noUsers": "No users found.",
+      "noRole": "No role assigned",
       "you": "(You)",
       "roleRemoved": "Role removed successfully",
       "error": "An error occurred",
@@ -277,13 +278,10 @@
       "addRoleBtn": "Add Role",
       "assignRole": "Assign Role",
       "inviteUser": "Invite User",
-      "usersWithoutRoles": "Users Without Roles",
-      "usersWithoutRolesDescription": "Users who have signed up but don't have roles assigned.",
-      "noUsersWithoutRoles": "All registered users have roles assigned.",
       "columns": {
         "email": "Email",
-        "roles": "Roles",
-        "since": "Since",
+        "role": "Role",
+        "joined": "Joined",
         "actions": "Actions"
       },
       "roles": {

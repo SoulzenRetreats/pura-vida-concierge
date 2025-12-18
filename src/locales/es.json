@@ -267,9 +267,10 @@
     "users": {
       "title": "Gestión de Usuarios",
       "description": "Gestionar roles y permisos de usuarios.",
-      "userRoles": "Roles de Usuario",
-      "userRolesDescription": "Ver y gestionar roles asignados a usuarios.",
-      "noUsers": "No se encontraron usuarios con roles.",
+      "allUsers": "Todos los Usuarios",
+      "allUsersDescription": "Ver y gestionar todos los usuarios registrados y sus roles.",
+      "noUsers": "No se encontraron usuarios.",
+      "noRole": "Sin rol asignado",
       "you": "(Tú)",
       "roleRemoved": "Rol eliminado exitosamente",
       "error": "Ocurrió un error",
@@ -277,13 +278,10 @@
       "addRoleBtn": "Agregar Rol",
       "assignRole": "Asignar Rol",
       "inviteUser": "Invitar Usuario",
-      "usersWithoutRoles": "Usuarios Sin Roles",
-      "usersWithoutRolesDescription": "Usuarios que se han registrado pero no tienen roles asignados.",
-      "noUsersWithoutRoles": "Todos los usuarios registrados tienen roles asignados.",
       "columns": {
         "email": "Correo Electrónico",
-        "roles": "Roles",
-        "since": "Desde",
+        "role": "Rol",
+        "joined": "Registrado",
         "actions": "Acciones"
       },
       "roles": {
