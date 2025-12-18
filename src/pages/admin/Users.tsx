@@ -41,11 +41,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
-  useUsersWithRoles, 
+  useAllUsersWithRoles,
   useRemoveUserRole, 
   usePendingInvitations,
   useRevokeInvitation,
-  useAllUsers
+  type MergedUser
 } from "@/hooks/useUsers";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -55,18 +55,10 @@ import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
-interface MergedUser {
-  user_id: string;
-  email: string;
-  created_at: string;
-  roles: Array<{ role: AppRole; created_at: string }>;
-}
-
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
-  const { data: usersWithRoles, isLoading: isLoadingRoles } = useUsersWithRoles();
-  const { data: allUsers, isLoading: isLoadingAllUsers } = useAllUsers();
+  const { data: mergedUsers, isLoading } = useAllUsersWithRoles();
   const { data: pendingInvitations, isLoading: isLoadingInvitations } = usePendingInvitations();
   const removeRole = useRemoveUserRole();
   const revokeInvitation = useRevokeInvitation();
@@ -75,37 +67,6 @@ export default function AdminUsers() {
   const [revokingInvitation, setRevokingInvitation] = useState<{ id: string; email: string } | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [addRoleUser, setAddRoleUser] = useState<{ user_id: string; email: string; existingRoles: AppRole[] } | null>(null);
-
-  const isLoading = isLoadingRoles || isLoadingAllUsers;
-
-  // Merge all users with their roles into a single list
-  const mergedUsers = useMemo<MergedUser[]>(() => {
-    if (!allUsers) return [];
-
-    // Create a map of user_id -> roles from usersWithRoles
-    const rolesMap = new Map<string, Array<{ role: AppRole; created_at: string }>>();
-    
-    usersWithRoles?.forEach((userRole) => {
-      const existing = rolesMap.get(userRole.user_id) || [];
-      existing.push({ role: userRole.role, created_at: userRole.role_created_at });
-      rolesMap.set(userRole.user_id, existing);
-    });
-
-    // Merge all users with their roles
-    const merged = allUsers.map((user) => ({
-      user_id: user.user_id,
-      email: user.email,
-      created_at: user.created_at,
-      roles: rolesMap.get(user.user_id) || [],
-    }));
-
-    // Sort: users with roles first, then users without roles
-    return merged.sort((a, b) => {
-      if (a.roles.length > 0 && b.roles.length === 0) return -1;
-      if (a.roles.length === 0 && b.roles.length > 0) return 1;
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-  }, [allUsers, usersWithRoles]);
 
   const handleRemoveRole = () => {
     if (!removingUser) return;
@@ -200,7 +161,7 @@ export default function AdminUsers() {
                     <TableCell>
                       {user.roles.length > 0 ? (
                         <div className="flex gap-2 flex-wrap">
-                          {user.roles.map(({ role }) => (
+                          {user.roles.map((role) => (
                             <Badge
                               key={role}
                               variant={role === "admin" ? "default" : "secondary"}
@@ -243,12 +204,12 @@ export default function AdminUsers() {
                               onClick={() => setAddRoleUser({
                                 user_id: user.user_id,
                                 email: user.email,
-                                existingRoles: user.roles.map(r => r.role),
+                                existingRoles: user.roles,
                               })}
                             >
                               {t("admin.users.addRoleBtn")}
                             </DropdownMenuItem>
-                            {user.roles.map(({ role }) => (
+                            {user.roles.map((role) => (
                               <DropdownMenuItem
                                 key={role}
                                 disabled={!canRemoveRole(user.user_id, role)}
