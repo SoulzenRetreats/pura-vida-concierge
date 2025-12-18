@@ -268,9 +268,8 @@
       "roleRemoved": "Role removed successfully",
       "error": "An error occurred",
       "removeRole": "Remove {{role}}",
-      "addRoleTitle": "Add New User Role",
-      "addRoleDescription": "To add a role to a user, they must first sign up through the login page.",
-      "addRoleInstructions": "Once a user has signed up, you can add their user_id to the user_roles table via the database to grant them admin or staff access.",
+      "addRoleBtn": "Add Role",
+      "inviteUser": "Invite User",
       "columns": {
         "email": "Email",
         "roles": "Roles",
@@ -279,13 +278,58 @@
       },
       "roles": {
         "admin": "Admin",
-        "staff": "Staff"
+        "staff": "Concierge"
       },
       "removeConfirm": {
         "title": "Remove Role",
         "description": "Are you sure you want to remove the {{role}} role from {{email}}?",
         "cancel": "Cancel",
         "confirm": "Remove Role"
+      },
+      "invite": {
+        "title": "Invite New User",
+        "description": "Send an email invitation to join the platform with a specific role.",
+        "email": "Email Address",
+        "emailPlaceholder": "user@example.com",
+        "emailRequired": "Please enter an email address",
+        "role": "Role",
+        "notes": "Notes (Optional)",
+        "notesPlaceholder": "Internal notes about this invitation...",
+        "cancel": "Cancel",
+        "send": "Send Invitation",
+        "success": "Invitation sent to {{email}}"
+      },
+      "addRole": {
+        "title": "Add Role",
+        "description": "Add a new role to {{email}}",
+        "selectRole": "Select Role",
+        "selectRolePlaceholder": "Choose a role...",
+        "noRolesAvailable": "This user already has all available roles.",
+        "cancel": "Cancel",
+        "confirm": "Add Role",
+        "success": "{{role}} role added to {{email}}"
+      },
+      "invitations": {
+        "title": "Pending Invitations",
+        "description": "Track and manage outstanding user invitations.",
+        "none": "No pending invitations.",
+        "expired": "Expired",
+        "revoke": "Revoke",
+        "revoked": "Invitation revoked successfully",
+        "columns": {
+          "email": "Email",
+          "role": "Role",
+          "notes": "Notes",
+          "sent": "Sent",
+          "expires": "Expires",
+          "actions": "Actions"
+        },
+        "revokeConfirm": {
+          "title": "Revoke Invitation",
+          "description": "Are you sure you want to revoke the invitation for {{email}}? They will no longer be able to use this invitation link.",
+          "cancel": "Cancel",
+          "confirm": "Revoke"
+        }
       }
     },
     "settings": {

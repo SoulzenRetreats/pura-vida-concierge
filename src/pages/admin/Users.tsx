@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { format } from "date-fns";
-import { Users, Shield, UserMinus, Loader2, AlertTriangle } from "lucide-react";
+import { format, isPast } from "date-fns";
+import { 
+  Users, 
+  Shield, 
+  UserMinus, 
+  Loader2, 
+  AlertTriangle, 
+  UserPlus, 
+  Clock, 
+  XCircle,
+  Mail,
+  Plus
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,9 +35,16 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUsersWithRoles, useRemoveUserRole } from "@/hooks/useUsers";
+import { 
+  useUsersWithRoles, 
+  useRemoveUserRole, 
+  usePendingInvitations,
+  useRevokeInvitation 
+} from "@/hooks/useUsers";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { InviteUserDialog } from "@/components/admin/InviteUserDialog";
+import { AddRoleDialog } from "@/components/admin/AddRoleDialog";
 import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -35,9 +53,14 @@ export default function AdminUsers() {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
   const { data: users, isLoading } = useUsersWithRoles();
+  const { data: pendingInvitations, isLoading: isLoadingInvitations } = usePendingInvitations();
   const removeRole = useRemoveUserRole();
+  const revokeInvitation = useRevokeInvitation();
   
   const [removingUser, setRemovingUser] = useState<{ userId: string; email: string; role: AppRole } | null>(null);
+  const [revokingInvitation, setRevokingInvitation] = useState<{ id: string; email: string } | null>(null);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [addRoleUser, setAddRoleUser] = useState<{ user_id: string; email: string; existingRoles: AppRole[] } | null>(null);
 
   const handleRemoveRole = () => {
     if (!removingUser) return;
@@ -54,6 +77,20 @@ export default function AdminUsers() {
         },
       }
     );
+  };
+
+  const handleRevokeInvitation = () => {
+    if (!revokingInvitation) return;
+    
+    revokeInvitation.mutate(revokingInvitation.id, {
+      onSuccess: () => {
+        toast.success(t("admin.users.invitations.revoked"));
+        setRevokingInvitation(null);
+      },
+      onError: () => {
+        toast.error(t("admin.users.error"));
+      },
+    });
   };
 
   // Group users by user_id to show all roles
@@ -76,11 +113,18 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-serif font-semibold">{t("admin.users.title")}</h1>
-        <p className="text-muted-foreground">{t("admin.users.description")}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-serif font-semibold">{t("admin.users.title")}</h1>
+          <p className="text-muted-foreground">{t("admin.users.description")}</p>
+        </div>
+        <Button onClick={() => setInviteDialogOpen(true)}>
+          <UserPlus className="h-4 w-4 mr-2" />
+          {t("admin.users.inviteUser")}
+        </Button>
       </div>
 
+      {/* User Roles Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -137,19 +181,33 @@ export default function AdminUsers() {
                       {user.roles[0] && format(new Date(user.roles[0].created_at), "MMM d, yyyy")}
                     </TableCell>
                     <TableCell className="text-right">
-                      {user.roles.map(({ role }) => (
+                      <div className="flex justify-end gap-2">
                         <Button
-                          key={role}
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
-                          disabled={user.user_id === currentUser?.id && role === "admin"}
-                          onClick={() => setRemovingUser({ userId: user.user_id, email: user.email, role })}
-                          className="text-destructive hover:text-destructive"
+                          onClick={() => setAddRoleUser({
+                            user_id: user.user_id,
+                            email: user.email,
+                            existingRoles: user.roles.map(r => r.role),
+                          })}
                         >
-                          <UserMinus className="h-4 w-4 mr-1" />
-                          {t("admin.users.removeRole", { role: t(`admin.users.roles.${role}`) })}
+                          <Plus className="h-4 w-4 mr-1" />
+                          {t("admin.users.addRoleBtn")}
                         </Button>
-                      ))}
+                        {user.roles.map(({ role }) => (
+                          <Button
+                            key={role}
+                            variant="ghost"
+                            size="sm"
+                            disabled={user.user_id === currentUser?.id && role === "admin"}
+                            onClick={() => setRemovingUser({ userId: user.user_id, email: user.email, role })}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <UserMinus className="h-4 w-4 mr-1" />
+                            {t("admin.users.removeRole", { role: t(`admin.users.roles.${role}`) })}
+                          </Button>
+                        ))}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -159,18 +217,107 @@ export default function AdminUsers() {
         </CardContent>
       </Card>
 
+      {/* Pending Invitations Card */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("admin.users.addRoleTitle")}</CardTitle>
-          <CardDescription>{t("admin.users.addRoleDescription")}</CardDescription>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            {t("admin.users.invitations.title")}
+          </CardTitle>
+          <CardDescription>{t("admin.users.invitations.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t("admin.users.addRoleInstructions")}
-          </p>
+          {isLoadingInvitations ? (
+            <div className="space-y-3">
+              {[...Array(2)].map((_, i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          ) : !pendingInvitations?.length ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {t("admin.users.invitations.none")}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("admin.users.invitations.columns.email")}</TableHead>
+                  <TableHead>{t("admin.users.invitations.columns.role")}</TableHead>
+                  <TableHead>{t("admin.users.invitations.columns.notes")}</TableHead>
+                  <TableHead>{t("admin.users.invitations.columns.sent")}</TableHead>
+                  <TableHead>{t("admin.users.invitations.columns.expires")}</TableHead>
+                  <TableHead className="text-right">{t("admin.users.invitations.columns.actions")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingInvitations.map((invitation) => {
+                  const isExpired = isPast(new Date(invitation.expires_at));
+                  return (
+                    <TableRow key={invitation.id} className={isExpired ? "opacity-60" : ""}>
+                      <TableCell>
+                        <div className="font-medium">{invitation.email}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={invitation.role === "admin" ? "default" : "secondary"}>
+                          {t(`admin.users.roles.${invitation.role}`)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {invitation.notes || "—"}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(invitation.created_at), "MMM d, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {isExpired ? (
+                            <Badge variant="destructive" className="gap-1">
+                              <Clock className="h-3 w-3" />
+                              {t("admin.users.invitations.expired")}
+                            </Badge>
+                          ) : (
+                            <span className="text-sm">
+                              {format(new Date(invitation.expires_at), "MMM d, yyyy")}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setRevokingInvitation({ id: invitation.id, email: invitation.email })}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          {t("admin.users.invitations.revoke")}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
+      {/* Invite User Dialog */}
+      <InviteUserDialog 
+        open={inviteDialogOpen} 
+        onOpenChange={setInviteDialogOpen} 
+      />
+
+      {/* Add Role Dialog */}
+      <AddRoleDialog
+        open={!!addRoleUser}
+        onOpenChange={(open) => !open && setAddRoleUser(null)}
+        user={addRoleUser}
+      />
+
+      {/* Remove Role Confirmation */}
       <AlertDialog open={!!removingUser} onOpenChange={() => setRemovingUser(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -194,6 +341,34 @@ export default function AdminUsers() {
             >
               {removeRole.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t("admin.users.removeConfirm.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Revoke Invitation Confirmation */}
+      <AlertDialog open={!!revokingInvitation} onOpenChange={() => setRevokingInvitation(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              {t("admin.users.invitations.revokeConfirm.title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("admin.users.invitations.revokeConfirm.description", {
+                email: revokingInvitation?.email,
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("admin.users.invitations.revokeConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRevokeInvitation}
+              disabled={revokeInvitation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {revokeInvitation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {t("admin.users.invitations.revokeConfirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
