@@ -4,17 +4,19 @@ import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
-interface UserWithRole {
-  user_id: string;
-  email: string;
-  role: AppRole;
-  role_created_at: string;
-}
-
-interface AuthUser {
+interface UserWithRoleRow {
   user_id: string;
   email: string;
   created_at: string;
+  role: AppRole | null;
+  role_created_at: string | null;
+}
+
+export interface MergedUser {
+  user_id: string;
+  email: string;
+  created_at: string;
+  roles: AppRole[];
 }
 
 interface UserInvitation {
@@ -29,26 +31,49 @@ interface UserInvitation {
   accepted_at: string | null;
 }
 
-export function useUsersWithRoles() {
+// Single combined query for all users with their roles
+export function useAllUsersWithRoles() {
   return useQuery({
-    queryKey: ["users-with-roles"],
+    queryKey: ["all-users-with-roles"],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_users_with_roles");
+      console.log("Fetching all users with roles...");
+      const { data, error } = await supabase.rpc("get_all_users_with_roles");
 
-      if (error) throw error;
-      return data as UserWithRole[];
-    },
-  });
-}
-
-export function useAllUsers() {
-  return useQuery({
-    queryKey: ["all-users"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_all_users_for_admin");
-
-      if (error) throw error;
-      return data as AuthUser[];
+      if (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+      }
+      
+      console.log("Raw RPC data:", data);
+      
+      // Process flat results into grouped MergedUser structure
+      const userMap = new Map<string, MergedUser>();
+      
+      for (const row of (data as UserWithRoleRow[])) {
+        if (!userMap.has(row.user_id)) {
+          userMap.set(row.user_id, {
+            user_id: row.user_id,
+            email: row.email,
+            created_at: row.created_at,
+            roles: [],
+          });
+        }
+        
+        if (row.role) {
+          userMap.get(row.user_id)!.roles.push(row.role);
+        }
+      }
+      
+      const users = Array.from(userMap.values());
+      // Sort: users with roles first
+      users.sort((a, b) => {
+        if (a.roles.length > 0 && b.roles.length === 0) return -1;
+        if (a.roles.length === 0 && b.roles.length > 0) return 1;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+      
+      console.log("Processed users:", users);
+      return users;
     },
   });
 }
@@ -58,18 +83,22 @@ export function useAddUserRole() {
 
   return useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: AppRole }) => {
+      console.log("Adding role:", { userId, role });
       const { data, error } = await supabase
         .from("user_roles")
         .insert({ user_id: userId, role })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error adding role:", error);
+        throw error;
+      }
+      console.log("Role added successfully:", data);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users-with-roles"] });
-      queryClient.invalidateQueries({ queryKey: ["all-users"] });
+      queryClient.invalidateQueries({ queryKey: ["all-users-with-roles"] });
     },
   });
 }
@@ -79,16 +108,21 @@ export function useRemoveUserRole() {
 
   return useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: AppRole }) => {
+      console.log("Removing role:", { userId, role });
       const { error } = await supabase
         .from("user_roles")
         .delete()
         .eq("user_id", userId)
         .eq("role", role);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error removing role:", error);
+        throw error;
+      }
+      console.log("Role removed successfully");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users-with-roles"] });
+      queryClient.invalidateQueries({ queryKey: ["all-users-with-roles"] });
     },
   });
 }
