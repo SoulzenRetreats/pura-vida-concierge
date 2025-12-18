@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -131,7 +132,10 @@ export default function AdminAuth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageToggle variant="full" />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-serif">{t("auth.title")}</CardTitle>
