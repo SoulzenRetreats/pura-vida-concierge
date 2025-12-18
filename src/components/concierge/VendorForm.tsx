@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,12 +56,24 @@ export function VendorForm({
   const form = useForm<VendorFormData>({
     resolver: zodResolver(vendorSchema),
     defaultValues: {
-      name: vendor?.name || "",
-      contact_info: vendor?.contact_info || "",
-      service_types: vendor?.service_types || [],
-      internal_notes: vendor?.internal_notes || "",
+      name: "",
+      contact_info: "",
+      service_types: [],
+      internal_notes: "",
     },
   });
+
+  // Reset form when vendor changes or dialog opens
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name: vendor?.name || "",
+        contact_info: vendor?.contact_info || "",
+        service_types: vendor?.service_types || [],
+        internal_notes: vendor?.internal_notes || "",
+      });
+    }
+  }, [open, vendor, form]);
 
   const handleSubmit = (data: VendorFormData) => {
     onSubmit(data);
