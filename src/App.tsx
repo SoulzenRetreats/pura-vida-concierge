@@ -17,6 +17,9 @@ import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminSettings from "./pages/admin/Settings";
 import AdminRevenue from "./pages/admin/Revenue";
+import AdminBookings from "./pages/admin/Bookings";
+import AdminVendors from "./pages/admin/Vendors";
+import AdminUsers from "./pages/admin/Users";
 import { ConciergeLayout } from "./components/concierge/ConciergeLayout";
 import ConciergeDashboard from "./pages/concierge/Dashboard";
 import ConciergeBookings from "./pages/concierge/Bookings";
@@ -55,8 +58,11 @@ function App(): React.JSX.Element {
               >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="settings" element={<AdminSettings />} />
+                <Route path="bookings" element={<AdminBookings />} />
+                <Route path="vendors" element={<AdminVendors />} />
                 <Route path="revenue" element={<AdminRevenue />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="settings" element={<AdminSettings />} />
               </Route>
 
               {/* Concierge protected routes (staff + admin can access) */}

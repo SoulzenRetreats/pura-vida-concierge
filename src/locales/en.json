@@ -233,6 +233,7 @@
       "bookings": "Bookings",
       "vendors": "Vendors",
       "revenue": "Revenue",
+      "users": "Users",
       "settings": "Settings",
       "viewConcierge": "View Concierge"
     },
@@ -245,6 +246,47 @@
       "properties": "Properties",
       "vendors": "Vendors",
       "revenue": "Revenue"
+    },
+    "bookings": {
+      "title": "Bookings Management",
+      "description": "View and override booking statuses.",
+      "override": "Override Status",
+      "statusUpdated": "Status updated successfully",
+      "error": "Failed to update status"
+    },
+    "vendors": {
+      "title": "Vendor Management",
+      "description": "Manage all vendor records."
+    },
+    "users": {
+      "title": "User Management",
+      "description": "Manage user roles and permissions.",
+      "userRoles": "User Roles",
+      "userRolesDescription": "View and manage roles assigned to users.",
+      "noUsers": "No users with roles found.",
+      "you": "(You)",
+      "roleRemoved": "Role removed successfully",
+      "error": "An error occurred",
+      "removeRole": "Remove {{role}}",
+      "addRoleTitle": "Add New User Role",
+      "addRoleDescription": "To add a role to a user, they must first sign up through the login page.",
+      "addRoleInstructions": "Once a user has signed up, you can add their user_id to the user_roles table via the database to grant them admin or staff access.",
+      "columns": {
+        "email": "Email",
+        "roles": "Roles",
+        "since": "Since",
+        "actions": "Actions"
+      },
+      "roles": {
+        "admin": "Admin",
+        "staff": "Staff"
+      },
+      "removeConfirm": {
+        "title": "Remove Role",
+        "description": "Are you sure you want to remove the {{role}} role from {{email}}?",
+        "cancel": "Cancel",
+        "confirm": "Remove Role"
+      }
     },
     "settings": {
       "title": "Settings",

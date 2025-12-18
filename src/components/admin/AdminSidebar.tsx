@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -20,6 +20,7 @@ const navItems = [
   { key: "bookings", path: "/admin/bookings", icon: ClipboardList },
   { key: "vendors", path: "/admin/vendors", icon: Users },
   { key: "revenue", path: "/admin/revenue", icon: DollarSign },
+  { key: "users", path: "/admin/users", icon: UserCog },
   { key: "settings", path: "/admin/settings", icon: Settings },
 ];
 
