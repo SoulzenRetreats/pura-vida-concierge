@@ -1,4 +1,10 @@
 {
+  "common": {
+    "language": {
+      "en": "English",
+      "es": "Español"
+    }
+  },
   "nav": {
     "properties": "Properties",
     "experiences": "Experiences",
@@ -351,8 +357,16 @@
         "customer": "Customer",
         "occasion": "Occasion",
         "status": "Status",
+        "assigned": "Assigned",
         "actions": "Actions"
-      }
+      },
+      "assignedToYou": "Yours",
+      "assigned": "Assigned",
+      "unassigned": "Unassigned",
+      "claim": "Claim",
+      "claimSuccess": "Booking claimed",
+      "claimSuccessDescription": "This booking is now assigned to you.",
+      "claimError": "Failed to claim booking"
     },
     "bookingDetail": {
       "notFound": "Booking not found.",
