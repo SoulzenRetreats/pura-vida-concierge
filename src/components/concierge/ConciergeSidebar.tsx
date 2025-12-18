@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import { LayoutDashboard, ClipboardList, Users, Settings, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 const navItems = [
   { key: "dashboard", path: "/concierge/dashboard", icon: LayoutDashboard },
@@ -68,7 +69,10 @@ export function ConciergeSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t">
+      <SidebarFooter className="border-t space-y-2">
+        <div className="flex justify-center group-data-[collapsible=icon]:px-0 px-2">
+          <LanguageToggle variant="full" className="w-full group-data-[collapsible=icon]:w-auto" />
+        </div>
         {isAdmin && (
           <Button
             variant="ghost"

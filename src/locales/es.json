@@ -1,4 +1,10 @@
 {
+  "common": {
+    "language": {
+      "en": "English",
+      "es": "Español"
+    }
+  },
   "nav": {
     "properties": "Propiedades",
     "experiences": "Experiencias",
@@ -269,7 +275,11 @@
       "error": "Ocurrió un error",
       "removeRole": "Eliminar {{role}}",
       "addRoleBtn": "Agregar Rol",
+      "assignRole": "Asignar Rol",
       "inviteUser": "Invitar Usuario",
+      "usersWithoutRoles": "Usuarios Sin Roles",
+      "usersWithoutRolesDescription": "Usuarios que se han registrado pero no tienen roles asignados.",
+      "noUsersWithoutRoles": "Todos los usuarios registrados tienen roles asignados.",
       "columns": {
         "email": "Correo Electrónico",
         "roles": "Roles",

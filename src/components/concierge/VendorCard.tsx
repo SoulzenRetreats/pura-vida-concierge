@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { Edit2, Trash2, Phone, Tag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ interface VendorCardProps {
 }
 
 export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
-  const { t } = useTranslation();
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -34,7 +32,7 @@ export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
                 <div className="flex flex-wrap gap-1">
                   {vendor.service_types.map((type) => (
                     <Badge key={type} variant="secondary" className="text-xs">
-                      {t(`experiences.filter.${type}`)}
+                      {type}
                     </Badge>
                   ))}
                 </div>
@@ -56,7 +54,7 @@ export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
               className="h-8 w-8"
             >
               <Edit2 className="h-4 w-4" />
-              <span className="sr-only">{t("concierge.vendors.edit")}</span>
+              <span className="sr-only">Edit vendor</span>
             </Button>
             <Button
               variant="ghost"
@@ -65,7 +63,7 @@ export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
               className="h-8 w-8 text-destructive hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
-              <span className="sr-only">{t("concierge.vendors.delete")}</span>
+              <span className="sr-only">Delete vendor</span>
             </Button>
           </div>
         </div>

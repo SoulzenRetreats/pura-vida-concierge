@@ -11,6 +11,12 @@ interface UserWithRole {
   role_created_at: string;
 }
 
+interface AuthUser {
+  user_id: string;
+  email: string;
+  created_at: string;
+}
+
 interface UserInvitation {
   id: string;
   email: string;
@@ -31,6 +37,18 @@ export function useUsersWithRoles() {
 
       if (error) throw error;
       return data as UserWithRole[];
+    },
+  });
+}
+
+export function useAllUsers() {
+  return useQuery({
+    queryKey: ["all-users"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_all_users_for_admin");
+
+      if (error) throw error;
+      return data as AuthUser[];
     },
   });
 }

@@ -39,7 +39,8 @@ import {
   useUsersWithRoles, 
   useRemoveUserRole, 
   usePendingInvitations,
-  useRevokeInvitation 
+  useRevokeInvitation,
+  useAllUsers
 } from "@/hooks/useUsers";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -53,6 +54,7 @@ export default function AdminUsers() {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
   const { data: users, isLoading } = useUsersWithRoles();
+  const { data: allUsers, isLoading: isLoadingAllUsers } = useAllUsers();
   const { data: pendingInvitations, isLoading: isLoadingInvitations } = usePendingInvitations();
   const removeRole = useRemoveUserRole();
   const revokeInvitation = useRevokeInvitation();
@@ -110,6 +112,10 @@ export default function AdminUsers() {
   }, {} as Record<string, { user_id: string; email: string; roles: Array<{ role: AppRole; created_at: string }> }>);
 
   const userList = groupedUsers ? Object.values(groupedUsers) : [];
+  
+  // Find users without any roles
+  const userIdsWithRoles = new Set(userList.map(u => u.user_id));
+  const usersWithoutRoles = allUsers?.filter(u => !userIdsWithRoles.has(u.user_id)) || [];
 
   return (
     <div className="space-y-6">
@@ -208,6 +214,66 @@ export default function AdminUsers() {
                           </Button>
                         ))}
                       </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Users Without Roles Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            {t("admin.users.usersWithoutRoles")}
+          </CardTitle>
+          <CardDescription>{t("admin.users.usersWithoutRolesDescription")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoadingAllUsers ? (
+            <div className="space-y-3">
+              {[...Array(2)].map((_, i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          ) : !usersWithoutRoles.length ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {t("admin.users.noUsersWithoutRoles")}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("admin.users.columns.email")}</TableHead>
+                  <TableHead>{t("admin.users.columns.since")}</TableHead>
+                  <TableHead className="text-right">{t("admin.users.columns.actions")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {usersWithoutRoles.map((user) => (
+                  <TableRow key={user.user_id}>
+                    <TableCell>
+                      <div className="font-medium">{user.email}</div>
+                    </TableCell>
+                    <TableCell>
+                      {format(new Date(user.created_at), "MMM d, yyyy")}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setAddRoleUser({
+                          user_id: user.user_id,
+                          email: user.email,
+                          existingRoles: [],
+                        })}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        {t("admin.users.assignRole")}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

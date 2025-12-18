@@ -405,6 +405,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_all_users_for_admin: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          user_id: string
+        }[]
+      }
       get_users_with_roles: {
         Args: never
         Returns: {
