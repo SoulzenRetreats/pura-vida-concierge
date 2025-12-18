@@ -239,6 +239,7 @@
       "bookings": "Bookings",
       "vendors": "Vendors",
       "revenue": "Revenue",
+      "users": "Users",
       "settings": "Settings",
       "viewConcierge": "View Concierge"
     },
@@ -251,6 +252,95 @@
       "properties": "Properties",
       "vendors": "Vendors",
       "revenue": "Revenue"
+    },
+    "bookings": {
+      "title": "Booking Management",
+      "description": "View and override booking statuses.",
+      "override": "Override Status",
+      "statusUpdated": "Status updated successfully",
+      "error": "Failed to update status"
+    },
+    "vendors": {
+      "title": "Vendor Management",
+      "description": "Manage all vendor records."
+    },
+    "users": {
+      "title": "User Management",
+      "description": "Manage user roles and permissions.",
+      "userRoles": "User Roles",
+      "userRolesDescription": "View and manage roles assigned to users.",
+      "noUsers": "No users with roles found.",
+      "you": "(You)",
+      "roleRemoved": "Role removed successfully",
+      "error": "An error occurred",
+      "removeRole": "Remove {{role}}",
+      "addRoleBtn": "Add Role",
+      "assignRole": "Assign Role",
+      "inviteUser": "Invite User",
+      "usersWithoutRoles": "Users Without Roles",
+      "usersWithoutRolesDescription": "Users who have signed up but don't have roles assigned.",
+      "noUsersWithoutRoles": "All registered users have roles assigned.",
+      "columns": {
+        "email": "Email",
+        "roles": "Roles",
+        "since": "Since",
+        "actions": "Actions"
+      },
+      "roles": {
+        "admin": "Admin",
+        "staff": "Concierge"
+      },
+      "removeConfirm": {
+        "title": "Remove Role",
+        "description": "Are you sure you want to remove the {{role}} role from {{email}}?",
+        "cancel": "Cancel",
+        "confirm": "Remove Role"
+      },
+      "invite": {
+        "title": "Invite New User",
+        "description": "Send an email invitation to join the platform with a specific role.",
+        "email": "Email",
+        "emailPlaceholder": "user@example.com",
+        "emailRequired": "Please enter an email address",
+        "role": "Role",
+        "notes": "Notes (Optional)",
+        "notesPlaceholder": "Internal notes about this invitation...",
+        "cancel": "Cancel",
+        "send": "Send Invitation",
+        "success": "Invitation sent to {{email}}"
+      },
+      "addRole": {
+        "title": "Add Role",
+        "description": "Add a new role to {{email}}",
+        "selectRole": "Select Role",
+        "selectRolePlaceholder": "Choose a role...",
+        "noRolesAvailable": "This user already has all available roles.",
+        "cancel": "Cancel",
+        "confirm": "Add Role",
+        "success": "{{role}} role added to {{email}}"
+      },
+      "invitations": {
+        "title": "Pending Invitations",
+        "description": "Track and manage pending user invitations.",
+        "none": "No pending invitations.",
+        "expired": "Expired",
+        "revoke": "Revoke",
+        "revoked": "Invitation revoked successfully",
+        "columns": {
+          "email": "Email",
+          "role": "Role",
+          "notes": "Notes",
+          "sent": "Sent",
+          "expires": "Expires",
+          "actions": "Actions"
+        },
+        "revokeConfirm": {
+          "title": "Revoke Invitation",
+          "description": "Are you sure you want to revoke the invitation for {{email}}? They will no longer be able to use this invitation link.",
+          "cancel": "Cancel",
+          "confirm": "Revoke"
+        }
+      }
     },
     "settings": {
       "title": "Settings",
