@@ -35,7 +35,7 @@ function App(): React.JSX.Element {
               <Route path="/booking" element={<Booking />} />
 
               {/* Auth route */}
-              <Route path="/admin/auth" element={<AdminAuth />} />
+              <Route path="/login/auth" element={<AdminAuth />} />
 
               {/* Admin protected routes */}
               <Route

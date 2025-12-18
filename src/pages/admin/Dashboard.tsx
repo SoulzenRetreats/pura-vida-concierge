@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Users, Building, Calendar, DollarSign } from "lucide-react";
+import { LogOut, Users, Building, Calendar, DollarSign, ArrowRight } from "lucide-react";
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
   return (
@@ -14,7 +16,15 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-serif font-semibold">{t("admin.dashboard.title")}</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/concierge/dashboard")}
+            >
+              {t("admin.dashboard.viewConcierge")}
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+            <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
             <Button variant="outline" size="sm" onClick={signOut}>
               <LogOut className="h-4 w-4 mr-2" />
               {t("auth.signOut")}

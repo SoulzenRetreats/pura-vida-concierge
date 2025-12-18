@@ -213,11 +213,16 @@
     "signIn": "Sign In",
     "signingIn": "Signing in...",
     "signOut": "Sign Out",
+    "forgotPassword": "Forgot your password?",
+    "sendingReset": "Sending...",
+    "resetSent": "Password Reset Email Sent",
+    "resetSentDescription": "Check your email for a link to reset your password.",
     "errors": {
       "invalidCredentials": "Invalid email or password",
       "noRole": "You don't have permission to access this area",
       "unauthorized": "You are not authorized to access this page",
-      "generic": "An error occurred. Please try again."
+      "generic": "An error occurred. Please try again.",
+      "emailRequired": "Please enter your email address first"
     }
   },
   "admin": {
@@ -229,7 +234,8 @@
       "totalBookings": "Total Bookings",
       "properties": "Properties",
       "vendors": "Vendors",
-      "revenue": "Revenue"
+      "revenue": "Revenue",
+      "viewConcierge": "View Concierge Dashboard"
     }
   },
   "concierge": {
@@ -240,7 +246,8 @@
       "placeholder": "Dashboard features will be implemented in the next phase.",
       "pendingRequests": "Pending Requests",
       "upcomingBookings": "Upcoming Bookings",
-      "activeVendors": "Active Vendors"
+      "activeVendors": "Active Vendors",
+      "backToAdmin": "Back to Admin"
     }
   }
 }

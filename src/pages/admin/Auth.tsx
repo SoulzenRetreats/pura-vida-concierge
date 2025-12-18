@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +27,7 @@ export default function AdminAuth() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   // Redirect if already authenticated with proper role
@@ -86,6 +88,38 @@ export default function AdminAuth() {
     }
 
     // Navigation will happen via useEffect when userRole is set
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setErrors({ email: t("auth.errors.emailRequired") });
+      return;
+    }
+
+    const emailValidation = z.string().email().safeParse(email);
+    if (!emailValidation.success) {
+      setErrors({ email: "Invalid email address" });
+      return;
+    }
+
+    setIsResetting(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/login/auth`,
+    });
+
+    if (error) {
+      toast({
+        title: t("auth.errors.generic"),
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: t("auth.resetSent"),
+        description: t("auth.resetSentDescription"),
+      });
+    }
+    setIsResetting(false);
   };
 
   if (authLoading) {
@@ -160,6 +194,23 @@ export default function AdminAuth() {
                 </>
               ) : (
                 t("auth.signIn")
+              )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="link"
+              className="w-full text-sm text-muted-foreground"
+              onClick={handleForgotPassword}
+              disabled={isResetting}
+            >
+              {isResetting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("auth.sendingReset")}
+                </>
+              ) : (
+                t("auth.forgotPassword")
               )}
             </Button>
           </form>

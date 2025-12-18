@@ -1,12 +1,16 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Calendar, ClipboardList, Users } from "lucide-react";
+import { LogOut, Calendar, ClipboardList, Users, ArrowLeft } from "lucide-react";
 
 export default function ConciergeDashboard() {
   const { t } = useTranslation();
-  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { user, userRole, signOut } = useAuth();
+
+  const isAdmin = userRole === "admin";
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -14,7 +18,17 @@ export default function ConciergeDashboard() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-serif font-semibold">{t("concierge.dashboard.title")}</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
+            {isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {t("concierge.dashboard.backToAdmin")}
+              </Button>
+            )}
+            <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
             <Button variant="outline" size="sm" onClick={signOut}>
               <LogOut className="h-4 w-4 mr-2" />
               {t("auth.signOut")}
