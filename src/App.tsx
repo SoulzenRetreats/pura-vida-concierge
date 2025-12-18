@@ -17,6 +17,8 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import { ConciergeLayout } from "./components/concierge/ConciergeLayout";
 import ConciergeDashboard from "./pages/concierge/Dashboard";
 import ConciergeBookings from "./pages/concierge/Bookings";
+import BookingDetail from "./pages/concierge/BookingDetail";
+import ConciergeVendors from "./pages/concierge/Vendors";
 
 const queryClient = new QueryClient();
 
@@ -61,8 +63,8 @@ function App(): React.JSX.Element {
                 <Route index element={<Navigate to="/concierge/dashboard" replace />} />
                 <Route path="dashboard" element={<ConciergeDashboard />} />
                 <Route path="bookings" element={<ConciergeBookings />} />
-                <Route path="bookings/:id" element={<div>Booking Detail (Coming Soon)</div>} />
-                <Route path="vendors" element={<div>Vendors (Coming Soon)</div>} />
+                <Route path="bookings/:id" element={<BookingDetail />} />
+                <Route path="vendors" element={<ConciergeVendors />} />
               </Route>
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

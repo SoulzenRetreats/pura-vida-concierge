@@ -292,6 +292,78 @@
         "status": "Estado",
         "actions": "Acciones"
       }
+    },
+    "bookingDetail": {
+      "notFound": "Reserva no encontrada.",
+      "backToList": "Volver a reservas",
+      "statusUpdated": "Estado actualizado exitosamente",
+      "error": "Ocurrió un error",
+      "customer": {
+        "title": "Información del Cliente",
+        "dietary": "Preferencias Dietéticas"
+      },
+      "stay": {
+        "title": "Detalles de la Estadía",
+        "needsRecommendation": "Necesita recomendación de propiedad",
+        "budget": "Rango de Presupuesto",
+        "vibe": "Ambiente / Preferencias"
+      },
+      "vendors": {
+        "title": "Servicios y Proveedores",
+        "noServices": "No hay servicios solicitados para esta reserva.",
+        "assignVendor": "Proveedor",
+        "selectVendor": "Seleccionar proveedor...",
+        "noVendor": "Sin proveedor asignado",
+        "price": "Precio"
+      },
+      "notes": {
+        "title": "Notas Internas",
+        "placeholder": "Agregar notas internas sobre esta reserva...",
+        "saving": "Guardando...",
+        "customerNotes": "Notas del Cliente",
+        "surpriseElements": "Elementos Sorpresa"
+      },
+      "workflow": {
+        "startReview": "Iniciar Revisión",
+        "sendQuote": "Enviar Cotización",
+        "markConfirmed": "Marcar Confirmada",
+        "markCompleted": "Marcar Completada",
+        "completed": "Reserva completada"
+      }
+    },
+    "vendors": {
+      "title": "Proveedores",
+      "description": "Administra tus relaciones con proveedores.",
+      "searchPlaceholder": "Buscar proveedores...",
+      "filterByService": "Filtrar por servicio",
+      "allServices": "Todos los Servicios",
+      "noVendors": "No se encontraron proveedores.",
+      "addVendor": "Agregar Proveedor",
+      "editVendor": "Editar Proveedor",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "created": "Proveedor creado exitosamente",
+      "updated": "Proveedor actualizado exitosamente",
+      "deleted": "Proveedor eliminado exitosamente",
+      "error": "Ocurrió un error",
+      "form": {
+        "name": "Nombre",
+        "namePlaceholder": "Nombre del proveedor",
+        "contactInfo": "Información de Contacto",
+        "contactInfoPlaceholder": "Teléfono, correo, dirección...",
+        "serviceTypes": "Tipos de Servicio",
+        "internalNotes": "Notas Internas",
+        "internalNotesPlaceholder": "Notas sobre precios, confiabilidad, etc...",
+        "cancel": "Cancelar",
+        "create": "Crear Proveedor",
+        "update": "Actualizar Proveedor"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar Proveedor",
+        "description": "¿Estás seguro de que quieres eliminar {{name}}? Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      }
     }
   }
 }
