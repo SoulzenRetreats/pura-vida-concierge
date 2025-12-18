@@ -202,5 +202,45 @@
     "validation": {
       "locationRequired": "Please enter where you're staying"
     }
+  },
+  "auth": {
+    "title": "Staff Login",
+    "subtitle": "Sign in to access the dashboard",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "signOut": "Sign Out",
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "noRole": "You don't have permission to access this area",
+      "unauthorized": "You are not authorized to access this page",
+      "generic": "An error occurred. Please try again."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome to the Admin Dashboard",
+      "welcomeDescription": "Manage your properties, bookings, vendors, and revenue from here.",
+      "placeholder": "Dashboard features will be implemented in the next phase.",
+      "totalBookings": "Total Bookings",
+      "properties": "Properties",
+      "vendors": "Vendors",
+      "revenue": "Revenue"
+    }
+  },
+  "concierge": {
+    "dashboard": {
+      "title": "Concierge Dashboard",
+      "welcome": "Welcome to the Concierge Dashboard",
+      "welcomeDescription": "Manage booking requests, coordinate with vendors, and track your active bookings.",
+      "placeholder": "Dashboard features will be implemented in the next phase.",
+      "pendingRequests": "Pending Requests",
+      "upcomingBookings": "Upcoming Bookings",
+      "activeVendors": "Active Vendors"
+    }
   }
 }

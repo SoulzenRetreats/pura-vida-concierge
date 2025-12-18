@@ -202,5 +202,45 @@
     "validation": {
       "locationRequired": "Por favor ingresa dónde te hospedas"
     }
+  },
+  "auth": {
+    "title": "Acceso del Personal",
+    "subtitle": "Inicia sesión para acceder al panel",
+    "email": "Correo Electrónico",
+    "emailPlaceholder": "tu@correo.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "signIn": "Iniciar Sesión",
+    "signingIn": "Iniciando sesión...",
+    "signOut": "Cerrar Sesión",
+    "errors": {
+      "invalidCredentials": "Correo o contraseña inválidos",
+      "noRole": "No tienes permisos para acceder a esta área",
+      "unauthorized": "No estás autorizado para acceder a esta página",
+      "generic": "Ocurrió un error. Por favor, intenta de nuevo."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de Administración",
+      "welcome": "Bienvenido al Panel de Administración",
+      "welcomeDescription": "Administra tus propiedades, reservas, proveedores e ingresos desde aquí.",
+      "placeholder": "Las funciones del panel se implementarán en la siguiente fase.",
+      "totalBookings": "Total de Reservas",
+      "properties": "Propiedades",
+      "vendors": "Proveedores",
+      "revenue": "Ingresos"
+    }
+  },
+  "concierge": {
+    "dashboard": {
+      "title": "Panel del Concierge",
+      "welcome": "Bienvenido al Panel del Concierge",
+      "welcomeDescription": "Gestiona solicitudes de reserva, coordina con proveedores y rastrea tus reservas activas.",
+      "placeholder": "Las funciones del panel se implementarán en la siguiente fase.",
+      "pendingRequests": "Solicitudes Pendientes",
+      "upcomingBookings": "Próximas Reservas",
+      "activeVendors": "Proveedores Activos"
+    }
   }
 }
