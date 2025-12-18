@@ -239,15 +239,59 @@
     }
   },
   "concierge": {
+    "sidebar": {
+      "title": "Concierge",
+      "menu": "Menu",
+      "dashboard": "Dashboard",
+      "bookings": "Bookings",
+      "vendors": "Vendors",
+      "settings": "Settings"
+    },
     "dashboard": {
-      "title": "Concierge Dashboard",
-      "welcome": "Welcome to the Concierge Dashboard",
+      "title": "Dashboard",
+      "welcome": "Welcome Back",
       "welcomeDescription": "Manage booking requests, coordinate with vendors, and track your active bookings.",
-      "placeholder": "Dashboard features will be implemented in the next phase.",
+      "placeholder": "Select an option from the sidebar to get started.",
+      "gettingStarted": "Navigate using the sidebar to manage bookings and vendors.",
       "pendingRequests": "Pending Requests",
+      "pendingDescription": "New & in review",
       "upcomingBookings": "Upcoming Bookings",
+      "upcomingDescription": "Quoted & confirmed",
       "activeVendors": "Active Vendors",
+      "vendorsDescription": "Available vendors",
+      "completedBookings": "Completed",
+      "completedDescription": "Successfully delivered",
       "backToAdmin": "Back to Admin"
+    },
+    "bookings": {
+      "title": "Bookings",
+      "description": "Manage and track all booking requests.",
+      "searchPlaceholder": "Search by name or email...",
+      "noBookings": "No bookings found.",
+      "guests": "guests",
+      "view": "View",
+      "tabs": {
+        "all": "All",
+        "new_request": "New",
+        "in_review": "In Review",
+        "quote_sent": "Quoted",
+        "confirmed": "Confirmed",
+        "completed": "Completed"
+      },
+      "statuses": {
+        "new_request": "New Request",
+        "in_review": "In Review",
+        "quote_sent": "Quote Sent",
+        "confirmed": "Confirmed",
+        "completed": "Completed"
+      },
+      "columns": {
+        "date": "Dates",
+        "customer": "Customer",
+        "occasion": "Occasion",
+        "status": "Status",
+        "actions": "Actions"
+      }
     }
   }
 }

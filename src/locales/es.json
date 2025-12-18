@@ -239,15 +239,59 @@
     }
   },
   "concierge": {
+    "sidebar": {
+      "title": "Concierge",
+      "menu": "Menú",
+      "dashboard": "Panel",
+      "bookings": "Reservas",
+      "vendors": "Proveedores",
+      "settings": "Configuración"
+    },
     "dashboard": {
-      "title": "Panel del Concierge",
-      "welcome": "Bienvenido al Panel del Concierge",
+      "title": "Panel",
+      "welcome": "Bienvenido de Vuelta",
       "welcomeDescription": "Gestiona solicitudes de reserva, coordina con proveedores y rastrea tus reservas activas.",
-      "placeholder": "Las funciones del panel se implementarán en la siguiente fase.",
+      "placeholder": "Selecciona una opción del menú lateral para comenzar.",
+      "gettingStarted": "Navega usando el menú lateral para gestionar reservas y proveedores.",
       "pendingRequests": "Solicitudes Pendientes",
+      "pendingDescription": "Nuevas y en revisión",
       "upcomingBookings": "Próximas Reservas",
+      "upcomingDescription": "Cotizadas y confirmadas",
       "activeVendors": "Proveedores Activos",
+      "vendorsDescription": "Proveedores disponibles",
+      "completedBookings": "Completadas",
+      "completedDescription": "Entregadas exitosamente",
       "backToAdmin": "Volver al Admin"
+    },
+    "bookings": {
+      "title": "Reservas",
+      "description": "Gestiona y rastrea todas las solicitudes de reserva.",
+      "searchPlaceholder": "Buscar por nombre o correo...",
+      "noBookings": "No se encontraron reservas.",
+      "guests": "huéspedes",
+      "view": "Ver",
+      "tabs": {
+        "all": "Todas",
+        "new_request": "Nuevas",
+        "in_review": "En Revisión",
+        "quote_sent": "Cotizadas",
+        "confirmed": "Confirmadas",
+        "completed": "Completadas"
+      },
+      "statuses": {
+        "new_request": "Nueva Solicitud",
+        "in_review": "En Revisión",
+        "quote_sent": "Cotización Enviada",
+        "confirmed": "Confirmada",
+        "completed": "Completada"
+      },
+      "columns": {
+        "date": "Fechas",
+        "customer": "Cliente",
+        "occasion": "Ocasión",
+        "status": "Estado",
+        "actions": "Acciones"
+      }
     }
   }
 }
