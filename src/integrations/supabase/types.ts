@@ -366,6 +366,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_users_with_roles: {
+        Args: never
+        Returns: {
+          email: string
+          role: Database["public"]["Enums"]["app_role"]
+          role_created_at: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

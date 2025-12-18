@@ -233,6 +233,7 @@
       "bookings": "Reservas",
       "vendors": "Proveedores",
       "revenue": "Ingresos",
+      "users": "Usuarios",
       "settings": "Configuración",
       "viewConcierge": "Ver Concierge"
     },
@@ -245,6 +246,47 @@
       "properties": "Propiedades",
       "vendors": "Proveedores",
       "revenue": "Ingresos"
+    },
+    "bookings": {
+      "title": "Gestión de Reservas",
+      "description": "Ver y anular estados de reservas.",
+      "override": "Anular Estado",
+      "statusUpdated": "Estado actualizado exitosamente",
+      "error": "Error al actualizar el estado"
+    },
+    "vendors": {
+      "title": "Gestión de Proveedores",
+      "description": "Administrar todos los registros de proveedores."
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "description": "Gestionar roles y permisos de usuarios.",
+      "userRoles": "Roles de Usuario",
+      "userRolesDescription": "Ver y gestionar roles asignados a usuarios.",
+      "noUsers": "No se encontraron usuarios con roles.",
+      "you": "(Tú)",
+      "roleRemoved": "Rol eliminado exitosamente",
+      "error": "Ocurrió un error",
+      "removeRole": "Eliminar {{role}}",
+      "addRoleTitle": "Agregar Nuevo Rol de Usuario",
+      "addRoleDescription": "Para agregar un rol a un usuario, primero debe registrarse a través de la página de inicio de sesión.",
+      "addRoleInstructions": "Una vez que un usuario se haya registrado, puede agregar su user_id a la tabla user_roles a través de la base de datos para otorgarle acceso de admin o staff.",
+      "columns": {
+        "email": "Correo Electrónico",
+        "roles": "Roles",
+        "since": "Desde",
+        "actions": "Acciones"
+      },
+      "roles": {
+        "admin": "Admin",
+        "staff": "Staff"
+      },
+      "removeConfirm": {
+        "title": "Eliminar Rol",
+        "description": "¿Estás seguro de que deseas eliminar el rol de {{role}} de {{email}}?",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar Rol"
+      }
     },
     "settings": {
       "title": "Configuración",
