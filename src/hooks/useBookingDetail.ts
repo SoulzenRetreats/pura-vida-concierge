@@ -17,7 +17,7 @@ export type BookingDetail = Database["public"]["Tables"]["bookings"]["Row"] & {
 
 export function useBookingDetail(bookingId: string) {
   return useQuery({
-    queryKey: ["booking", bookingId],
+    queryKey: ["booking-detail", bookingId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bookings")
@@ -55,7 +55,7 @@ export function useUpdateBookingStatus() {
       if (error) throw error;
     },
     onSuccess: (_, { bookingId }) => {
-      queryClient.invalidateQueries({ queryKey: ["booking", bookingId] });
+      queryClient.invalidateQueries({ queryKey: ["booking-detail", bookingId] });
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       queryClient.invalidateQueries({ queryKey: ["booking-counts"] });
     },
@@ -75,7 +75,7 @@ export function useUpdateBookingNotes() {
       if (error) throw error;
     },
     onSuccess: (_, { bookingId }) => {
-      queryClient.invalidateQueries({ queryKey: ["booking", bookingId] });
+      queryClient.invalidateQueries({ queryKey: ["booking-detail", bookingId] });
     },
   });
 }
@@ -105,7 +105,7 @@ export function useAssignVendor() {
       if (error) throw error;
     },
     onSuccess: (_, { bookingId }) => {
-      queryClient.invalidateQueries({ queryKey: ["booking", bookingId] });
+      queryClient.invalidateQueries({ queryKey: ["booking-detail", bookingId] });
     },
   });
 }

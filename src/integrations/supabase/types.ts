@@ -77,6 +77,7 @@ export type Database = {
       }
       bookings: {
         Row: {
+          assigned_to: string | null
           budget_range: string | null
           check_in: string
           check_out: string
@@ -100,6 +101,7 @@ export type Database = {
           vibe_preferences: string | null
         }
         Insert: {
+          assigned_to?: string | null
           budget_range?: string | null
           check_in: string
           check_out: string
@@ -123,6 +125,7 @@ export type Database = {
           vibe_preferences?: string | null
         }
         Update: {
+          assigned_to?: string | null
           budget_range?: string | null
           check_in?: string
           check_out?: string

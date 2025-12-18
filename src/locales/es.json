@@ -437,8 +437,16 @@
         "customer": "Cliente",
         "occasion": "Ocasión",
         "status": "Estado",
+        "assigned": "Asignado",
         "actions": "Acciones"
-      }
+      },
+      "assignedToYou": "Tuya",
+      "assigned": "Asignada",
+      "unassigned": "Sin asignar",
+      "claim": "Reclamar",
+      "claimSuccess": "Reserva reclamada",
+      "claimSuccessDescription": "Esta reserva ahora está asignada a ti.",
+      "claimError": "Error al reclamar la reserva"
     },
     "bookingDetail": {
       "notFound": "Reserva no encontrada.",
