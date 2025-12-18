@@ -11,6 +11,18 @@ interface UserWithRole {
   role_created_at: string;
 }
 
+interface UserInvitation {
+  id: string;
+  email: string;
+  role: AppRole;
+  invited_by: string;
+  notes: string | null;
+  status: string;
+  created_at: string;
+  expires_at: string;
+  accepted_at: string | null;
+}
+
 export function useUsersWithRoles() {
   return useQuery({
     queryKey: ["users-with-roles"],
@@ -58,6 +70,80 @@ export function useRemoveUserRole() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users-with-roles"] });
+    },
+  });
+}
+
+// Invitation hooks
+export function usePendingInvitations() {
+  return useQuery({
+    queryKey: ["pending-invitations"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("user_invitations")
+        .select("*")
+        .in("status", ["pending", "expired"])
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as UserInvitation[];
+    },
+  });
+}
+
+export function useInviteUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ 
+      email, 
+      role, 
+      notes 
+    }: { 
+      email: string; 
+      role: AppRole; 
+      notes?: string 
+    }) => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      
+      if (!sessionData.session?.access_token) {
+        throw new Error("Not authenticated");
+      }
+
+      const response = await supabase.functions.invoke("invite-user", {
+        body: { email, role, notes },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to send invitation");
+      }
+
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
+
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pending-invitations"] });
+    },
+  });
+}
+
+export function useRevokeInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (invitationId: string) => {
+      const { error } = await supabase
+        .from("user_invitations")
+        .update({ status: "revoked" })
+        .eq("id", invitationId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pending-invitations"] });
     },
   });
 }

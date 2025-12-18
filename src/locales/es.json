@@ -268,9 +268,8 @@
       "roleRemoved": "Rol eliminado exitosamente",
       "error": "Ocurrió un error",
       "removeRole": "Eliminar {{role}}",
-      "addRoleTitle": "Agregar Nuevo Rol de Usuario",
-      "addRoleDescription": "Para agregar un rol a un usuario, primero debe registrarse a través de la página de inicio de sesión.",
-      "addRoleInstructions": "Una vez que un usuario se haya registrado, puede agregar su user_id a la tabla user_roles a través de la base de datos para otorgarle acceso de admin o staff.",
+      "addRoleBtn": "Agregar Rol",
+      "inviteUser": "Invitar Usuario",
       "columns": {
         "email": "Correo Electrónico",
         "roles": "Roles",
@@ -279,13 +278,58 @@
       },
       "roles": {
         "admin": "Admin",
-        "staff": "Staff"
+        "staff": "Concierge"
       },
       "removeConfirm": {
         "title": "Eliminar Rol",
         "description": "¿Estás seguro de que deseas eliminar el rol de {{role}} de {{email}}?",
         "cancel": "Cancelar",
         "confirm": "Eliminar Rol"
+      },
+      "invite": {
+        "title": "Invitar Nuevo Usuario",
+        "description": "Envía una invitación por correo para unirse a la plataforma con un rol específico.",
+        "email": "Correo Electrónico",
+        "emailPlaceholder": "usuario@ejemplo.com",
+        "emailRequired": "Por favor ingresa un correo electrónico",
+        "role": "Rol",
+        "notes": "Notas (Opcional)",
+        "notesPlaceholder": "Notas internas sobre esta invitación...",
+        "cancel": "Cancelar",
+        "send": "Enviar Invitación",
+        "success": "Invitación enviada a {{email}}"
+      },
+      "addRole": {
+        "title": "Agregar Rol",
+        "description": "Agregar un nuevo rol a {{email}}",
+        "selectRole": "Seleccionar Rol",
+        "selectRolePlaceholder": "Elegir un rol...",
+        "noRolesAvailable": "Este usuario ya tiene todos los roles disponibles.",
+        "cancel": "Cancelar",
+        "confirm": "Agregar Rol",
+        "success": "Rol de {{role}} agregado a {{email}}"
+      },
+      "invitations": {
+        "title": "Invitaciones Pendientes",
+        "description": "Rastrea y gestiona las invitaciones de usuarios pendientes.",
+        "none": "No hay invitaciones pendientes.",
+        "expired": "Expirada",
+        "revoke": "Revocar",
+        "revoked": "Invitación revocada exitosamente",
+        "columns": {
+          "email": "Correo",
+          "role": "Rol",
+          "notes": "Notas",
+          "sent": "Enviada",
+          "expires": "Expira",
+          "actions": "Acciones"
+        },
+        "revokeConfirm": {
+          "title": "Revocar Invitación",
+          "description": "¿Estás seguro de que deseas revocar la invitación para {{email}}? Ya no podrán usar este enlace de invitación.",
+          "cancel": "Cancelar",
+          "confirm": "Revocar"
+        }
       }
     },
     "settings": {
