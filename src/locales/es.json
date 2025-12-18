@@ -226,16 +226,77 @@
     }
   },
   "admin": {
+    "sidebar": {
+      "title": "Admin",
+      "menu": "Menú",
+      "dashboard": "Panel",
+      "bookings": "Reservas",
+      "vendors": "Proveedores",
+      "revenue": "Ingresos",
+      "settings": "Configuración",
+      "viewConcierge": "Ver Concierge"
+    },
     "dashboard": {
       "title": "Panel de Administración",
       "welcome": "Bienvenido al Panel de Administración",
       "welcomeDescription": "Administra tus propiedades, reservas, proveedores e ingresos desde aquí.",
-      "placeholder": "Las funciones del panel se implementarán en la siguiente fase.",
+      "gettingStarted": "Navega usando la barra lateral para gestionar reservas, proveedores e ingresos.",
       "totalBookings": "Total de Reservas",
       "properties": "Propiedades",
       "vendors": "Proveedores",
-      "revenue": "Ingresos",
-      "viewConcierge": "Ver Panel del Concierge"
+      "revenue": "Ingresos"
+    },
+    "settings": {
+      "title": "Configuración",
+      "description": "Gestionar la configuración global de la plataforma.",
+      "save": "Guardar Cambios",
+      "saved": "Configuración guardada exitosamente",
+      "error": "Error al guardar la configuración",
+      "invalidPercentage": "Por favor ingresa un porcentaje válido (0-100)",
+      "revenueShare": {
+        "title": "Participación en Ingresos",
+        "description": "Establece el porcentaje predeterminado para los cálculos de participación del concierge.",
+        "label": "Porcentaje de Participación Predeterminado",
+        "hint": "Este porcentaje se aplica a la ganancia (Total - Costo del Proveedor) para nuevas entradas de ingresos."
+      }
+    },
+    "revenue": {
+      "title": "Seguimiento de Ingresos",
+      "description": "Rastrea los ingresos y la participación del concierge para reservas completadas.",
+      "totalCharged": "Total Cobrado",
+      "vendorCosts": "Costos de Proveedores",
+      "conciergeShare": "Participación del Concierge",
+      "fromEntries": "De {{count}} entradas",
+      "completedBookings": "Reservas Completadas",
+      "completedDescription": "Ingresa los costos de proveedores y calcula la participación de ingresos para reservas completadas.",
+      "noBookings": "Aún no hay reservas completadas.",
+      "pending": "Pendiente",
+      "add": "Agregar",
+      "edit": "Editar",
+      "addEntry": "Agregar Entrada de Ingresos",
+      "editEntry": "Editar Entrada de Ingresos",
+      "created": "Entrada de ingresos creada",
+      "updated": "Entrada de ingresos actualizada",
+      "error": "Ocurrió un error",
+      "columns": {
+        "customer": "Cliente",
+        "dates": "Fechas",
+        "totalCharged": "Total Cobrado",
+        "vendorCost": "Costo del Proveedor",
+        "conciergeShare": "Participación del Concierge",
+        "actions": "Acciones"
+      },
+      "form": {
+        "totalCharged": "Total Cobrado al Cliente",
+        "vendorCost": "Costo Total del Proveedor",
+        "sharePercentage": "% de Participación del Concierge",
+        "calculatedShare": "Participación Calculada del Concierge",
+        "notes": "Notas",
+        "notesPlaceholder": "Notas sobre esta entrada de ingresos...",
+        "cancel": "Cancelar",
+        "create": "Crear Entrada",
+        "update": "Actualizar Entrada"
+      }
     }
   },
   "concierge": {
