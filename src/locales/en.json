@@ -226,16 +226,77 @@
     }
   },
   "admin": {
+    "sidebar": {
+      "title": "Admin",
+      "menu": "Menu",
+      "dashboard": "Dashboard",
+      "bookings": "Bookings",
+      "vendors": "Vendors",
+      "revenue": "Revenue",
+      "settings": "Settings",
+      "viewConcierge": "View Concierge"
+    },
     "dashboard": {
       "title": "Admin Dashboard",
       "welcome": "Welcome to the Admin Dashboard",
       "welcomeDescription": "Manage your properties, bookings, vendors, and revenue from here.",
-      "placeholder": "Dashboard features will be implemented in the next phase.",
+      "gettingStarted": "Navigate using the sidebar to manage bookings, vendors, and revenue.",
       "totalBookings": "Total Bookings",
       "properties": "Properties",
       "vendors": "Vendors",
-      "revenue": "Revenue",
-      "viewConcierge": "View Concierge Dashboard"
+      "revenue": "Revenue"
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Manage global platform settings.",
+      "save": "Save Changes",
+      "saved": "Settings saved successfully",
+      "error": "Failed to save settings",
+      "invalidPercentage": "Please enter a valid percentage (0-100)",
+      "revenueShare": {
+        "title": "Revenue Share",
+        "description": "Set the default percentage for concierge revenue share calculations.",
+        "label": "Default Share Percentage",
+        "hint": "This percentage is applied to the profit (Total - Vendor Cost) for new revenue entries."
+      }
+    },
+    "revenue": {
+      "title": "Revenue Tracking",
+      "description": "Track revenue and concierge share for completed bookings.",
+      "totalCharged": "Total Charged",
+      "vendorCosts": "Vendor Costs",
+      "conciergeShare": "Concierge Share",
+      "fromEntries": "From {{count}} entries",
+      "completedBookings": "Completed Bookings",
+      "completedDescription": "Enter vendor costs and calculate revenue share for completed bookings.",
+      "noBookings": "No completed bookings yet.",
+      "pending": "Pending",
+      "add": "Add",
+      "edit": "Edit",
+      "addEntry": "Add Revenue Entry",
+      "editEntry": "Edit Revenue Entry",
+      "created": "Revenue entry created",
+      "updated": "Revenue entry updated",
+      "error": "An error occurred",
+      "columns": {
+        "customer": "Customer",
+        "dates": "Dates",
+        "totalCharged": "Total Charged",
+        "vendorCost": "Vendor Cost",
+        "conciergeShare": "Concierge Share",
+        "actions": "Actions"
+      },
+      "form": {
+        "totalCharged": "Total Charged to Customer",
+        "vendorCost": "Total Vendor Cost",
+        "sharePercentage": "Concierge Share %",
+        "calculatedShare": "Calculated Concierge Share",
+        "notes": "Notes",
+        "notesPlaceholder": "Any notes about this revenue entry...",
+        "cancel": "Cancel",
+        "create": "Create Entry",
+        "update": "Update Entry"
+      }
     }
   },
   "concierge": {
