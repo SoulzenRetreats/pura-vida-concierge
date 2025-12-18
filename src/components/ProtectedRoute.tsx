@@ -23,11 +23,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps):
   }
 
   if (!user) {
-    return <Navigate to="/admin/auth" state={{ from: location }} replace />;
+    return <Navigate to="/login/auth" state={{ from: location }} replace />;
   }
 
   if (!userRole) {
-    return <Navigate to="/admin/auth" state={{ error: "noRole" }} replace />;
+    return <Navigate to="/login/auth" state={{ error: "noRole" }} replace />;
   }
 
   // Check if user has one of the allowed roles
@@ -35,7 +35,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps):
   const hasAccess = userRole === "admin" || allowedRoles.includes(userRole);
 
   if (!hasAccess) {
-    return <Navigate to="/admin/auth" state={{ error: "unauthorized" }} replace />;
+    return <Navigate to="/login/auth" state={{ error: "unauthorized" }} replace />;
   }
 
   return <>{children}</>;
