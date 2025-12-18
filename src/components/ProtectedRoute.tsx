@@ -1,3 +1,4 @@
+import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
@@ -9,7 +10,7 @@ interface ProtectedRouteProps {
   allowedRoles: AppRole[];
 }
 
-export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps): React.JSX.Element {
   const { user, userRole, isLoading } = useAuth();
   const location = useLocation();
 
