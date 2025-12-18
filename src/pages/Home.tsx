@@ -124,7 +124,7 @@ const Home = () => {
           <Link to="/booking">
             <Button
               size="lg"
-              className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-12 py-6 shadow-luxury"
+              className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"
             >
               {t('home.cta.button')}
             </Button>
