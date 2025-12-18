@@ -292,6 +292,78 @@
         "status": "Status",
         "actions": "Actions"
       }
+    },
+    "bookingDetail": {
+      "notFound": "Booking not found.",
+      "backToList": "Back to bookings",
+      "statusUpdated": "Status updated successfully",
+      "error": "An error occurred",
+      "customer": {
+        "title": "Customer Information",
+        "dietary": "Dietary Preferences"
+      },
+      "stay": {
+        "title": "Stay Details",
+        "needsRecommendation": "Needs property recommendation",
+        "budget": "Budget Range",
+        "vibe": "Vibe / Preferences"
+      },
+      "vendors": {
+        "title": "Services & Vendors",
+        "noServices": "No services requested for this booking.",
+        "assignVendor": "Vendor",
+        "selectVendor": "Select vendor...",
+        "noVendor": "No vendor assigned",
+        "price": "Price"
+      },
+      "notes": {
+        "title": "Internal Notes",
+        "placeholder": "Add internal notes about this booking...",
+        "saving": "Saving...",
+        "customerNotes": "Customer Notes",
+        "surpriseElements": "Surprise Elements"
+      },
+      "workflow": {
+        "startReview": "Start Review",
+        "sendQuote": "Send Quote",
+        "markConfirmed": "Mark Confirmed",
+        "markCompleted": "Mark Completed",
+        "completed": "Booking completed"
+      }
+    },
+    "vendors": {
+      "title": "Vendors",
+      "description": "Manage your vendor relationships.",
+      "searchPlaceholder": "Search vendors...",
+      "filterByService": "Filter by service",
+      "allServices": "All Services",
+      "noVendors": "No vendors found.",
+      "addVendor": "Add Vendor",
+      "editVendor": "Edit Vendor",
+      "edit": "Edit",
+      "delete": "Delete",
+      "created": "Vendor created successfully",
+      "updated": "Vendor updated successfully",
+      "deleted": "Vendor deleted successfully",
+      "error": "An error occurred",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Vendor name",
+        "contactInfo": "Contact Information",
+        "contactInfoPlaceholder": "Phone, email, address...",
+        "serviceTypes": "Service Types",
+        "internalNotes": "Internal Notes",
+        "internalNotesPlaceholder": "Notes about pricing, reliability, etc...",
+        "cancel": "Cancel",
+        "create": "Create Vendor",
+        "update": "Update Vendor"
+      },
+      "deleteConfirm": {
+        "title": "Delete Vendor",
+        "description": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
     }
   }
 }
