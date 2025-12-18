@@ -6,6 +6,7 @@ type BookingStatus = Database["public"]["Enums"]["booking_status"];
 
 export type BookingWithProperty = Database["public"]["Tables"]["bookings"]["Row"] & {
   properties: { name: string; location: string } | null;
+  assigned_to: string | null;
 };
 
 interface UseBookingsOptions {
@@ -19,7 +20,7 @@ export function useBookings({ statusFilter = "all", searchTerm = "" }: UseBookin
     queryFn: async () => {
       let query = supabase
         .from("bookings")
-        .select("*, properties(name, location)")
+        .select("*, properties(name, location), assigned_to")
         .order("created_at", { ascending: false });
 
       if (statusFilter !== "all") {
@@ -88,6 +89,34 @@ export function useUpdateBooking() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       queryClient.invalidateQueries({ queryKey: ["booking-counts"] });
+      queryClient.invalidateQueries({ queryKey: ["booking-detail"] });
+    },
+  });
+}
+
+export function useClaimBooking() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (bookingId: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: result, error } = await supabase
+        .from("bookings")
+        .update({ assigned_to: user.id })
+        .eq("id", bookingId)
+        .is("assigned_to", null)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["booking-counts"] });
+      queryClient.invalidateQueries({ queryKey: ["booking-detail"] });
     },
   });
 }

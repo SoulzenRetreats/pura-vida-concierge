@@ -12,11 +12,14 @@ import {
   Gift,
   FileText,
   Loader2,
+  UserCheck,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   useBookingDetail,
@@ -24,6 +27,8 @@ import {
   useUpdateBookingNotes,
   useAssignVendor,
 } from "@/hooks/useBookingDetail";
+import { useClaimBooking } from "@/hooks/useBookings";
+import { useAuth } from "@/contexts/AuthContext";
 import { BookingStatusBadge } from "@/components/concierge/BookingStatusBadge";
 import { BookingStatusWorkflow } from "@/components/concierge/BookingStatusWorkflow";
 import { VendorAssignment } from "@/components/concierge/VendorAssignment";
@@ -36,13 +41,33 @@ export default function BookingDetail() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const { data: booking, isLoading } = useBookingDetail(id || "");
   const updateStatus = useUpdateBookingStatus();
   const updateNotes = useUpdateBookingNotes();
   const assignVendor = useAssignVendor();
+  const claimBooking = useClaimBooking();
 
   const [internalNotes, setInternalNotes] = useState<string | null>(null);
+
+  const handleClaim = () => {
+    if (!id) return;
+    claimBooking.mutate(id, {
+      onSuccess: () => {
+        toast({
+          title: t("concierge.bookings.claimSuccess"),
+          description: t("concierge.bookings.claimSuccessDescription"),
+        });
+      },
+      onError: () => {
+        toast({
+          title: t("concierge.bookings.claimError"),
+          variant: "destructive",
+        });
+      },
+    });
+  };
 
   const handleStatusChange = (newStatus: BookingStatus) => {
     if (!id) return;
@@ -104,28 +129,55 @@ export default function BookingDetail() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/concierge/bookings")}
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-heading font-semibold">
-              {booking.customer_name}
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <BookingStatusBadge status={booking.status || "new_request"} />
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/concierge/bookings")}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-heading font-semibold">
+                {booking.customer_name}
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <BookingStatusBadge status={booking.status || "new_request"} />
+                {booking.assigned_to === user?.id ? (
+                  <Badge variant="secondary" className="gap-1">
+                    <UserCheck className="h-3 w-3" />
+                    {t("concierge.bookings.assignedToYou")}
+                  </Badge>
+                ) : booking.assigned_to ? (
+                  <Badge variant="outline" className="gap-1">
+                    <UserCheck className="h-3 w-3" />
+                    {t("concierge.bookings.assigned")}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-muted-foreground">
+                    {t("concierge.bookings.unassigned")}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <BookingStatusWorkflow
-          currentStatus={booking.status || "new_request"}
-          onStatusChange={handleStatusChange}
-          isUpdating={updateStatus.isPending}
-        />
+          <div className="flex items-center gap-2">
+            {!booking.assigned_to && (
+              <Button
+                variant="outline"
+                onClick={handleClaim}
+                disabled={claimBooking.isPending}
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                {t("concierge.bookings.claim")}
+              </Button>
+            )}
+            <BookingStatusWorkflow
+              currentStatus={booking.status || "new_request"}
+              onStatusChange={handleStatusChange}
+              isUpdating={updateStatus.isPending}
+            />
+          </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
