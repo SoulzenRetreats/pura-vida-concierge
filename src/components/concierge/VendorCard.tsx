@@ -2,6 +2,7 @@ import { Edit2, Trash2, Phone, Tag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import type { Vendor } from "@/hooks/useVendors";
 
 interface VendorCardProps {
@@ -11,6 +12,7 @@ interface VendorCardProps {
 }
 
 export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
+  const { t } = useTranslation();
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -32,7 +34,7 @@ export function VendorCard({ vendor, onEdit, onDelete }: VendorCardProps) {
                 <div className="flex flex-wrap gap-1">
                   {vendor.service_types.map((type) => (
                     <Badge key={type} variant="secondary" className="text-xs">
-                      {type}
+                      {t(`experiences.filter.${type}`, type)}
                     </Badge>
                   ))}
                 </div>
