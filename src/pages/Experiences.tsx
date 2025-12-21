@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import servicesHero from "@/assets/services-hero.jpg";
 
 interface Service {
@@ -22,6 +23,19 @@ const Experiences = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+
+  // Fetch distinct categories dynamically from the services table
+  const { data: categoryList } = useQuery({
+    queryKey: ["service-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("category")
+        .order("category");
+      if (error) throw error;
+      return [...new Set(data?.map((s) => s.category))] as string[];
+    },
+  });
 
   useEffect(() => {
     fetchServices();
@@ -57,16 +71,14 @@ const Experiences = () => {
       .join(" ");
   };
 
+  // Build categories dynamically from fetched data
   const categories = [
     { value: "all", label: t('experiences.filter.all') },
-    { value: "chef", label: t('experiences.filter.chef') },
-    { value: "transportation", label: t('experiences.filter.transportation') },
-    { value: "adventure", label: t('experiences.filter.adventure') },
-    { value: "spa", label: t('experiences.filter.spa') },
-    { value: "tours", label: t('experiences.filter.tours') },
-    { value: "celebrations", label: t('experiences.filter.celebrations') },
+    ...(categoryList || []).map(cat => ({
+      value: cat,
+      label: t(`experiences.filter.${cat}`, formatCategory(cat))
+    }))
   ];
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
