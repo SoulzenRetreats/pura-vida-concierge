@@ -24,7 +24,7 @@ export function useVendors({ searchTerm = "", serviceFilter = "" }: UseVendorsOp
         query = query.ilike("name", `%${searchTerm}%`);
       }
 
-      if (serviceFilter) {
+      if (serviceFilter && serviceFilter !== "all") {
         query = query.contains("service_types", [serviceFilter]);
       }
 
