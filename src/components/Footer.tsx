@@ -75,6 +75,14 @@ export const Footer = () => {
           <p>{t('footer.copyright', {
             year: new Date().getFullYear()
           })}</p>
+          <div className="mt-4">
+            <Link 
+              to="/login/auth" 
+              className="text-xs text-primary-foreground/40 hover:text-primary-foreground/60 transition-smooth"
+            >
+              {t('footer.staffLogin')}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>;

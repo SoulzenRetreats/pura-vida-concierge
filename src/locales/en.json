@@ -19,7 +19,8 @@
     "email": "Email",
     "phone": "Phone",
     "location": "Location",
-    "copyright": "© {{year}} Pura Vida Concierge. All rights reserved."
+    "copyright": "© {{year}} Pura Vida Concierge. All rights reserved.",
+    "staffLogin": "Staff Login"
   },
   "home": {
     "hero": {
@@ -76,7 +77,8 @@
       "spa": "Spa",
       "tours": "Tours",
       "celebrations": "Celebrations",
-      "other": "Other"
+      "other": "Other",
+      "luxury_items": "Luxury Items"
     },
     "loading": "Loading services...",
     "noServices": "No Services Available",
