@@ -240,6 +240,7 @@
       "dashboard": "Dashboard",
       "bookings": "Bookings",
       "vendors": "Vendors",
+      "services": "Services",
       "revenue": "Revenue",
       "users": "Users",
       "settings": "Settings",
@@ -265,6 +266,45 @@
     "vendors": {
       "title": "Vendor Management",
       "description": "Manage all vendor records."
+    },
+    "services": {
+      "title": "Services Management",
+      "description": "Manage experiences shown on the public website.",
+      "addService": "Add Service",
+      "editService": "Edit Service",
+      "searchPlaceholder": "Search services...",
+      "noServices": "No services found.",
+      "created": "Service created successfully",
+      "updated": "Service updated successfully",
+      "deleted": "Service deleted successfully",
+      "error": "An error occurred",
+      "edit": "Edit",
+      "delete": "Delete",
+      "columns": {
+        "name": "Name",
+        "category": "Category",
+        "priceRange": "Price Range",
+        "defaultVendor": "Default Vendor",
+        "actions": "Actions"
+      },
+      "form": {
+        "name": "Service Name",
+        "description": "Description",
+        "category": "Category",
+        "priceRange": "Price Range",
+        "photoUrl": "Photo URL",
+        "defaultVendor": "Default Vendor",
+        "selectVendor": "Select a vendor...",
+        "noVendor": "No vendor",
+        "isForSale": "Item for Sale",
+        "price": "Fixed Price",
+        "create": "Create Service",
+        "update": "Update Service"
+      },
+      "deleteConfirm": {
+        "title": "Delete Service",
+        "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+      }
     },
     "users": {
       "title": "User Management",
