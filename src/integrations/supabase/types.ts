@@ -286,8 +286,10 @@ export type Database = {
           created_at: string | null
           description: string
           id: string
+          is_for_sale: boolean | null
           name: string
           photos: string[] | null
+          price: number | null
           price_range: string | null
           updated_at: string | null
         }
@@ -296,8 +298,10 @@ export type Database = {
           created_at?: string | null
           description: string
           id?: string
+          is_for_sale?: boolean | null
           name: string
           photos?: string[] | null
+          price?: number | null
           price_range?: string | null
           updated_at?: string | null
         }
@@ -306,8 +310,10 @@ export type Database = {
           created_at?: string | null
           description?: string
           id?: string
+          is_for_sale?: boolean | null
           name?: string
           photos?: string[] | null
+          price?: number | null
           price_range?: string | null
           updated_at?: string | null
         }
@@ -457,6 +463,7 @@ export type Database = {
         | "tours"
         | "celebrations"
         | "other"
+        | "luxury_items"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -601,6 +608,7 @@ export const Constants = {
         "tours",
         "celebrations",
         "other",
+        "luxury_items",
       ],
     },
   },
