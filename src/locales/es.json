@@ -240,6 +240,7 @@
       "dashboard": "Panel",
       "bookings": "Reservas",
       "vendors": "Proveedores",
+      "services": "Servicios",
       "revenue": "Ingresos",
       "users": "Usuarios",
       "settings": "Configuración",
@@ -265,6 +266,45 @@
     "vendors": {
       "title": "Gestión de Proveedores",
       "description": "Administrar todos los registros de proveedores."
+    },
+    "services": {
+      "title": "Gestión de Servicios",
+      "description": "Administrar las experiencias mostradas en el sitio web público.",
+      "addService": "Agregar Servicio",
+      "editService": "Editar Servicio",
+      "searchPlaceholder": "Buscar servicios...",
+      "noServices": "No se encontraron servicios.",
+      "created": "Servicio creado exitosamente",
+      "updated": "Servicio actualizado exitosamente",
+      "deleted": "Servicio eliminado exitosamente",
+      "error": "Ocurrió un error",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "columns": {
+        "name": "Nombre",
+        "category": "Categoría",
+        "priceRange": "Rango de Precio",
+        "defaultVendor": "Proveedor Predeterminado",
+        "actions": "Acciones"
+      },
+      "form": {
+        "name": "Nombre del Servicio",
+        "description": "Descripción",
+        "category": "Categoría",
+        "priceRange": "Rango de Precio",
+        "photoUrl": "URL de Foto",
+        "defaultVendor": "Proveedor Predeterminado",
+        "selectVendor": "Seleccionar proveedor...",
+        "noVendor": "Sin proveedor",
+        "isForSale": "Artículo en Venta",
+        "price": "Precio Fijo",
+        "create": "Crear Servicio",
+        "update": "Actualizar Servicio"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar Servicio",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer."
+      }
     },
     "users": {
       "title": "Gestión de Usuarios",

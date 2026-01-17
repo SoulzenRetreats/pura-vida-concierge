@@ -284,6 +284,7 @@ export type Database = {
         Row: {
           category: Database["public"]["Enums"]["service_category"]
           created_at: string | null
+          default_vendor_id: string | null
           description: string
           id: string
           is_for_sale: boolean | null
@@ -296,6 +297,7 @@ export type Database = {
         Insert: {
           category: Database["public"]["Enums"]["service_category"]
           created_at?: string | null
+          default_vendor_id?: string | null
           description: string
           id?: string
           is_for_sale?: boolean | null
@@ -308,6 +310,7 @@ export type Database = {
         Update: {
           category?: Database["public"]["Enums"]["service_category"]
           created_at?: string | null
+          default_vendor_id?: string | null
           description?: string
           id?: string
           is_for_sale?: boolean | null
@@ -317,7 +320,15 @@ export type Database = {
           price_range?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "services_default_vendor_id_fkey"
+            columns: ["default_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_invitations: {
         Row: {
