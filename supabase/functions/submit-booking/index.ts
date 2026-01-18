@@ -138,34 +138,112 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Budget range and location details are now optional for the simplified form
-    // but we still accept them if provided
+    // Validate field lengths - reject oversized inputs with clear errors instead of silent truncation
+    const trimmedBudgetRange = budgetRange?.trim() || "";
+    if (trimmedBudgetRange.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Budget range must be under 100 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedServiceDates = serviceDates?.trim() || "";
+    if (trimmedServiceDates.length > 200) {
+      return new Response(
+        JSON.stringify({ error: "Service dates must be under 200 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedLocationDetails = locationDetails?.trim() || "";
+    if (trimmedLocationDetails.length > 500) {
+      return new Response(
+        JSON.stringify({ error: "Location details must be under 500 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedDietaryPreferences = dietaryPreferences?.trim() || "";
+    if (trimmedDietaryPreferences.length > 500) {
+      return new Response(
+        JSON.stringify({ error: "Dietary preferences must be under 500 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedVibePreferences = vibePreferences?.trim() || "";
+    if (trimmedVibePreferences.length > 200) {
+      return new Response(
+        JSON.stringify({ error: "Vibe preferences must be under 200 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedSurpriseElements = surpriseElements?.trim() || "";
+    if (trimmedSurpriseElements.length > 500) {
+      return new Response(
+        JSON.stringify({ error: "Surprise elements must be under 500 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedSpecialNotes = specialNotes?.trim() || "";
+    if (trimmedSpecialNotes.length > 1000) {
+      return new Response(
+        JSON.stringify({ error: "Special notes must be under 1000 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedOccasionType = occasionType?.trim() || "";
+    if (trimmedOccasionType.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Occasion type must be under 100 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedPreferredTime = preferredTime?.trim() || "";
+    if (trimmedPreferredTime.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Preferred time must be under 100 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const trimmedCustomerPhone = customerPhone?.trim() || "";
+    if (trimmedCustomerPhone.length > 50) {
+      return new Response(
+        JSON.stringify({ error: "Phone number must be under 50 characters" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Create Supabase client with service role for inserting
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Create booking with extended fields
+    // Create booking with validated fields (no silent truncation)
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
         property_id: propertyId || null,
         customer_name: customerName.trim(),
         customer_email: customerEmail.trim().toLowerCase(),
-        customer_phone: customerPhone?.trim() || null,
+        customer_phone: trimmedCustomerPhone || null,
         check_in: checkIn,
         check_out: checkOut,
         guest_count: guestCount,
-        budget_range: budgetRange.trim(),
-        service_dates: serviceDates.trim(),
-        preferred_time: preferredTime?.trim() || null,
-        location_details: locationDetails.trim(),
-        occasion_type: occasionType?.trim() || null,
-        dietary_preferences: dietaryPreferences?.substring(0, 500) || null,
-        vibe_preferences: vibePreferences?.substring(0, 200) || null,
-        surprise_elements: surpriseElements?.substring(0, 500) || null,
-        special_notes: specialNotes?.substring(0, 1000) || null,
+        budget_range: trimmedBudgetRange || null,
+        service_dates: trimmedServiceDates || null,
+        preferred_time: trimmedPreferredTime || null,
+        location_details: trimmedLocationDetails || null,
+        occasion_type: trimmedOccasionType || null,
+        dietary_preferences: trimmedDietaryPreferences || null,
+        vibe_preferences: trimmedVibePreferences || null,
+        surprise_elements: trimmedSurpriseElements || null,
+        special_notes: trimmedSpecialNotes || null,
         status: "new_request",
       })
       .select()
