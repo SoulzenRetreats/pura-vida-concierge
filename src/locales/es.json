@@ -60,6 +60,10 @@
       "jaco": "Jacó",
       "laFortuna": "La Fortuna"
     },
+    "locations": {
+      "jaco": "Jacó",
+      "la_fortuna": "La Fortuna"
+    },
     "loading": "Cargando propiedades...",
     "noProperties": "No Hay Propiedades Disponibles",
     "sleeps": "Capacidad {{count}}",
@@ -241,6 +245,7 @@
       "menu": "Menú",
       "dashboard": "Panel",
       "bookings": "Reservas",
+      "properties": "Propiedades",
       "vendors": "Proveedores",
       "services": "Servicios",
       "revenue": "Ingresos",
@@ -264,6 +269,53 @@
       "override": "Anular Estado",
       "statusUpdated": "Estado actualizado exitosamente",
       "error": "Error al actualizar el estado"
+    },
+    "properties": {
+      "title": "Gestión de Propiedades",
+      "description": "Administrar propiedades de alquiler y enlaces de reserva.",
+      "addProperty": "Agregar Propiedad",
+      "editProperty": "Editar Propiedad",
+      "searchPlaceholder": "Buscar propiedades...",
+      "allLocations": "Todas las Ubicaciones",
+      "noProperties": "No se encontraron propiedades.",
+      "created": "Propiedad creada exitosamente",
+      "updated": "Propiedad actualizada exitosamente",
+      "deleted": "Propiedad eliminada exitosamente",
+      "error": "Ocurrió un error",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "viewListing": "Ver Anuncio",
+      "columns": {
+        "name": "Nombre",
+        "location": "Ubicación",
+        "sleeps": "Capacidad",
+        "propertyManager": "Administrador",
+        "bookingLink": "Enlace de Reserva",
+        "actions": "Acciones"
+      },
+      "form": {
+        "name": "Nombre de la Propiedad",
+        "description": "Descripción",
+        "location": "Ubicación",
+        "bookingUrl": "URL de Reserva",
+        "bookingUrlPlaceholder": "https://airbnb.com/rooms/...",
+        "sleeps": "Capacidad",
+        "bedrooms": "Habitaciones",
+        "bathrooms": "Baños",
+        "propertyManager": "Administrador de la Propiedad",
+        "selectManager": "Seleccionar administrador...",
+        "noManager": "Sin administrador",
+        "photoUrls": "URLs de Fotos (una por línea)",
+        "photoUrlsPlaceholder": "https://ejemplo.com/foto1.jpg\nhttps://ejemplo.com/foto2.jpg",
+        "amenities": "Amenidades (una por línea)",
+        "amenitiesPlaceholder": "Piscina\nAire Acondicionado\nVista al Mar",
+        "create": "Crear Propiedad",
+        "update": "Actualizar Propiedad"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar Propiedad",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer."
+      }
     },
     "vendors": {
       "title": "Gestión de Proveedores",

@@ -20,6 +20,7 @@ import AdminRevenue from "./pages/admin/Revenue";
 import AdminBookings from "./pages/admin/Bookings";
 import AdminVendors from "./pages/admin/Vendors";
 import AdminServices from "./pages/admin/Services";
+import AdminProperties from "./pages/admin/Properties";
 import AdminUsers from "./pages/admin/Users";
 import { ConciergeLayout } from "./components/concierge/ConciergeLayout";
 import ConciergeDashboard from "./pages/concierge/Dashboard";
@@ -60,6 +61,7 @@ function App(): React.JSX.Element {
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="bookings" element={<AdminBookings />} />
+                <Route path="properties" element={<AdminProperties />} />
                 <Route path="vendors" element={<AdminVendors />} />
                 <Route path="services" element={<AdminServices />} />
                 <Route path="revenue" element={<AdminRevenue />} />

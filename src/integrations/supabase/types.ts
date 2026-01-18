@@ -164,6 +164,7 @@ export type Database = {
           bathrooms: number
           bedrooms: number
           blackout_dates: unknown[] | null
+          booking_url: string | null
           created_at: string | null
           description: string
           id: string
@@ -172,12 +173,14 @@ export type Database = {
           photos: string[] | null
           sleeps: number
           updated_at: string | null
+          vendor_id: string | null
         }
         Insert: {
           amenities?: string[] | null
           bathrooms: number
           bedrooms: number
           blackout_dates?: unknown[] | null
+          booking_url?: string | null
           created_at?: string | null
           description: string
           id?: string
@@ -186,12 +189,14 @@ export type Database = {
           photos?: string[] | null
           sleeps: number
           updated_at?: string | null
+          vendor_id?: string | null
         }
         Update: {
           amenities?: string[] | null
           bathrooms?: number
           bedrooms?: number
           blackout_dates?: unknown[] | null
+          booking_url?: string | null
           created_at?: string | null
           description?: string
           id?: string
@@ -200,8 +205,17 @@ export type Database = {
           photos?: string[] | null
           sleeps?: number
           updated_at?: string | null
+          vendor_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "properties_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_services: {
         Row: {

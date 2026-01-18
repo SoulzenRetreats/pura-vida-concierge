@@ -60,6 +60,10 @@
       "jaco": "Jaco",
       "laFortuna": "La Fortuna"
     },
+    "locations": {
+      "jaco": "Jaco",
+      "la_fortuna": "La Fortuna"
+    },
     "loading": "Loading properties...",
     "noProperties": "No Properties Available",
     "sleeps": "Sleeps {{count}}",
@@ -241,6 +245,7 @@
       "menu": "Menu",
       "dashboard": "Dashboard",
       "bookings": "Bookings",
+      "properties": "Properties",
       "vendors": "Vendors",
       "services": "Services",
       "revenue": "Revenue",
@@ -264,6 +269,53 @@
       "override": "Override Status",
       "statusUpdated": "Status updated successfully",
       "error": "Failed to update status"
+    },
+    "properties": {
+      "title": "Properties Management",
+      "description": "Manage rental properties and booking links.",
+      "addProperty": "Add Property",
+      "editProperty": "Edit Property",
+      "searchPlaceholder": "Search properties...",
+      "allLocations": "All Locations",
+      "noProperties": "No properties found.",
+      "created": "Property created successfully",
+      "updated": "Property updated successfully",
+      "deleted": "Property deleted successfully",
+      "error": "An error occurred",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewListing": "View Listing",
+      "columns": {
+        "name": "Name",
+        "location": "Location",
+        "sleeps": "Sleeps",
+        "propertyManager": "Property Manager",
+        "bookingLink": "Booking Link",
+        "actions": "Actions"
+      },
+      "form": {
+        "name": "Property Name",
+        "description": "Description",
+        "location": "Location",
+        "bookingUrl": "Booking URL",
+        "bookingUrlPlaceholder": "https://airbnb.com/rooms/...",
+        "sleeps": "Sleeps",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "propertyManager": "Property Manager",
+        "selectManager": "Select a property manager...",
+        "noManager": "No manager",
+        "photoUrls": "Photo URLs (one per line)",
+        "photoUrlsPlaceholder": "https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg",
+        "amenities": "Amenities (one per line)",
+        "amenitiesPlaceholder": "Pool\nAir Conditioning\nOcean View",
+        "create": "Create Property",
+        "update": "Update Property"
+      },
+      "deleteConfirm": {
+        "title": "Delete Property",
+        "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+      }
     },
     "vendors": {
       "title": "Vendor Management",
