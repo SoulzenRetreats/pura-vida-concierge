@@ -12,13 +12,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight, UserCog, Package } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight, UserCog, Package, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 
 const navItems = [
   { key: "dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { key: "bookings", path: "/admin/bookings", icon: ClipboardList },
+  { key: "properties", path: "/admin/properties", icon: Home },
   { key: "vendors", path: "/admin/vendors", icon: Users },
   { key: "services", path: "/admin/services", icon: Package },
   { key: "revenue", path: "/admin/revenue", icon: DollarSign },
