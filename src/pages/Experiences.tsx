@@ -1,13 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import useEmblaCarousel from "embla-carousel-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import servicesHero from "@/assets/services-hero.jpg";
 
 interface Service {
@@ -22,39 +28,6 @@ interface Service {
 
 // Photo Carousel component for service cards
 function ServicePhotoCarousel({ photos, serviceName }: { photos: string[]; serviceName: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
-    };
-  }, [emblaApi, onSelect]);
-
-  const scrollPrev = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    emblaApi?.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    emblaApi?.scrollNext();
-  }, [emblaApi]);
-
   // Single photo - no carousel needed
   if (!photos || photos.length <= 1) {
     return (
@@ -67,60 +40,21 @@ function ServicePhotoCarousel({ photos, serviceName }: { photos: string[]; servi
   }
 
   return (
-    <div className="relative w-full h-full">
-      <div className="overflow-hidden w-full h-full" ref={emblaRef}>
-        <div className="flex h-full">
-          {photos.map((photo, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 h-full">
-              <img
-                src={photo || "/placeholder.svg"}
-                alt={`${serviceName} ${index + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-spring"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Navigation arrows */}
-      <button
-        onClick={scrollPrev}
-        className={`absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background p-1.5 rounded-full shadow-md transition-opacity ${
-          canScrollPrev ? "opacity-100" : "opacity-50"
-        }`}
-        aria-label="Previous photo"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-      <button
-        onClick={scrollNext}
-        className={`absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background p-1.5 rounded-full shadow-md transition-opacity ${
-          canScrollNext ? "opacity-100" : "opacity-50"
-        }`}
-        aria-label="Next photo"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
-
-      {/* Dot indicators */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-        {photos.map((_, index) => (
-          <button
-            key={index}
-            onClick={(e) => {
-              e.stopPropagation();
-              emblaApi?.scrollTo(index);
-            }}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === selectedIndex
-                ? "bg-primary"
-                : "bg-background/60 hover:bg-background/80"
-            }`}
-            aria-label={`Go to photo ${index + 1}`}
-          />
+    <Carousel className="w-full h-full" opts={{ loop: true }}>
+      <CarouselContent className="h-full -ml-0">
+        {photos.map((photo, index) => (
+          <CarouselItem key={index} className="h-full pl-0">
+            <img
+              src={photo || "/placeholder.svg"}
+              alt={`${serviceName} ${index + 1}`}
+              className="w-full h-56 object-cover group-hover:scale-110 transition-spring"
+            />
+          </CarouselItem>
         ))}
-      </div>
-    </div>
+      </CarouselContent>
+      <CarouselPrevious className="left-2 h-8 w-8" />
+      <CarouselNext className="right-2 h-8 w-8" />
+    </Carousel>
   );
 }
 
@@ -261,13 +195,13 @@ const Experiences = () => {
                       />
                       
                       {/* Category badge */}
-                      <Badge className="absolute top-4 right-4 gradient-secondary">
+                      <Badge className="absolute top-4 right-4 gradient-secondary z-10">
                         {formatCategory(service.category)}
                       </Badge>
                       
                       {/* For Sale badge for luxury items */}
                       {isForSale && (
-                        <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground">
+                        <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground z-10">
                           {t('experiences.forSale')}
                         </Badge>
                       )}
