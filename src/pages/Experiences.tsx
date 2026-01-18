@@ -3,17 +3,11 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import servicesHero from "@/assets/services-hero.jpg";
 
 interface Service {
@@ -26,9 +20,11 @@ interface Service {
   price: number | null;
 }
 
-// Photo Carousel component for service cards
-function ServicePhotoCarousel({ photos, serviceName }: { photos: string[]; serviceName: string }) {
-  // Single photo - no carousel needed
+// Simple photo gallery component with manual navigation (no embla dependency)
+function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; serviceName: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Single photo or no photos - no navigation needed
   if (!photos || photos.length <= 1) {
     return (
       <img
@@ -39,22 +35,63 @@ function ServicePhotoCarousel({ photos, serviceName }: { photos: string[]; servi
     );
   }
 
+  const goToPrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
+  };
+
+  const goToNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
+  };
+
   return (
-    <Carousel className="w-full h-full" opts={{ loop: true }}>
-      <CarouselContent className="h-full -ml-0">
-        {photos.map((photo, index) => (
-          <CarouselItem key={index} className="h-full pl-0">
-            <img
-              src={photo || "/placeholder.svg"}
-              alt={`${serviceName} ${index + 1}`}
-              className="w-full h-56 object-cover group-hover:scale-110 transition-spring"
-            />
-          </CarouselItem>
+    <div className="relative w-full h-full">
+      <img
+        src={photos[currentIndex] || "/placeholder.svg"}
+        alt={`${serviceName} ${currentIndex + 1}`}
+        className="w-full h-full object-cover group-hover:scale-110 transition-spring"
+      />
+
+      {/* Navigation arrows */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={goToPrev}
+        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
+        aria-label="Previous photo"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={goToNext}
+        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
+        aria-label="Next photo"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+        {photos.map((_, index) => (
+          <button
+            key={index}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex(index);
+            }}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentIndex
+                ? "bg-primary"
+                : "bg-background/60 hover:bg-background/80"
+            }`}
+            aria-label={`Go to photo ${index + 1}`}
+          />
         ))}
-      </CarouselContent>
-      <CarouselPrevious className="left-2 h-8 w-8" />
-      <CarouselNext className="right-2 h-8 w-8" />
-    </Carousel>
+      </div>
+    </div>
   );
 }
 
@@ -189,7 +226,7 @@ const Experiences = () => {
                     className="overflow-hidden hover:shadow-luxury transition-spring group"
                   >
                     <div className="relative h-56 overflow-hidden">
-                      <ServicePhotoCarousel 
+                      <ServicePhotoGallery 
                         photos={service.photos || []} 
                         serviceName={service.name} 
                       />
