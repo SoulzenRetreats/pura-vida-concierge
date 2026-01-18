@@ -82,7 +82,8 @@
     },
     "loading": "Cargando servicios...",
     "noServices": "No Hay Servicios Disponibles",
-    "priceRange": "Rango de Precio: {{range}}"
+    "priceRange": "Rango de Precio: {{range}}",
+    "forSale": "En Venta"
   },
   "tripTypes": {
     "hero": {
@@ -292,11 +293,11 @@
         "description": "Descripción",
         "category": "Categoría",
         "priceRange": "Rango de Precio",
-        "photoUrl": "URL de Foto",
+        "photoUrls": "URLs de Fotos (una por línea)",
+        "photoUrlsPlaceholder": "https://ejemplo.com/foto1.jpg\nhttps://ejemplo.com/foto2.jpg",
         "defaultVendor": "Proveedor Predeterminado",
         "selectVendor": "Seleccionar proveedor...",
         "noVendor": "Sin proveedor",
-        "isForSale": "Artículo en Venta",
         "price": "Precio Fijo",
         "create": "Crear Servicio",
         "update": "Actualizar Servicio"

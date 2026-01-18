@@ -29,7 +29,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useVendors } from "@/hooks/useVendors";
 import type { Service } from "@/hooks/useServices";
 import { Constants } from "@/integrations/supabase/types";
@@ -41,9 +40,8 @@ const serviceSchema = z.object({
   description: z.string().min(1, "Description is required"),
   category: z.enum(serviceCategories as unknown as [string, ...string[]]),
   price_range: z.string().optional().nullable(),
-  photo_url: z.string().optional().nullable(),
+  photo_urls: z.string().optional().nullable(),
   default_vendor_id: z.string().optional().nullable(),
-  is_for_sale: z.boolean().default(false),
   price: z.number().optional().nullable(),
 });
 
@@ -74,26 +72,27 @@ export function ServiceForm({
       description: "",
       category: "other",
       price_range: "",
-      photo_url: "",
+      photo_urls: "",
       default_vendor_id: null,
-      is_for_sale: false,
       price: null,
     },
   });
 
-  const isForSale = form.watch("is_for_sale");
+  const selectedCategory = form.watch("category");
+  const isLuxuryItem = selectedCategory === "luxury_items";
 
   useEffect(() => {
     if (open) {
       if (service) {
+        // Join photos array into newline-separated string for textarea
+        const photoUrlsString = service.photos?.join("\n") || "";
         form.reset({
           name: service.name,
           description: service.description,
           category: service.category,
           price_range: service.price_range || "",
-          photo_url: service.photos?.[0] || "",
+          photo_urls: photoUrlsString,
           default_vendor_id: service.default_vendor_id || null,
-          is_for_sale: service.is_for_sale || false,
           price: service.price || null,
         });
       } else {
@@ -102,9 +101,8 @@ export function ServiceForm({
           description: "",
           category: "other",
           price_range: "",
-          photo_url: "",
+          photo_urls: "",
           default_vendor_id: null,
-          is_for_sale: false,
           price: null,
         });
       }
@@ -184,31 +182,59 @@ export function ServiceForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="price_range"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("admin.services.form.priceRange")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} value={field.value || ""} placeholder="$50 - $200" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Show price range for non-luxury items, fixed price for luxury items */}
+            {isLuxuryItem ? (
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("admin.services.form.price")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? parseFloat(e.target.value) : null
+                          )
+                        }
+                        placeholder="0.00"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="price_range"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("admin.services.form.priceRange")}</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value || ""} placeholder="$50 - $200" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
-              name="photo_url"
+              name="photo_urls"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("admin.services.form.photoUrl")}</FormLabel>
+                  <FormLabel>{t("admin.services.form.photoUrls")}</FormLabel>
                   <FormControl>
-                    <Input
+                    <Textarea
                       {...field}
                       value={field.value || ""}
-                      placeholder="https://example.com/photo.jpg"
+                      placeholder={t("admin.services.form.photoUrlsPlaceholder")}
+                      rows={3}
                     />
                   </FormControl>
                   <FormMessage />
@@ -248,50 +274,6 @@ export function ServiceForm({
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="is_for_sale"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>{t("admin.services.form.isForSale")}</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            {isForSale && (
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("admin.services.form.price")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? parseFloat(e.target.value) : null
-                          )
-                        }
-                        placeholder="0.00"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
 
             <DialogFooter className="gap-2 sm:gap-0">
               <Button
