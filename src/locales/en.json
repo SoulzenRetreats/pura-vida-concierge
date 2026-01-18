@@ -215,6 +215,7 @@
   "auth": {
     "title": "Staff Login",
     "subtitle": "Sign in to access the dashboard",
+    "backToHome": "Back to Home",
     "email": "Email",
     "emailPlaceholder": "your@email.com",
     "password": "Password",

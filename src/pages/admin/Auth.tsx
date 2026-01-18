@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { LanguageToggle } from "@/components/LanguageToggle";
 
@@ -133,6 +133,15 @@ export default function AdminAuth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 relative">
+      <div className="absolute top-4 left-4">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>{t("auth.backToHome")}</span>
+        </Link>
+      </div>
       <div className="absolute top-4 right-4">
         <LanguageToggle variant="full" />
       </div>

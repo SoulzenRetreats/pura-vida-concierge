@@ -215,6 +215,7 @@
   "auth": {
     "title": "Acceso del Personal",
     "subtitle": "Inicia sesión para acceder al panel",
+    "backToHome": "Volver al Inicio",
     "email": "Correo Electrónico",
     "emailPlaceholder": "tu@correo.com",
     "password": "Contraseña",
