@@ -80,20 +80,26 @@ export default function AdminServices() {
     description: string;
     category: string;
     price_range?: string | null;
-    photo_url?: string | null;
+    photo_urls?: string | null;
     default_vendor_id?: string | null;
-    is_for_sale?: boolean;
     price?: number | null;
   }) => {
     try {
+      // Parse photo URLs from textarea (one per line)
+      const photos = data.photo_urls
+        ? data.photo_urls
+            .split("\n")
+            .map((url) => url.trim())
+            .filter((url) => url.length > 0)
+        : null;
+
       const serviceData = {
         name: data.name,
         description: data.description,
         category: data.category as typeof serviceCategories[number],
         price_range: data.price_range || null,
-        photos: data.photo_url ? [data.photo_url] : null,
+        photos,
         default_vendor_id: data.default_vendor_id || null,
-        is_for_sale: data.is_for_sale || false,
         price: data.price || null,
       };
 
@@ -206,7 +212,11 @@ export default function AdminServices() {
                   <TableCell>
                     {t(`experiences.filter.${service.category}`)}
                   </TableCell>
-                  <TableCell>{service.price_range || "-"}</TableCell>
+                  <TableCell>
+                    {service.category === "luxury_items" && service.price
+                      ? `$${service.price.toFixed(2)}`
+                      : service.price_range || "-"}
+                  </TableCell>
                   <TableCell>{service.vendor_name || "-"}</TableCell>
                   <TableCell>
                     <DropdownMenu>
