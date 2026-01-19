@@ -301,6 +301,8 @@ export type Database = {
           default_vendor_id: string | null
           description: string
           id: string
+          is_for_sale: boolean
+          is_rental: boolean
           name: string
           photos: string[] | null
           price: number | null
@@ -313,6 +315,8 @@ export type Database = {
           default_vendor_id?: string | null
           description: string
           id?: string
+          is_for_sale?: boolean
+          is_rental?: boolean
           name: string
           photos?: string[] | null
           price?: number | null
@@ -325,6 +329,8 @@ export type Database = {
           default_vendor_id?: string | null
           description?: string
           id?: string
+          is_for_sale?: boolean
+          is_rental?: boolean
           name?: string
           photos?: string[] | null
           price?: number | null

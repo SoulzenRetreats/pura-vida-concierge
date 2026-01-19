@@ -29,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useVendors } from "@/hooks/useVendors";
 import type { Service } from "@/hooks/useServices";
 import { Constants } from "@/integrations/supabase/types";
@@ -43,6 +44,8 @@ const serviceSchema = z.object({
   photo_urls: z.string().optional().nullable(),
   default_vendor_id: z.string().optional().nullable(),
   price: z.number().optional().nullable(),
+  is_for_sale: z.boolean().default(false),
+  is_rental: z.boolean().default(false),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -75,6 +78,8 @@ export function ServiceForm({
       photo_urls: "",
       default_vendor_id: null,
       price: null,
+      is_for_sale: false,
+      is_rental: false,
     },
   });
 
@@ -94,6 +99,8 @@ export function ServiceForm({
           photo_urls: photoUrlsString,
           default_vendor_id: service.default_vendor_id || null,
           price: service.price || null,
+          is_for_sale: service.is_for_sale ?? false,
+          is_rental: service.is_rental ?? false,
         });
       } else {
         form.reset({
@@ -104,6 +111,8 @@ export function ServiceForm({
           photo_urls: "",
           default_vendor_id: null,
           price: null,
+          is_for_sale: false,
+          is_rental: false,
         });
       }
     }
@@ -181,6 +190,44 @@ export function ServiceForm({
                 </FormItem>
               )}
             />
+
+            {/* For Sale and Rental toggles */}
+            <div className="flex gap-6">
+              <FormField
+                control={form.control}
+                name="is_for_sale"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="cursor-pointer">
+                      {t("admin.services.form.forSale")}
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="is_rental"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="cursor-pointer">
+                      {t("admin.services.form.rental")}
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Show price range for non-luxury items, fixed price for luxury items */}
             {isLuxuryItem ? (
