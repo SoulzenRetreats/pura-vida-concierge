@@ -136,11 +136,11 @@ const Properties = () => {
                   key={property.id}
                   className="overflow-hidden hover:shadow-luxury transition-spring group"
                 >
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-48 overflow-hidden bg-muted">
                     <img
                       src={property.photos[0] || "/placeholder.svg"}
                       alt={property.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-spring"
+                      className="w-full h-full object-cover bg-muted group-hover:scale-110 transition-spring"
                     />
                     <Badge className="absolute top-4 right-4 gradient-primary">
                       <MapPin className="w-3 h-3 mr-1" />

@@ -32,7 +32,7 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
       <img
         src={photos?.[0] || "/placeholder.svg"}
         alt={serviceName}
-        className="w-full h-full object-cover group-hover:scale-110 transition-spring"
+        className="w-full h-full object-cover bg-muted group-hover:scale-110 transition-spring"
       />
     );
   }
@@ -52,7 +52,7 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
       <img
         src={photos[currentIndex] || "/placeholder.svg"}
         alt={`${serviceName} ${currentIndex + 1}`}
-        className="w-full h-full object-cover group-hover:scale-110 transition-spring"
+        className="w-full h-full object-cover bg-muted group-hover:scale-110 transition-spring"
       />
 
       {/* Navigation arrows */}
@@ -225,7 +225,7 @@ const Experiences = () => {
                   key={service.id}
                   className="overflow-hidden hover:shadow-luxury transition-spring group"
                 >
-                  <div className="relative h-56 overflow-hidden">
+                  <div className="relative h-48 overflow-hidden bg-muted">
                     <ServicePhotoGallery 
                       photos={service.photos || []} 
                       serviceName={service.name} 
