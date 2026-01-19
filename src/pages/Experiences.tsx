@@ -18,6 +18,8 @@ interface Service {
   photos: string[];
   price_range: string;
   price: number | null;
+  is_for_sale: boolean;
+  is_rental: boolean;
 }
 
 // Simple photo gallery component with manual navigation (no embla dependency)
@@ -218,53 +220,57 @@ const Experiences = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service) => {
-                const isForSale = service.category === "luxury_items";
-                return (
-                  <Card
-                    key={service.id}
-                    className="overflow-hidden hover:shadow-luxury transition-spring group"
-                  >
-                    <div className="relative h-56 overflow-hidden">
-                      <ServicePhotoGallery 
-                        photos={service.photos || []} 
-                        serviceName={service.name} 
-                      />
-                      
-                      {/* Category badge */}
-                      <Badge className="absolute top-4 right-4 gradient-secondary z-10">
-                        {formatCategory(service.category)}
-                      </Badge>
-                      
-                      {/* For Sale badge for luxury items */}
-                      {isForSale && (
-                        <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground z-10">
+              {services.map((service) => (
+                <Card
+                  key={service.id}
+                  className="overflow-hidden hover:shadow-luxury transition-spring group"
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <ServicePhotoGallery 
+                      photos={service.photos || []} 
+                      serviceName={service.name} 
+                    />
+                    
+                    {/* Category badge */}
+                    <Badge className="absolute top-4 right-4 gradient-secondary z-10">
+                      {formatCategory(service.category)}
+                    </Badge>
+                    
+                    {/* Status badges */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
+                      {service.is_for_sale && (
+                        <Badge className="bg-accent text-accent-foreground">
                           {t('experiences.forSale')}
                         </Badge>
                       )}
+                      {service.is_rental && (
+                        <Badge variant="outline" className="bg-background/80">
+                          {t('experiences.rental')}
+                        </Badge>
+                      )}
                     </div>
+                  </div>
 
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-heading font-semibold mb-2">
-                        {service.name}
-                      </h3>
-                      <p className="text-muted-foreground mb-4 line-clamp-3">
-                        {service.description}
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-heading font-semibold mb-2">
+                      {service.name}
+                    </h3>
+                    <p className="text-muted-foreground mb-4 line-clamp-3">
+                      {service.description}
+                    </p>
+                    {/* Show fixed price for for-sale items, price range for others */}
+                    {service.is_for_sale && service.price ? (
+                      <p className="text-lg font-semibold text-accent">
+                        ${service.price.toFixed(2)}
                       </p>
-                      {/* Show fixed price for luxury items, price range for others */}
-                      {isForSale && service.price ? (
-                        <p className="text-lg font-semibold text-accent">
-                          ${service.price.toFixed(2)}
-                        </p>
-                      ) : service.price_range ? (
-                        <p className="text-sm font-medium text-accent">
-                          {t('experiences.priceRange', { range: service.price_range })}
-                        </p>
-                      ) : null}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                    ) : service.price_range ? (
+                      <p className="text-sm font-medium text-accent">
+                        {t('experiences.priceRange', { range: service.price_range })}
+                      </p>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </div>

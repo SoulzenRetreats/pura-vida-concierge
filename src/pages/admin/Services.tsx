@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, Search, Pencil, Trash2, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -83,6 +84,8 @@ export default function AdminServices() {
     photo_urls?: string | null;
     default_vendor_id?: string | null;
     price?: number | null;
+    is_for_sale?: boolean;
+    is_rental?: boolean;
   }) => {
     try {
       // Parse photo URLs from textarea (one per line)
@@ -101,6 +104,8 @@ export default function AdminServices() {
         photos,
         default_vendor_id: data.default_vendor_id || null,
         price: data.price || null,
+        is_for_sale: data.is_for_sale ?? false,
+        is_rental: data.is_rental ?? false,
       };
 
       if (editingService) {
@@ -185,6 +190,7 @@ export default function AdminServices() {
             <TableRow>
               <TableHead>{t("admin.services.columns.name")}</TableHead>
               <TableHead>{t("admin.services.columns.category")}</TableHead>
+              <TableHead>{t("admin.services.columns.status")}</TableHead>
               <TableHead>{t("admin.services.columns.priceRange")}</TableHead>
               <TableHead>{t("admin.services.columns.defaultVendor")}</TableHead>
               <TableHead className="w-[100px]">
@@ -195,13 +201,13 @@ export default function AdminServices() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   {t("experiences.loading")}
                 </TableCell>
               </TableRow>
             ) : services.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   {t("admin.services.noServices")}
                 </TableCell>
               </TableRow>
@@ -211,6 +217,21 @@ export default function AdminServices() {
                   <TableCell className="font-medium">{service.name}</TableCell>
                   <TableCell>
                     {t(`experiences.filter.${service.category}`)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1 flex-wrap">
+                      {service.is_for_sale && (
+                        <Badge variant="secondary">
+                          {t("admin.services.forSale")}
+                        </Badge>
+                      )}
+                      {service.is_rental && (
+                        <Badge variant="outline">
+                          {t("admin.services.rental")}
+                        </Badge>
+                      )}
+                      {!service.is_for_sale && !service.is_rental && "-"}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {service.category === "luxury_items" && service.price

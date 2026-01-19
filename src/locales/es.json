@@ -87,7 +87,8 @@
     "loading": "Cargando servicios...",
     "noServices": "No Hay Servicios Disponibles",
     "priceRange": "Rango de Precio: {{range}}",
-    "forSale": "En Venta"
+    "forSale": "En Venta",
+    "rental": "Alquiler"
   },
   "tripTypes": {
     "hero": {
@@ -334,9 +335,12 @@
       "error": "Ocurrió un error",
       "edit": "Editar",
       "delete": "Eliminar",
+      "forSale": "En Venta",
+      "rental": "Alquiler",
       "columns": {
         "name": "Nombre",
         "category": "Categoría",
+        "status": "Estado",
         "priceRange": "Rango de Precio",
         "defaultVendor": "Proveedor Predeterminado",
         "actions": "Acciones"
@@ -345,6 +349,8 @@
         "name": "Nombre del Servicio",
         "description": "Descripción",
         "category": "Categoría",
+        "forSale": "En Venta",
+        "rental": "Alquiler",
         "priceRange": "Rango de Precio",
         "photoUrls": "URLs de Fotos (una por línea)",
         "photoUrlsPlaceholder": "https://ejemplo.com/foto1.jpg\nhttps://ejemplo.com/foto2.jpg",
