@@ -249,10 +249,40 @@
       "properties": "Properties",
       "vendors": "Vendors",
       "services": "Services",
+      "categories": "Categories",
       "revenue": "Revenue",
       "users": "Users",
       "settings": "Settings",
       "viewConcierge": "View Concierge"
+    },
+    "categories": {
+      "title": "Category Management",
+      "description": "Organize service categories for your experiences.",
+      "addCategory": "Add Category",
+      "editCategory": "Edit Category",
+      "noCategories": "No categories found.",
+      "created": "Category created successfully",
+      "updated": "Category updated successfully",
+      "deleted": "Category deleted successfully",
+      "duplicateSlug": "A category with this name already exists",
+      "error": "An error occurred",
+      "edit": "Edit",
+      "delete": "Delete",
+      "columns": {
+        "name": "Name",
+        "actions": "Actions"
+      },
+      "form": {
+        "nameEn": "English Name",
+        "nameEs": "Spanish Name",
+        "create": "Create Category",
+        "update": "Update Category"
+      },
+      "deleteConfirm": {
+        "title": "Delete Category",
+        "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+        "hasServices": "This category has {{count}} services assigned. Please reassign them before deleting."
+      }
     },
     "dashboard": {
       "title": "Admin Dashboard",

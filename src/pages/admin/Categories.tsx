@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, MoreHorizontal, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -41,7 +40,7 @@ import {
 } from "@/hooks/useCategories";
 
 export default function AdminCategories() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [formOpen, setFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -104,6 +103,11 @@ export default function AdminCategories() {
     }
   };
 
+  // Get localized category name based on current language
+  const getCategoryDisplayName = (category: Category) => {
+    return i18n.language === "es" ? category.name_es : category.name_en;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -125,12 +129,7 @@ export default function AdminCategories() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("admin.categories.columns.nameEn")}</TableHead>
-              <TableHead>{t("admin.categories.columns.nameEs")}</TableHead>
-              <TableHead>{t("admin.categories.columns.slug")}</TableHead>
-              <TableHead>{t("admin.categories.columns.icon")}</TableHead>
-              <TableHead className="text-center">{t("admin.categories.columns.order")}</TableHead>
-              <TableHead className="text-center">{t("admin.categories.columns.active")}</TableHead>
+              <TableHead>{t("admin.categories.columns.name")}</TableHead>
               <TableHead className="w-[100px]">
                 {t("admin.categories.columns.actions")}
               </TableHead>
@@ -139,32 +138,21 @@ export default function AdminCategories() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8">
+                <TableCell colSpan={2} className="text-center py-8">
                   {t("experiences.loading")}
                 </TableCell>
               </TableRow>
             ) : categories.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8">
+                <TableCell colSpan={2} className="text-center py-8">
                   {t("admin.categories.noCategories")}
                 </TableCell>
               </TableRow>
             ) : (
               categories.map((category) => (
                 <TableRow key={category.id}>
-                  <TableCell className="font-medium">{category.name_en}</TableCell>
-                  <TableCell>{category.name_es}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{category.slug}</Badge>
-                  </TableCell>
-                  <TableCell>{category.icon || "-"}</TableCell>
-                  <TableCell className="text-center">{category.sort_order}</TableCell>
-                  <TableCell className="text-center">
-                    {category.is_active ? (
-                      <Check className="h-4 w-4 text-green-600 mx-auto" />
-                    ) : (
-                      <X className="h-4 w-4 text-muted-foreground mx-auto" />
-                    )}
+                  <TableCell className="font-medium">
+                    {getCategoryDisplayName(category)}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -212,11 +200,11 @@ export default function AdminCategories() {
             <AlertDialogDescription>
               {serviceCount > 0
                 ? t("admin.categories.deleteConfirm.hasServices", {
-                    name: categoryToDelete?.name_en,
+                    name: getCategoryDisplayName(categoryToDelete!),
                     count: serviceCount,
                   })
                 : t("admin.categories.deleteConfirm.description", {
-                    name: categoryToDelete?.name_en,
+                    name: getCategoryDisplayName(categoryToDelete!),
                   })}
             </AlertDialogDescription>
           </AlertDialogHeader>
