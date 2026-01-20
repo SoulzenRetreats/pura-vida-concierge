@@ -44,12 +44,10 @@ import {
   useDeleteService,
   type Service,
 } from "@/hooks/useServices";
-import { Constants } from "@/integrations/supabase/types";
-
-const serviceCategories = Constants.public.Enums.service_category;
+import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
 
 export default function AdminServices() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
@@ -61,6 +59,7 @@ export default function AdminServices() {
     searchTerm,
     categoryFilter,
   });
+  const { data: categories = [] } = useCategories();
 
   const createService = useCreateService();
   const updateService = useUpdateService();
@@ -99,7 +98,7 @@ export default function AdminServices() {
       const serviceData = {
         name: data.name,
         description: data.description,
-        category: data.category as typeof serviceCategories[number],
+        category: data.category,
         price_range: data.price_range || null,
         photos,
         default_vendor_id: data.default_vendor_id || null,
@@ -175,9 +174,9 @@ export default function AdminServices() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("experiences.filter.all")}</SelectItem>
-            {serviceCategories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {t(`experiences.filter.${category}`)}
+            {categories.map((category) => (
+              <SelectItem key={category.slug} value={category.slug}>
+                {getCategoryName(category, i18n.language)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -216,7 +215,7 @@ export default function AdminServices() {
                 <TableRow key={service.id}>
                   <TableCell className="font-medium">{service.name}</TableCell>
                   <TableCell>
-                    {t(`experiences.filter.${service.category}`)}
+                    {getCategoryNameBySlug(categories, service.category, i18n.language)}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap">

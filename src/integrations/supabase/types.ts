@@ -158,6 +158,42 @@ export type Database = {
           },
         ]
       }
+      categories: {
+        Row: {
+          created_at: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name_en: string
+          name_es: string
+          slug: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name_en: string
+          name_es: string
+          slug: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name_en?: string
+          name_es?: string
+          slug?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           amenities: string[] | null
@@ -296,7 +332,7 @@ export type Database = {
       }
       services: {
         Row: {
-          category: Database["public"]["Enums"]["service_category"]
+          category: string
           created_at: string | null
           default_vendor_id: string | null
           description: string
@@ -310,7 +346,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          category: Database["public"]["Enums"]["service_category"]
+          category: string
           created_at?: string | null
           default_vendor_id?: string | null
           description: string
@@ -324,7 +360,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          category?: Database["public"]["Enums"]["service_category"]
+          category?: string
           created_at?: string | null
           default_vendor_id?: string | null
           description?: string
@@ -483,15 +519,6 @@ export type Database = {
         | "confirmed"
         | "completed"
       location_type: "jaco" | "la_fortuna"
-      service_category:
-        | "chef"
-        | "transportation"
-        | "adventure"
-        | "spa"
-        | "tours"
-        | "celebrations"
-        | "other"
-        | "luxury_items"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -628,16 +655,6 @@ export const Constants = {
         "completed",
       ],
       location_type: ["jaco", "la_fortuna"],
-      service_category: [
-        "chef",
-        "transportation",
-        "adventure",
-        "spa",
-        "tours",
-        "celebrations",
-        "other",
-        "luxury_items",
-      ],
     },
   },
 } as const

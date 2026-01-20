@@ -31,15 +31,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useVendors } from "@/hooks/useVendors";
+import { useCategories, getCategoryName } from "@/hooks/useCategories";
 import type { Service } from "@/hooks/useServices";
-import { Constants } from "@/integrations/supabase/types";
-
-const serviceCategories = Constants.public.Enums.service_category;
 
 const serviceSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  category: z.enum(serviceCategories as unknown as [string, ...string[]]),
+  category: z.string().min(1, "Category is required"),
   price_range: z.string().optional().nullable(),
   photo_urls: z.string().optional().nullable(),
   default_vendor_id: z.string().optional().nullable(),
@@ -65,8 +63,9 @@ export function ServiceForm({
   onSubmit,
   isSubmitting = false,
 }: ServiceFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: vendors = [] } = useVendors({});
+  const { data: categories = [] } = useCategories();
 
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
@@ -179,9 +178,9 @@ export function ServiceForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {serviceCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {t(`experiences.filter.${category}`)}
+                      {categories.map((category) => (
+                        <SelectItem key={category.slug} value={category.slug}>
+                          {getCategoryName(category, i18n.language)}
                         </SelectItem>
                       ))}
                     </SelectContent>
