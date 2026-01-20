@@ -19,17 +19,6 @@ import {
 import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories, getCategoryName } from "@/hooks/useCategories";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, "Check-in date is required"),
@@ -71,7 +60,7 @@ const OCCASION_OPTIONS = [
 ];
 
 const Booking = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
