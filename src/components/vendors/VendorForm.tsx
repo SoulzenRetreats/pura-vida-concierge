@@ -23,9 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Vendor } from "@/hooks/useVendors";
-import { Constants } from "@/integrations/supabase/types";
-
-const serviceCategories = Constants.public.Enums.service_category;
+import { useCategories, getCategoryName } from "@/hooks/useCategories";
 
 const vendorSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -51,7 +49,8 @@ export function VendorForm({
   onSubmit,
   isSubmitting,
 }: VendorFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { data: categories = [] } = useCategories();
 
   const form = useForm<VendorFormData>({
     resolver: zodResolver(vendorSchema),
@@ -134,30 +133,30 @@ export function VendorForm({
                 <FormItem>
                   <FormLabel>{t("concierge.vendors.form.serviceTypes")}</FormLabel>
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {serviceCategories.map((category) => (
+                    {categories.map((category) => (
                       <FormField
-                        key={category}
+                        key={category.slug}
                         control={form.control}
                         name="service_types"
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(category)}
+                                checked={field.value?.includes(category.slug)}
                                 onCheckedChange={(checked) => {
                                   const current = field.value || [];
                                   if (checked) {
-                                    field.onChange([...current, category]);
+                                    field.onChange([...current, category.slug]);
                                   } else {
                                     field.onChange(
-                                      current.filter((c) => c !== category)
+                                      current.filter((c) => c !== category.slug)
                                     );
                                   }
                                 }}
                               />
                             </FormControl>
                             <FormLabel className="text-sm font-normal cursor-pointer">
-                              {t(`experiences.filter.${category}`)}
+                              {getCategoryName(category, i18n.language)}
                             </FormLabel>
                           </FormItem>
                         )}

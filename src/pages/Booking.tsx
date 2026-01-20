@@ -1,13 +1,24 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useCategories, getCategoryName } from "@/hooks/useCategories";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,26 +94,13 @@ const Booking = () => {
     honeypot: "",
   });
 
-  // Fetch distinct service categories from database
-  const { data: serviceCategories, isLoading: categoriesLoading } = useQuery({
-    queryKey: ["service-categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("services")
-        .select("category")
-        .order("category");
-
-      if (error) throw error;
-      // Get unique categories
-      const unique = [...new Set(data?.map((s) => s.category))] as string[];
-      return unique;
-    },
-  });
+  // Fetch categories dynamically
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
   // Auto-select category from URL parameter
   useEffect(() => {
     const categoryParam = searchParams.get("category");
-    if (categoryParam && serviceCategories?.includes(categoryParam as any)) {
+    if (categoryParam && categories.some((c) => c.slug === categoryParam)) {
       setFormData((prev) => {
         if (!prev.serviceInterests.includes(categoryParam)) {
           return {
@@ -113,7 +111,7 @@ const Booking = () => {
         return prev;
       });
     }
-  }, [searchParams, serviceCategories]);
+  }, [searchParams, categories]);
 
   const handleServiceToggle = (category: string) => {
     setFormData((prev) => ({
@@ -476,18 +474,18 @@ const Booking = () => {
             </div>
           ) : (
             <div className="flex flex-wrap gap-3">
-              {serviceCategories?.map((category) => (
+              {categories.map((category) => (
                 <button
-                  key={category}
+                  key={category.slug}
                   type="button"
-                  onClick={() => handleServiceToggle(category)}
+                  onClick={() => handleServiceToggle(category.slug)}
                   className={`px-5 py-3 rounded-full text-sm font-medium transition-all min-h-[48px] ${
-                    formData.serviceInterests.includes(category)
+                    formData.serviceInterests.includes(category.slug)
                       ? "bg-primary text-primary-foreground shadow-md"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
-                  {t(`booking.serviceCategories.${category}`)}
+                  {getCategoryName(category, i18n.language)}
                 </button>
               ))}
             </div>

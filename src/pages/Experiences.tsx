@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
 import servicesHero from "@/assets/services-hero.jpg";
+import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
 
 interface Service {
   id: string;
@@ -98,23 +98,13 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
 }
 
 const Experiences = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
 
-  // Fetch distinct categories dynamically from the services table
-  const { data: categoryList } = useQuery({
-    queryKey: ["service-categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("services")
-        .select("category")
-        .order("category");
-      if (error) throw error;
-      return [...new Set(data?.map((s) => s.category))] as string[];
-    },
-  });
+  // Fetch categories dynamically from the categories table
+  const { data: categories = [] } = useCategories();
 
   useEffect(() => {
     fetchServices();
@@ -126,10 +116,7 @@ const Experiences = () => {
       let query = supabase.from("services").select("*");
 
       if (filter !== "all") {
-        query = query.eq(
-          "category",
-          filter as "chef" | "transportation" | "adventure" | "spa" | "tours" | "celebrations" | "other" | "luxury_items"
-        );
+        query = query.eq("category", filter);
       }
 
       const { data, error } = await query;
@@ -143,20 +130,13 @@ const Experiences = () => {
     }
   };
 
-  const formatCategory = (category: string) => {
-    return category
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   // Build categories dynamically from fetched data
-  const categories = [
-    { value: "all", label: t('experiences.filter.all') },
-    ...(categoryList || []).map(cat => ({
-      value: cat,
-      label: t(`experiences.filter.${cat}`, formatCategory(cat))
-    }))
+  const categoryFilters = [
+    { value: "all", label: t("experiences.filter.all") },
+    ...categories.map((cat) => ({
+      value: cat.slug,
+      label: getCategoryName(cat, i18n.language),
+    })),
   ];
 
   return (
@@ -176,7 +156,7 @@ const Experiences = () => {
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl sm:text-6xl font-heading font-bold text-white mb-4">
-            {t('experiences.hero')}
+            {t("experiences.hero")}
           </h1>
         </div>
       </section>
@@ -185,7 +165,7 @@ const Experiences = () => {
       <section className="py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="container mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
-            {categories.map((category) => (
+            {categoryFilters.map((category) => (
               <button
                 key={category.value}
                 onClick={() => setFilter(category.value)}
@@ -212,7 +192,7 @@ const Experiences = () => {
           ) : services.length === 0 ? (
             <div className="text-center py-20">
               <h3 className="text-2xl font-heading font-semibold mb-4">
-                No Services Available
+                {t("experiences.noServices")}
               </h3>
               <p className="text-muted-foreground">
                 Check back soon or contact us for custom experiences
@@ -233,19 +213,19 @@ const Experiences = () => {
                     
                     {/* Category badge */}
                     <Badge className="absolute top-4 right-4 gradient-secondary z-10">
-                      {formatCategory(service.category)}
+                      {getCategoryNameBySlug(categories, service.category, i18n.language)}
                     </Badge>
                     
                     {/* Status badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
                       {service.is_for_sale && (
                         <Badge className="bg-accent text-accent-foreground">
-                          {t('experiences.forSale')}
+                          {t("experiences.forSale")}
                         </Badge>
                       )}
                       {service.is_rental && (
                         <Badge variant="outline" className="bg-background/80">
-                          {t('experiences.rental')}
+                          {t("experiences.rental")}
                         </Badge>
                       )}
                     </div>
@@ -265,7 +245,7 @@ const Experiences = () => {
                       </p>
                     ) : service.price_range ? (
                       <p className="text-sm font-medium text-accent">
-                        {t('experiences.priceRange', { range: service.price_range })}
+                        {t("experiences.priceRange", { range: service.price_range })}
                       </p>
                     ) : null}
                   </CardContent>

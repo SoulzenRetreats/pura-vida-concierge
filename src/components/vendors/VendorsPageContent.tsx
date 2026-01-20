@@ -32,9 +32,7 @@ import {
 } from "@/hooks/useVendors";
 import { VendorCard } from "@/components/vendors/VendorCard";
 import { VendorForm } from "@/components/vendors/VendorForm";
-import { Constants } from "@/integrations/supabase/types";
-
-const serviceCategories = Constants.public.Enums.service_category;
+import { useCategories, getCategoryName } from "@/hooks/useCategories";
 
 interface VendorsPageContentProps {
   titleKey: string;
@@ -42,8 +40,9 @@ interface VendorsPageContentProps {
 }
 
 export function VendorsPageContent({ titleKey, descriptionKey }: VendorsPageContentProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { data: categories = [] } = useCategories();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
@@ -141,9 +140,9 @@ export function VendorsPageContent({ titleKey, descriptionKey }: VendorsPageCont
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("concierge.vendors.allServices")}</SelectItem>
-                {serviceCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {t(`experiences.filter.${category}`)}
+                {categories.map((category) => (
+                  <SelectItem key={category.slug} value={category.slug}>
+                    {getCategoryName(category, i18n.language)}
                   </SelectItem>
                 ))}
               </SelectContent>
