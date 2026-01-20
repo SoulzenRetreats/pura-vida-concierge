@@ -193,33 +193,37 @@ export default function AdminCategories() {
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t("admin.categories.deleteConfirm.title")}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {serviceCount > 0
-                ? t("admin.categories.deleteConfirm.hasServices", {
-                    name: getCategoryDisplayName(categoryToDelete!),
-                    count: serviceCount,
-                  })
-                : t("admin.categories.deleteConfirm.description", {
-                    name: getCategoryDisplayName(categoryToDelete!),
-                  })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {t("admin.users.removeConfirm.cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              disabled={serviceCount > 0}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {t("admin.categories.delete")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          {categoryToDelete && (
+            <>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("admin.categories.deleteConfirm.title")}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {serviceCount > 0
+                    ? t("admin.categories.deleteConfirm.hasServices", {
+                        name: getCategoryDisplayName(categoryToDelete),
+                        count: serviceCount,
+                      })
+                    : t("admin.categories.deleteConfirm.description", {
+                        name: getCategoryDisplayName(categoryToDelete),
+                      })}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {t("admin.users.removeConfirm.cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleConfirmDelete}
+                  disabled={serviceCount > 0}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {t("admin.categories.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </>
+          )}
         </AlertDialogContent>
       </AlertDialog>
     </div>
