@@ -249,10 +249,40 @@
       "properties": "Propiedades",
       "vendors": "Proveedores",
       "services": "Servicios",
+      "categories": "Categorías",
       "revenue": "Ingresos",
       "users": "Usuarios",
       "settings": "Configuración",
       "viewConcierge": "Ver Concierge"
+    },
+    "categories": {
+      "title": "Gestión de Categorías",
+      "description": "Organiza las categorías de servicios para tus experiencias.",
+      "addCategory": "Agregar Categoría",
+      "editCategory": "Editar Categoría",
+      "noCategories": "No se encontraron categorías.",
+      "created": "Categoría creada exitosamente",
+      "updated": "Categoría actualizada exitosamente",
+      "deleted": "Categoría eliminada exitosamente",
+      "duplicateSlug": "Ya existe una categoría con este nombre",
+      "error": "Ocurrió un error",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "columns": {
+        "name": "Nombre",
+        "actions": "Acciones"
+      },
+      "form": {
+        "nameEn": "Nombre en Inglés",
+        "nameEs": "Nombre en Español",
+        "create": "Crear Categoría",
+        "update": "Actualizar Categoría"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar Categoría",
+        "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+        "hasServices": "Esta categoría tiene {{count}} servicios asignados. Por favor reasígnalos antes de eliminarla."
+      }
     },
     "dashboard": {
       "title": "Panel de Administración",
