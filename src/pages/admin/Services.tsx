@@ -191,7 +191,6 @@ export default function AdminServices() {
               <TableHead>{t("admin.services.columns.category")}</TableHead>
               <TableHead>{t("admin.services.columns.status")}</TableHead>
               <TableHead>{t("admin.services.columns.priceRange")}</TableHead>
-              <TableHead>{t("admin.services.columns.defaultVendor")}</TableHead>
               <TableHead className="w-[100px]">
                 {t("admin.services.columns.actions")}
               </TableHead>
@@ -200,13 +199,13 @@ export default function AdminServices() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                   {t("experiences.loading")}
                 </TableCell>
               </TableRow>
             ) : services.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                <TableCell colSpan={5} className="text-center py-8">
                   {t("admin.services.noServices")}
                 </TableCell>
               </TableRow>
@@ -237,7 +236,6 @@ export default function AdminServices() {
                       ? `$${service.price.toFixed(2)}`
                       : service.price_range || "-"}
                   </TableCell>
-                  <TableCell>{service.vendor_name || "-"}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

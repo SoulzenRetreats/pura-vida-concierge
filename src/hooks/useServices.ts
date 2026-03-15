@@ -2,9 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 
-export type Service = Tables<"services"> & {
-  vendor_name?: string | null;
-};
+export type Service = Tables<"services">;
 export type ServiceInsert = TablesInsert<"services">;
 export type ServiceUpdate = TablesUpdate<"services">;
 
@@ -19,10 +17,7 @@ export function useServices({ searchTerm = "", categoryFilter = "" }: UseService
     queryFn: async () => {
       let query = supabase
         .from("services")
-        .select(`
-          *,
-          vendors:default_vendor_id (name)
-        `)
+        .select("*")
         .order("name", { ascending: true });
 
       if (searchTerm) {
@@ -30,18 +25,14 @@ export function useServices({ searchTerm = "", categoryFilter = "" }: UseService
       }
 
       if (categoryFilter && categoryFilter !== "all") {
-        query = query.eq("category", categoryFilter as "adventure" | "celebrations" | "chef" | "luxury_items" | "other" | "spa" | "tours" | "transportation");
+        query = query.eq("category", categoryFilter);
       }
 
       const { data, error } = await query;
 
       if (error) throw error;
 
-      // Transform to include vendor_name at top level
-      return (data || []).map((service) => ({
-        ...service,
-        vendor_name: (service.vendors as { name: string } | null)?.name || null,
-      })) as Service[];
+      return (data || []) as Service[];
     },
   });
 }
