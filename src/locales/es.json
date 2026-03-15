@@ -299,7 +299,14 @@
       "description": "Lista de consultas enviadas (solo lectura).",
       "override": "Anular Estado",
       "statusUpdated": "Estado actualizado exitosamente",
-      "error": "Error al actualizar el estado"
+      "error": "Error al actualizar el estado",
+      "tripPlan": "Plan de Viaje",
+      "noServices": "No se seleccionaron servicios",
+      "submitted": "Enviado",
+      "emailSent": "Correo Enviado",
+      "emailSentTo": "Confirmación enviada a {{email}} el {{date}}",
+      "copyDetails": "Copiar Detalles del Lead",
+      "detailsCopied": "Detalles del lead copiados al portapapeles"
     },
     "properties": {
       "title": "Gestión de Propiedades",

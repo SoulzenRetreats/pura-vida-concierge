@@ -1,25 +1,55 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { Search } from "lucide-react";
+import { Search, Copy, Check, Mail, Clock, ShoppingBag } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useBookings } from "@/hooks/useBookings";
+import { toast } from "sonner";
 
 export default function AdminBookings() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const { data: bookings, isLoading } = useBookings({ searchTerm });
+
+  const handleCopy = async (booking: NonNullable<typeof bookings>[number]) => {
+    const services = booking.booking_services
+      ?.map((bs) => bs.services?.name)
+      .filter(Boolean);
+
+    const text = [
+      `${t("concierge.bookings.columns.customer")}: ${booking.customer_name}`,
+      `Email: ${booking.customer_email}`,
+      booking.customer_phone ? `Phone: ${booking.customer_phone}` : null,
+      `${t("concierge.bookings.columns.date")}: ${format(new Date(booking.check_in), "MMM d")} – ${format(new Date(booking.check_out), "MMM d, yyyy")}`,
+      `${t("concierge.bookings.guests")}: ${booking.guest_count}`,
+      booking.occasion_type
+        ? `${t("concierge.bookings.columns.occasion")}: ${t(`booking.occasions.${booking.occasion_type}`)}`
+        : null,
+      services?.length
+        ? `\n${t("admin.bookings.tripPlan")}:\n${services.map((s) => `  • ${s}`).join("\n")}`
+        : null,
+      booking.special_notes ? `\nNotes: ${booking.special_notes}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    await navigator.clipboard.writeText(text);
+    setCopiedId(booking.id);
+    toast.success(t("admin.bookings.detailsCopied"));
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   return (
     <div className="space-y-6">
@@ -56,45 +86,97 @@ export default function AdminBookings() {
               {t("concierge.bookings.noBookings")}
             </div>
           ) : (
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("concierge.bookings.columns.date")}</TableHead>
-                    <TableHead>{t("concierge.bookings.columns.customer")}</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      {t("concierge.bookings.columns.occasion")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bookings.map((booking) => (
-                    <TableRow key={booking.id}>
-                      <TableCell className="font-medium">
-                        <div>
+            <Accordion type="single" collapsible className="w-full">
+              {bookings.map((booking) => {
+                const services = booking.booking_services
+                  ?.map((bs) => bs.services?.name)
+                  .filter(Boolean) as string[];
+                const submittedAt = booking.created_at
+                  ? format(new Date(booking.created_at), "MMM d, yyyy 'at' h:mm a")
+                  : "–";
+
+                return (
+                  <AccordionItem key={booking.id} value={booking.id}>
+                    <AccordionTrigger className="hover:no-underline px-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-left flex-1 mr-4">
+                        <span className="font-medium text-sm">
                           {format(new Date(booking.check_in), "MMM d")} –{" "}
                           {format(new Date(booking.check_out), "MMM d, yyyy")}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
+                        </span>
+                        <span className="text-sm text-muted-foreground">
                           {booking.guest_count} {t("concierge.bookings.guests")}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{booking.customer_name}</div>
-                        <div className="text-xs text-muted-foreground">
+                        </span>
+                        <span className="font-medium text-sm">
+                          {booking.customer_name}
+                        </span>
+                        {booking.occasion_type && (
+                          <Badge variant="secondary" className="w-fit text-xs">
+                            {t(`booking.occasions.${booking.occasion_type}`)}
+                          </Badge>
+                        )}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-2">
+                      <div className="space-y-4 pt-2">
+                        {/* Contact */}
+                        <div className="text-sm text-muted-foreground">
                           {booking.customer_email}
+                          {booking.customer_phone && ` · ${booking.customer_phone}`}
                         </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {booking.occasion_type
-                          ? t(`booking.occasions.${booking.occasion_type}`)
-                          : "–"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+
+                        {/* Trip Plan */}
+                        <div>
+                          <div className="flex items-center gap-2 text-sm font-medium mb-1">
+                            <ShoppingBag className="h-4 w-4" />
+                            {t("admin.bookings.tripPlan")}
+                          </div>
+                          {services?.length ? (
+                            <ul className="list-disc list-inside text-sm text-muted-foreground pl-1 space-y-0.5">
+                              {services.map((name, i) => (
+                                <li key={i}>{name}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-muted-foreground italic">
+                              {t("admin.bookings.noServices")}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Timestamps */}
+                        <div className="flex flex-col sm:flex-row gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-3.5 w-3.5" />
+                            {t("admin.bookings.submitted")}: {submittedAt}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Mail className="h-3.5 w-3.5" />
+                            {t("admin.bookings.emailSentTo", {
+                              email: booking.customer_email,
+                              date: submittedAt,
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Copy button */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCopy(booking)}
+                        >
+                          {copiedId === booking.id ? (
+                            <Check className="h-4 w-4 mr-1" />
+                          ) : (
+                            <Copy className="h-4 w-4 mr-1" />
+                          )}
+                          {t("admin.bookings.copyDetails")}
+                        </Button>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
           )}
         </CardContent>
       </Card>
