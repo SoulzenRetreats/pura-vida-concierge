@@ -98,7 +98,7 @@ export default function AdminBookings() {
                 return (
                   <AccordionItem key={booking.id} value={booking.id}>
                     <AccordionTrigger className="hover:no-underline px-2">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-left flex-1 mr-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-left flex-1 mr-4 font-body">
                         <span className="font-medium text-sm">
                           {format(new Date(booking.check_in), "MMM d")} –{" "}
                           {format(new Date(booking.check_out), "MMM d, yyyy")}
