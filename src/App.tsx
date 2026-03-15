@@ -23,12 +23,6 @@ import AdminServices from "./pages/admin/Services";
 import AdminProperties from "./pages/admin/Properties";
 import AdminUsers from "./pages/admin/Users";
 import AdminCategories from "./pages/admin/Categories";
-import { ConciergeLayout } from "./components/concierge/ConciergeLayout";
-import ConciergeDashboard from "./pages/concierge/Dashboard";
-import ConciergeBookings from "./pages/concierge/Bookings";
-import BookingDetail from "./pages/concierge/BookingDetail";
-import ConciergeVendors from "./pages/concierge/Vendors";
-
 const queryClient = new QueryClient();
 
 function App(): React.JSX.Element {
