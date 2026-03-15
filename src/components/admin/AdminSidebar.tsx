@@ -76,17 +76,6 @@ export function AdminSidebar() {
         <div className="flex justify-center group-data-[collapsible=icon]:px-0 px-2">
           <LanguageToggle variant="full" className="w-full group-data-[collapsible=icon]:w-auto" />
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start group-data-[collapsible=icon]:justify-center"
-          onClick={() => navigate("/concierge/dashboard")}
-        >
-          <ArrowRight className="h-4 w-4 mr-2 group-data-[collapsible=icon]:mr-0" />
-          <span className="group-data-[collapsible=icon]:hidden">
-            {t("admin.sidebar.viewConcierge")}
-          </span>
-        </Button>
       </SidebarFooter>
     </Sidebar>
   );

@@ -65,22 +65,6 @@ function App(): React.JSX.Element {
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
 
-              {/* Concierge protected routes (staff + admin can access) */}
-              <Route
-                path="/concierge"
-                element={
-                  <ProtectedRoute allowedRoles={["admin", "staff"]}>
-                    <ConciergeLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/concierge/dashboard" replace />} />
-                <Route path="dashboard" element={<ConciergeDashboard />} />
-                <Route path="bookings" element={<ConciergeBookings />} />
-                <Route path="bookings/:id" element={<BookingDetail />} />
-                <Route path="vendors" element={<ConciergeVendors />} />
-              </Route>
-
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
