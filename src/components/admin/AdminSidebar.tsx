@@ -11,10 +11,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { LayoutDashboard, ClipboardList, Users, Settings, UserCog, Package, Home, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { key: "dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
@@ -32,6 +34,8 @@ export function AdminSidebar() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { setOpenMobile } = useSidebar();
 
   const currentPath = location.pathname;
 
@@ -60,7 +64,10 @@ export function AdminSidebar() {
                     isActive={currentPath === item.path || currentPath.startsWith(item.path + "/")}
                     tooltip={t(`admin.sidebar.${item.key}`)}
                   >
-                    <button onClick={() => navigate(item.path)}>
+                    <button onClick={() => {
+                      navigate(item.path);
+                      if (isMobile) setOpenMobile(false);
+                    }}>
                       <item.icon className="h-4 w-4" />
                       <span>{t(`admin.sidebar.${item.key}`)}</span>
                     </button>
