@@ -16,7 +16,7 @@ import AdminAuth from "./pages/admin/Auth";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminSettings from "./pages/admin/Settings";
-import AdminRevenue from "./pages/admin/Revenue";
+
 import AdminBookings from "./pages/admin/Bookings";
 import AdminVendors from "./pages/admin/Vendors";
 import AdminServices from "./pages/admin/Services";
