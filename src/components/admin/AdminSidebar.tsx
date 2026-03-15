@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight, UserCog, Package, Home, Tags } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Users, Settings, UserCog, Package, Home, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 
