@@ -36,7 +36,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { ServiceForm } from "@/components/services/ServiceForm";
+import { ServiceForm, type ServiceFormData } from "@/components/services/ServiceForm";
 import {
   useServices,
   useCreateService,
@@ -75,18 +75,8 @@ export default function AdminServices() {
     setEditingService(null);
   };
 
-  const handleSubmit = async (data: {
-    name: string;
-    description: string;
-    category: string;
-    photo_urls?: string | null;
-    price_min?: number | null;
-    price_max?: number | null;
-    is_for_sale?: boolean;
-    is_rental?: boolean;
-  }) => {
+  const handleSubmit = async (data: ServiceFormData) => {
     try {
-      // Parse photo URLs from textarea (one per line)
       const photos = data.photo_urls
         ? data.photo_urls
             .split("\n")
@@ -95,8 +85,12 @@ export default function AdminServices() {
         : null;
 
       const serviceData = {
-        name: data.name,
-        description: data.description,
+        name: data.name_en,
+        name_en: data.name_en,
+        name_es: data.name_es || null,
+        description: data.description_en,
+        description_en: data.description_en,
+        description_es: data.description_es || null,
         category: data.category,
         photos,
         price_min: data.price_min ?? null,
@@ -137,6 +131,13 @@ export default function AdminServices() {
     } catch (error) {
       toast.error(t("admin.services.error"));
     }
+  };
+
+  const getServiceName = (service: Service) => {
+    if (i18n.language === "es") {
+      return (service as any).name_es || (service as any).name_en || service.name;
+    }
+    return (service as any).name_en || service.name;
   };
 
   return (
@@ -210,7 +211,7 @@ export default function AdminServices() {
             ) : (
               services.map((service) => (
                 <TableRow key={service.id}>
-                  <TableCell className="font-medium">{service.name}</TableCell>
+                  <TableCell className="font-medium">{getServiceName(service)}</TableCell>
                   <TableCell>
                     {getCategoryNameBySlug(categories, service.category, i18n.language)}
                   </TableCell>

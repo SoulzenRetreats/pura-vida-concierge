@@ -336,10 +336,14 @@ export type Database = {
           created_at: string | null
           default_vendor_id: string | null
           description: string
+          description_en: string
+          description_es: string | null
           id: string
           is_for_sale: boolean
           is_rental: boolean
           name: string
+          name_en: string
+          name_es: string | null
           photos: string[] | null
           price: number | null
           price_max: number | null
@@ -352,10 +356,14 @@ export type Database = {
           created_at?: string | null
           default_vendor_id?: string | null
           description: string
+          description_en: string
+          description_es?: string | null
           id?: string
           is_for_sale?: boolean
           is_rental?: boolean
           name: string
+          name_en: string
+          name_es?: string | null
           photos?: string[] | null
           price?: number | null
           price_max?: number | null
@@ -368,10 +376,14 @@ export type Database = {
           created_at?: string | null
           default_vendor_id?: string | null
           description?: string
+          description_en?: string
+          description_es?: string | null
           id?: string
           is_for_sale?: boolean
           is_rental?: boolean
           name?: string
+          name_en?: string
+          name_es?: string | null
           photos?: string[] | null
           price?: number | null
           price_max?: number | null

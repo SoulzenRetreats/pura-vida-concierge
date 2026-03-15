@@ -385,6 +385,12 @@
       "form": {
         "name": "Service Name",
         "description": "Description",
+        "tabEnglish": "English",
+        "tabSpanish": "Spanish",
+        "nameEn": "Name (English)",
+        "nameEs": "Name (Spanish)",
+        "descriptionEn": "Description (English)",
+        "descriptionEs": "Description (Spanish)",
         "category": "Category",
         "forSale": "For Sale",
         "rental": "Rental",

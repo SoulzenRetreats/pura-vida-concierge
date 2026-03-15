@@ -13,8 +13,12 @@ import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/u
 interface Service {
   id: string;
   name: string;
+  name_en: string;
+  name_es: string | null;
   category: string;
   description: string;
+  description_en: string;
+  description_es: string | null;
   photos: string[];
   price_min: number | null;
   price_max: number | null;
@@ -22,11 +26,10 @@ interface Service {
   is_rental: boolean;
 }
 
-// Simple photo gallery component with manual navigation (no embla dependency)
+// Simple photo gallery component with manual navigation
 function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; serviceName: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   
-  // Single photo or no photos - no navigation needed
   if (!photos || photos.length <= 1) {
     return (
       <img
@@ -54,8 +57,6 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
         alt={`${serviceName} ${currentIndex + 1}`}
         className="w-full h-full object-cover group-hover:scale-110 transition-spring"
       />
-
-      {/* Navigation arrows */}
       <Button
         variant="outline"
         size="icon"
@@ -74,8 +75,6 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
-
-      {/* Dot indicators */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
         {photos.map((_, index) => (
           <button
@@ -102,8 +101,6 @@ const Experiences = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
-
-  // Fetch categories dynamically from the categories table
   const { data: categories = [] } = useCategories();
 
   useEffect(() => {
@@ -114,13 +111,10 @@ const Experiences = () => {
     setLoading(true);
     try {
       let query = supabase.from("services").select("*");
-
       if (filter !== "all") {
         query = query.eq("category", filter);
       }
-
       const { data, error } = await query;
-
       if (error) throw error;
       setServices(data || []);
     } catch (error) {
@@ -130,7 +124,20 @@ const Experiences = () => {
     }
   };
 
-  // Build categories dynamically from fetched data
+  const getLocalizedName = (service: Service) => {
+    if (i18n.language === "es") {
+      return service.name_es || service.name_en || service.name;
+    }
+    return service.name_en || service.name;
+  };
+
+  const getLocalizedDescription = (service: Service) => {
+    if (i18n.language === "es") {
+      return service.description_es || service.description_en || service.description;
+    }
+    return service.description_en || service.description;
+  };
+
   const categoryFilters = [
     { value: "all", label: t("experiences.filter.all") },
     ...categories.map((cat) => ({
@@ -143,17 +150,11 @@ const Experiences = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden mt-20">
         <div className="absolute inset-0">
-          <img
-            src={servicesHero}
-            alt="Luxury Experiences"
-            className="w-full h-full object-cover"
-          />
+          <img src={servicesHero} alt="Luxury Experiences" className="w-full h-full object-cover" />
           <div className="absolute inset-0 gradient-hero" />
         </div>
-
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl sm:text-6xl font-heading font-bold text-white mb-4">
             {t("experiences.hero")}
@@ -161,7 +162,6 @@ const Experiences = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
       <section className="py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="container mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
@@ -182,7 +182,6 @@ const Experiences = () => {
         </div>
       </section>
 
-      {/* Services Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
           {loading ? (
@@ -201,48 +200,26 @@ const Experiences = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service) => (
-                <Card
-                  key={service.id}
-                  className="overflow-hidden hover:shadow-luxury transition-spring group"
-                >
+                <Card key={service.id} className="overflow-hidden hover:shadow-luxury transition-spring group">
                   <div className="relative h-56 overflow-hidden">
-                    <ServicePhotoGallery 
-                      photos={service.photos || []} 
-                      serviceName={service.name} 
-                    />
-                    
-                    {/* Category badge */}
+                    <ServicePhotoGallery photos={service.photos || []} serviceName={getLocalizedName(service)} />
                     <Badge className="absolute top-4 right-4 gradient-secondary z-10">
                       {getCategoryNameBySlug(categories, service.category, i18n.language)}
                     </Badge>
-                    
-                    {/* Status badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
                       {service.is_for_sale && (
-                        <Badge className="bg-accent text-accent-foreground">
-                          {t("experiences.forSale")}
-                        </Badge>
+                        <Badge className="bg-accent text-accent-foreground">{t("experiences.forSale")}</Badge>
                       )}
                       {service.is_rental && (
-                        <Badge variant="outline" className="bg-background/80">
-                          {t("experiences.rental")}
-                        </Badge>
+                        <Badge variant="outline" className="bg-background/80">{t("experiences.rental")}</Badge>
                       )}
                     </div>
                   </div>
-
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-heading font-semibold mb-2">
-                      {service.name}
-                    </h3>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">
-                      {service.description}
-                    </p>
-                    {/* Price display using price_min / price_max */}
+                    <h3 className="text-xl font-heading font-semibold mb-2">{getLocalizedName(service)}</h3>
+                    <p className="text-muted-foreground mb-4 line-clamp-3">{getLocalizedDescription(service)}</p>
                     {service.price_min != null && service.price_max != null && service.price_min === service.price_max ? (
-                      <p className="text-lg font-semibold text-accent">
-                        ${service.price_min.toFixed(2)}
-                      </p>
+                      <p className="text-lg font-semibold text-accent">${service.price_min.toFixed(2)}</p>
                     ) : service.price_min != null && service.price_max != null ? (
                       <p className="text-sm font-medium text-accent">
                         ${service.price_min.toFixed(2)} – ${service.price_max.toFixed(2)}
