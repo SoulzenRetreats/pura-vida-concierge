@@ -205,7 +205,7 @@ export default function AdminServices() {
               </TableRow>
             ) : services.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                <TableCell colSpan={5} className="text-center py-8">
                   {t("admin.services.noServices")}
                 </TableCell>
               </TableRow>
