@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -14,28 +13,13 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useBookings, useBookingCounts } from "@/hooks/useBookings";
-import { BookingStatusBadge } from "@/components/BookingStatusBadge";
-import type { Database } from "@/integrations/supabase/types";
-
-type BookingStatus = Database["public"]["Enums"]["booking_status"];
-
-const statusTabs: Array<{ key: BookingStatus | "all"; labelKey: string }> = [
-  { key: "all", labelKey: "all" },
-  { key: "new_request", labelKey: "new_request" },
-  { key: "in_review", labelKey: "in_review" },
-  { key: "quote_sent", labelKey: "quote_sent" },
-  { key: "confirmed", labelKey: "confirmed" },
-  { key: "completed", labelKey: "completed" },
-];
+import { useBookings } from "@/hooks/useBookings";
 
 export default function AdminBookings() {
   const { t } = useTranslation();
-  const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: bookings, isLoading } = useBookings({ statusFilter, searchTerm });
-  const { data: counts } = useBookingCounts();
+  const { data: bookings, isLoading } = useBookings({ searchTerm });
 
   return (
     <div className="space-y-6">
@@ -61,24 +45,6 @@ export default function AdminBookings() {
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <Tabs
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter(v as BookingStatus | "all")}
-          >
-            <TabsList className="mb-4 flex-wrap h-auto gap-1">
-              {statusTabs.map((tab) => (
-                <TabsTrigger key={tab.key} value={tab.key} className="text-xs sm:text-sm">
-                  {t(`concierge.bookings.tabs.${tab.labelKey}`)}
-                  {counts && (
-                    <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-xs">
-                      {counts[tab.key] || 0}
-                    </span>
-                  )}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-
           {isLoading ? (
             <div className="space-y-3">
               {[...Array(5)].map((_, i) => (
@@ -99,7 +65,6 @@ export default function AdminBookings() {
                     <TableHead className="hidden md:table-cell">
                       {t("concierge.bookings.columns.occasion")}
                     </TableHead>
-                    <TableHead>{t("concierge.bookings.columns.status")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -124,9 +89,6 @@ export default function AdminBookings() {
                         {booking.occasion_type
                           ? t(`booking.occasions.${booking.occasion_type}`)
                           : "–"}
-                      </TableCell>
-                      <TableCell>
-                        <BookingStatusBadge status={booking.status || "new_request"} />
                       </TableCell>
                     </TableRow>
                   ))}
