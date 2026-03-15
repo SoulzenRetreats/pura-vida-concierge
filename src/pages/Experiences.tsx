@@ -16,8 +16,8 @@ interface Service {
   category: string;
   description: string;
   photos: string[];
-  price_range: string;
-  price: number | null;
+  price_min: number | null;
+  price_max: number | null;
   is_for_sale: boolean;
   is_rental: boolean;
 }
