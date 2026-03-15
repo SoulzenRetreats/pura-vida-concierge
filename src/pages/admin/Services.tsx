@@ -191,7 +191,6 @@ export default function AdminServices() {
               <TableHead>{t("admin.services.columns.category")}</TableHead>
               <TableHead>{t("admin.services.columns.status")}</TableHead>
               <TableHead>{t("admin.services.columns.priceRange")}</TableHead>
-              <TableHead>{t("admin.services.columns.defaultVendor")}</TableHead>
               <TableHead className="w-[100px]">
                 {t("admin.services.columns.actions")}
               </TableHead>
