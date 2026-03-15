@@ -385,6 +385,12 @@
       "form": {
         "name": "Nombre del Servicio",
         "description": "Descripción",
+        "tabEnglish": "Inglés",
+        "tabSpanish": "Español",
+        "nameEn": "Nombre (Inglés)",
+        "nameEs": "Nombre (Español)",
+        "descriptionEn": "Descripción (Inglés)",
+        "descriptionEs": "Descripción (Español)",
         "category": "Categoría",
         "forSale": "En Venta",
         "rental": "Alquiler",
