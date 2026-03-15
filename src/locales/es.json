@@ -296,7 +296,7 @@
     },
     "bookings": {
       "title": "Registro de Consultas",
-      "description": "Lista de consultas enviadas (solo lectura).",
+      "description": "Lista de Consultas Enviadas",
       "override": "Anular Estado",
       "statusUpdated": "Estado actualizado exitosamente",
       "error": "Error al actualizar el estado",
