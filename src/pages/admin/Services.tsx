@@ -199,7 +199,7 @@ export default function AdminServices() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                   {t("experiences.loading")}
                 </TableCell>
               </TableRow>
