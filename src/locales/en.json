@@ -296,7 +296,7 @@
     },
     "bookings": {
       "title": "Lead Log",
-      "description": "Read-only list of submitted inquiries.",
+      "description": "List of Submitted Inquiries",
       "override": "Override Status",
       "statusUpdated": "Status updated successfully",
       "error": "Failed to update status",
