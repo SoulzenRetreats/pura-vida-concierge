@@ -64,7 +64,10 @@ export function AdminSidebar() {
                     isActive={currentPath === item.path || currentPath.startsWith(item.path + "/")}
                     tooltip={t(`admin.sidebar.${item.key}`)}
                   >
-                    <button onClick={() => navigate(item.path)}>
+                    <button onClick={() => {
+                      navigate(item.path);
+                      if (isMobile) setOpenMobile(false);
+                    }}>
                       <item.icon className="h-4 w-4" />
                       <span>{t(`admin.sidebar.${item.key}`)}</span>
                     </button>
