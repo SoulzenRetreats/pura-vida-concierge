@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -34,8 +35,10 @@ import { useCategories, getCategoryName } from "@/hooks/useCategories";
 import type { Service } from "@/hooks/useServices";
 
 const serviceSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
+  name_en: z.string().min(1, "English name is required"),
+  name_es: z.string().optional().default(""),
+  description_en: z.string().min(1, "English description is required"),
+  description_es: z.string().optional().default(""),
   category: z.string().min(1, "Category is required"),
   price_min: z.number().optional().nullable(),
   price_max: z.number().optional().nullable(),
@@ -44,7 +47,7 @@ const serviceSchema = z.object({
   is_rental: z.boolean().default(false),
 });
 
-type ServiceFormData = z.infer<typeof serviceSchema>;
+export type ServiceFormData = z.infer<typeof serviceSchema>;
 
 interface ServiceFormProps {
   open: boolean;
@@ -67,8 +70,10 @@ export function ServiceForm({
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name_en: "",
+      name_es: "",
+      description_en: "",
+      description_es: "",
       category: "other",
       price_min: null,
       price_max: null,
@@ -83,8 +88,10 @@ export function ServiceForm({
       if (service) {
         const photoUrlsString = service.photos?.join("\n") || "";
         form.reset({
-          name: service.name,
-          description: service.description,
+          name_en: (service as any).name_en || service.name || "",
+          name_es: (service as any).name_es || "",
+          description_en: (service as any).description_en || service.description || "",
+          description_es: (service as any).description_es || "",
           category: service.category,
           price_min: service.price_min ?? null,
           price_max: service.price_max ?? null,
@@ -94,8 +101,10 @@ export function ServiceForm({
         });
       } else {
         form.reset({
-          name: "",
-          description: "",
+          name_en: "",
+          name_es: "",
+          description_en: "",
+          description_es: "",
           category: "other",
           price_min: null,
           price_max: null,
@@ -127,33 +136,75 @@ export function ServiceForm({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("admin.services.form.name")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Localized Name & Description Tabs */}
+            <Tabs defaultValue="en" className="w-full">
+              <TabsList className="w-full">
+                <TabsTrigger value="en" className="flex-1">
+                  {t("admin.services.form.tabEnglish")}
+                </TabsTrigger>
+                <TabsTrigger value="es" className="flex-1">
+                  {t("admin.services.form.tabSpanish")}
+                </TabsTrigger>
+              </TabsList>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("admin.services.form.description")}</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={3} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <TabsContent value="en" className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("admin.services.form.nameEn")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("admin.services.form.descriptionEn")}</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} rows={3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+
+              <TabsContent value="es" className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name_es"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("admin.services.form.nameEs")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description_es"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("admin.services.form.descriptionEs")}</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} rows={3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+            </Tabs>
 
             <FormField
               control={form.control}
