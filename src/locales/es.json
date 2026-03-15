@@ -86,7 +86,7 @@
     },
     "loading": "Cargando servicios...",
     "noServices": "No Hay Servicios Disponibles",
-    "priceRange": "Rango de Precio: {{range}}",
+    "fromPrice": "Desde ${{price}}",
     "forSale": "En Venta",
     "rental": "Alquiler"
   },
