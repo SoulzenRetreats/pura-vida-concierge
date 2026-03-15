@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { Search, Eye } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -14,18 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useBookings, useBookingCounts, useUpdateBooking } from "@/hooks/useBookings";
+import { useBookings, useBookingCounts } from "@/hooks/useBookings";
 import { BookingStatusBadge } from "@/components/BookingStatusBadge";
-import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
 type BookingStatus = Database["public"]["Enums"]["booking_status"];
@@ -39,37 +29,13 @@ const statusTabs: Array<{ key: BookingStatus | "all"; labelKey: string }> = [
   { key: "completed", labelKey: "completed" },
 ];
 
-const allStatuses: BookingStatus[] = [
-  "new_request",
-  "in_review",
-  "quote_sent",
-  "confirmed",
-  "completed",
-];
-
 export default function AdminBookings() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: bookings, isLoading } = useBookings({ statusFilter, searchTerm });
   const { data: counts } = useBookingCounts();
-  const updateBooking = useUpdateBooking();
-
-  const handleStatusOverride = (bookingId: string, newStatus: BookingStatus) => {
-    updateBooking.mutate(
-      { id: bookingId, status: newStatus },
-      {
-        onSuccess: () => {
-          toast.success(t("admin.bookings.statusUpdated"));
-        },
-        onError: () => {
-          toast.error(t("admin.bookings.error"));
-        },
-      }
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -84,16 +50,14 @@ export default function AdminBookings() {
 
       <Card>
         <CardHeader className="pb-3">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t("concierge.bookings.searchPlaceholder")}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={t("concierge.bookings.searchPlaceholder")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
           </div>
         </CardHeader>
         <CardContent className="pt-0">
@@ -136,10 +100,6 @@ export default function AdminBookings() {
                       {t("concierge.bookings.columns.occasion")}
                     </TableHead>
                     <TableHead>{t("concierge.bookings.columns.status")}</TableHead>
-                    <TableHead>{t("admin.bookings.override")}</TableHead>
-                    <TableHead className="text-right">
-                      {t("concierge.bookings.columns.actions")}
-                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -147,7 +107,7 @@ export default function AdminBookings() {
                     <TableRow key={booking.id}>
                       <TableCell className="font-medium">
                         <div>
-                          {format(new Date(booking.check_in), "MMM d")} -{" "}
+                          {format(new Date(booking.check_in), "MMM d")} –{" "}
                           {format(new Date(booking.check_out), "MMM d, yyyy")}
                         </div>
                         <div className="text-xs text-muted-foreground">
@@ -163,39 +123,10 @@ export default function AdminBookings() {
                       <TableCell className="hidden md:table-cell">
                         {booking.occasion_type
                           ? t(`booking.occasions.${booking.occasion_type}`)
-                          : "-"}
+                          : "–"}
                       </TableCell>
                       <TableCell>
                         <BookingStatusBadge status={booking.status || "new_request"} />
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={booking.status || "new_request"}
-                          onValueChange={(value) =>
-                            handleStatusOverride(booking.id, value as BookingStatus)
-                          }
-                        >
-                          <SelectTrigger className="w-36">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {allStatuses.map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {t(`concierge.bookings.statuses.${status}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => navigate(`/concierge/bookings/${booking.id}`)}
-                        >
-                          <Eye className="h-4 w-4" />
-                          <span className="sr-only">{t("concierge.bookings.view")}</span>
-                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

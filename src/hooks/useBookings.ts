@@ -1,12 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database, TablesUpdate } from "@/integrations/supabase/types";
+import type { Database } from "@/integrations/supabase/types";
 
 type BookingStatus = Database["public"]["Enums"]["booking_status"];
 
 export type BookingWithProperty = Database["public"]["Tables"]["bookings"]["Row"] & {
   properties: { name: string; location: string } | null;
-  assigned_to: string | null;
 };
 
 interface UseBookingsOptions {
@@ -20,7 +19,7 @@ export function useBookings({ statusFilter = "all", searchTerm = "" }: UseBookin
     queryFn: async () => {
       let query = supabase
         .from("bookings")
-        .select("*, properties(name, location), assigned_to")
+        .select("*, properties(name, location)")
         .order("created_at", { ascending: false });
 
       if (statusFilter !== "all") {
@@ -67,56 +66,6 @@ export function useBookingCounts() {
       });
 
       return counts;
-    },
-  });
-}
-
-export function useUpdateBooking() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ id, ...data }: TablesUpdate<"bookings"> & { id: string }) => {
-      const { data: result, error } = await supabase
-        .from("bookings")
-        .update(data)
-        .eq("id", id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return result;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["booking-counts"] });
-      queryClient.invalidateQueries({ queryKey: ["booking-detail"] });
-    },
-  });
-}
-
-export function useClaimBooking() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (bookingId: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: result, error } = await supabase
-        .from("bookings")
-        .update({ assigned_to: user.id })
-        .eq("id", bookingId)
-        .is("assigned_to", null)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return result;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["booking-counts"] });
-      queryClient.invalidateQueries({ queryKey: ["booking-detail"] });
     },
   });
 }
