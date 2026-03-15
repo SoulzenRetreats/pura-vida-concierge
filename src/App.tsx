@@ -16,19 +16,13 @@ import AdminAuth from "./pages/admin/Auth";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminSettings from "./pages/admin/Settings";
-import AdminRevenue from "./pages/admin/Revenue";
+
 import AdminBookings from "./pages/admin/Bookings";
 import AdminVendors from "./pages/admin/Vendors";
 import AdminServices from "./pages/admin/Services";
 import AdminProperties from "./pages/admin/Properties";
 import AdminUsers from "./pages/admin/Users";
 import AdminCategories from "./pages/admin/Categories";
-import { ConciergeLayout } from "./components/concierge/ConciergeLayout";
-import ConciergeDashboard from "./pages/concierge/Dashboard";
-import ConciergeBookings from "./pages/concierge/Bookings";
-import BookingDetail from "./pages/concierge/BookingDetail";
-import ConciergeVendors from "./pages/concierge/Vendors";
-
 const queryClient = new QueryClient();
 
 function App(): React.JSX.Element {
@@ -66,25 +60,9 @@ function App(): React.JSX.Element {
                 <Route path="vendors" element={<AdminVendors />} />
                 <Route path="services" element={<AdminServices />} />
                 <Route path="categories" element={<AdminCategories />} />
-                <Route path="revenue" element={<AdminRevenue />} />
+                
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="settings" element={<AdminSettings />} />
-              </Route>
-
-              {/* Concierge protected routes (staff + admin can access) */}
-              <Route
-                path="/concierge"
-                element={
-                  <ProtectedRoute allowedRoles={["admin", "staff"]}>
-                    <ConciergeLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/concierge/dashboard" replace />} />
-                <Route path="dashboard" element={<ConciergeDashboard />} />
-                <Route path="bookings" element={<ConciergeBookings />} />
-                <Route path="bookings/:id" element={<BookingDetail />} />
-                <Route path="vendors" element={<ConciergeVendors />} />
               </Route>
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

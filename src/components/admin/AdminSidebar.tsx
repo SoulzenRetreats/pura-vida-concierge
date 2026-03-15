@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Settings, ArrowRight, UserCog, Package, Home, Tags } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Users, Settings, UserCog, Package, Home, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 
@@ -23,7 +23,7 @@ const navItems = [
   { key: "vendors", path: "/admin/vendors", icon: Users },
   { key: "services", path: "/admin/services", icon: Package },
   { key: "categories", path: "/admin/categories", icon: Tags },
-  { key: "revenue", path: "/admin/revenue", icon: DollarSign },
+  
   { key: "users", path: "/admin/users", icon: UserCog },
   { key: "settings", path: "/admin/settings", icon: Settings },
 ];
@@ -76,17 +76,6 @@ export function AdminSidebar() {
         <div className="flex justify-center group-data-[collapsible=icon]:px-0 px-2">
           <LanguageToggle variant="full" className="w-full group-data-[collapsible=icon]:w-auto" />
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start group-data-[collapsible=icon]:justify-center"
-          onClick={() => navigate("/concierge/dashboard")}
-        >
-          <ArrowRight className="h-4 w-4 mr-2 group-data-[collapsible=icon]:mr-0" />
-          <span className="group-data-[collapsible=icon]:hidden">
-            {t("admin.sidebar.viewConcierge")}
-          </span>
-        </Button>
       </SidebarFooter>
     </Sidebar>
   );

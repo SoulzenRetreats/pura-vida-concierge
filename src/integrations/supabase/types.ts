@@ -342,6 +342,8 @@ export type Database = {
           name: string
           photos: string[] | null
           price: number | null
+          price_max: number | null
+          price_min: number | null
           price_range: string | null
           updated_at: string | null
         }
@@ -356,6 +358,8 @@ export type Database = {
           name: string
           photos?: string[] | null
           price?: number | null
+          price_max?: number | null
+          price_min?: number | null
           price_range?: string | null
           updated_at?: string | null
         }
@@ -370,6 +374,8 @@ export type Database = {
           name?: string
           photos?: string[] | null
           price?: number | null
+          price_max?: number | null
+          price_min?: number | null
           price_range?: string | null
           updated_at?: string | null
         }
