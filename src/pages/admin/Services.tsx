@@ -230,9 +230,13 @@ export default function AdminServices() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {service.category === "luxury_items" && service.price
-                      ? `$${service.price.toFixed(2)}`
-                      : service.price_range || "-"}
+                    {service.price_min != null && service.price_max != null
+                      ? service.price_min === service.price_max
+                        ? `$${service.price_min.toFixed(2)}`
+                        : `$${service.price_min.toFixed(2)} – $${service.price_max.toFixed(2)}`
+                      : service.price_min != null
+                        ? `${t("experiences.fromPrice", { price: `$${service.price_min.toFixed(2)}` })}`
+                        : "-"}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
