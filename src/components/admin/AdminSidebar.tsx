@@ -23,7 +23,7 @@ const navItems = [
   { key: "vendors", path: "/admin/vendors", icon: Users },
   { key: "services", path: "/admin/services", icon: Package },
   { key: "categories", path: "/admin/categories", icon: Tags },
-  { key: "revenue", path: "/admin/revenue", icon: DollarSign },
+  
   { key: "users", path: "/admin/users", icon: UserCog },
   { key: "settings", path: "/admin/settings", icon: Settings },
 ];
