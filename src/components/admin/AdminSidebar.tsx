@@ -11,10 +11,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { LayoutDashboard, ClipboardList, Users, Settings, UserCog, Package, Home, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { key: "dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
