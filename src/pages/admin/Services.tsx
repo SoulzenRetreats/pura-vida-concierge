@@ -236,7 +236,6 @@ export default function AdminServices() {
                       ? `$${service.price.toFixed(2)}`
                       : service.price_range || "-"}
                   </TableCell>
-                  <TableCell>{service.vendor_name || "-"}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
