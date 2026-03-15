@@ -24,7 +24,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBookings, useBookingCounts, useUpdateBooking } from "@/hooks/useBookings";
-import { BookingStatusBadge } from "@/components/concierge/BookingStatusBadge";
+import { BookingStatusBadge } from "@/components/BookingStatusBadge";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
