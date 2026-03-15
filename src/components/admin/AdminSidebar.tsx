@@ -34,6 +34,8 @@ export function AdminSidebar() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { setOpenMobile } = useSidebar();
 
   const currentPath = location.pathname;
 
