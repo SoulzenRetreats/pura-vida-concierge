@@ -30,7 +30,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useVendors } from "@/hooks/useVendors";
 import { useCategories, getCategoryName } from "@/hooks/useCategories";
 import type { Service } from "@/hooks/useServices";
 
@@ -38,10 +37,9 @@ const serviceSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
-  price_range: z.string().optional().nullable(),
+  price_min: z.number().optional().nullable(),
+  price_max: z.number().optional().nullable(),
   photo_urls: z.string().optional().nullable(),
-  default_vendor_id: z.string().optional().nullable(),
-  price: z.number().optional().nullable(),
   is_for_sale: z.boolean().default(false),
   is_rental: z.boolean().default(false),
 });
@@ -64,7 +62,6 @@ export function ServiceForm({
   isSubmitting = false,
 }: ServiceFormProps) {
   const { t, i18n } = useTranslation();
-  const { data: vendors = [] } = useVendors({});
   const { data: categories = [] } = useCategories();
 
   const form = useForm<ServiceFormData>({
@@ -73,31 +70,25 @@ export function ServiceForm({
       name: "",
       description: "",
       category: "other",
-      price_range: "",
+      price_min: null,
+      price_max: null,
       photo_urls: "",
-      default_vendor_id: null,
-      price: null,
       is_for_sale: false,
       is_rental: false,
     },
   });
 
-  const selectedCategory = form.watch("category");
-  const isLuxuryItem = selectedCategory === "luxury_items";
-
   useEffect(() => {
     if (open) {
       if (service) {
-        // Join photos array into newline-separated string for textarea
         const photoUrlsString = service.photos?.join("\n") || "";
         form.reset({
           name: service.name,
           description: service.description,
           category: service.category,
-          price_range: service.price_range || "",
+          price_min: service.price_min ?? null,
+          price_max: service.price_max ?? null,
           photo_urls: photoUrlsString,
-          default_vendor_id: service.default_vendor_id || null,
-          price: service.price || null,
           is_for_sale: service.is_for_sale ?? false,
           is_rental: service.is_rental ?? false,
         });
@@ -106,10 +97,9 @@ export function ServiceForm({
           name: "",
           description: "",
           category: "other",
-          price_range: "",
+          price_min: null,
+          price_max: null,
           photo_urls: "",
-          default_vendor_id: null,
-          price: null,
           is_for_sale: false,
           is_rental: false,
         });
@@ -228,14 +218,14 @@ export function ServiceForm({
               />
             </div>
 
-            {/* Show price range for non-luxury items, fixed price for luxury items */}
-            {isLuxuryItem ? (
+            {/* Price Min / Max */}
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="price"
+                name="price_min"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("admin.services.form.price")}</FormLabel>
+                    <FormLabel>{t("admin.services.form.priceMin")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -253,21 +243,33 @@ export function ServiceForm({
                   </FormItem>
                 )}
               />
-            ) : (
               <FormField
                 control={form.control}
-                name="price_range"
+                name="price_max"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("admin.services.form.priceRange")}</FormLabel>
+                    <FormLabel>{t("admin.services.form.priceMax")}</FormLabel>
                     <FormControl>
-                      <Input {...field} value={field.value || ""} placeholder="$50 - $200" />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? parseFloat(e.target.value) : null
+                          )
+                        }
+                        placeholder="0.00"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
+            </div>
+            <p className="text-xs text-muted-foreground -mt-2">
+              {t("admin.services.form.priceHelp")}
+            </p>
 
             <FormField
               control={form.control}
@@ -283,39 +285,6 @@ export function ServiceForm({
                       rows={3}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="default_vendor_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("admin.services.form.defaultVendor")}</FormLabel>
-                  <Select
-                    onValueChange={(value) =>
-                      field.onChange(value === "none" ? null : value)
-                    }
-                    value={field.value || "none"}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("admin.services.form.selectVendor")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        {t("admin.services.form.noVendor")}
-                      </SelectItem>
-                      {vendors.map((vendor) => (
-                        <SelectItem key={vendor.id} value={vendor.id}>
-                          {vendor.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
