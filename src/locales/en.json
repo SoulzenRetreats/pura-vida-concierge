@@ -295,8 +295,8 @@
       "revenue": "Revenue"
     },
     "bookings": {
-      "title": "Booking Management",
-      "description": "View and override booking statuses.",
+      "title": "Lead Log",
+      "description": "Read-only list of submitted inquiries.",
       "override": "Override Status",
       "statusUpdated": "Status updated successfully",
       "error": "Failed to update status"

@@ -295,8 +295,8 @@
       "revenue": "Ingresos"
     },
     "bookings": {
-      "title": "Gestión de Reservas",
-      "description": "Ver y anular estados de reservas.",
+      "title": "Registro de Consultas",
+      "description": "Lista de consultas enviadas (solo lectura).",
       "override": "Anular Estado",
       "statusUpdated": "Estado actualizado exitosamente",
       "error": "Error al actualizar el estado"
