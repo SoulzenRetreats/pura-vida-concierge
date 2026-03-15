@@ -16,8 +16,8 @@ interface Service {
   category: string;
   description: string;
   photos: string[];
-  price_range: string;
-  price: number | null;
+  price_min: number | null;
+  price_max: number | null;
   is_for_sale: boolean;
   is_rental: boolean;
 }
@@ -238,14 +238,18 @@ const Experiences = () => {
                     <p className="text-muted-foreground mb-4 line-clamp-3">
                       {service.description}
                     </p>
-                    {/* Show fixed price for for-sale items, price range for others */}
-                    {service.is_for_sale && service.price ? (
+                    {/* Price display using price_min / price_max */}
+                    {service.price_min != null && service.price_max != null && service.price_min === service.price_max ? (
                       <p className="text-lg font-semibold text-accent">
-                        ${service.price.toFixed(2)}
+                        ${service.price_min.toFixed(2)}
                       </p>
-                    ) : service.price_range ? (
+                    ) : service.price_min != null && service.price_max != null ? (
                       <p className="text-sm font-medium text-accent">
-                        {t("experiences.priceRange", { range: service.price_range })}
+                        ${service.price_min.toFixed(2)} – ${service.price_max.toFixed(2)}
+                      </p>
+                    ) : service.price_min != null ? (
+                      <p className="text-sm font-medium text-accent">
+                        {t("experiences.fromPrice", { price: service.price_min.toFixed(2) })}
                       </p>
                     ) : null}
                   </CardContent>

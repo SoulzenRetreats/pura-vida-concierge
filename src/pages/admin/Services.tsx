@@ -79,10 +79,9 @@ export default function AdminServices() {
     name: string;
     description: string;
     category: string;
-    price_range?: string | null;
     photo_urls?: string | null;
-    default_vendor_id?: string | null;
-    price?: number | null;
+    price_min?: number | null;
+    price_max?: number | null;
     is_for_sale?: boolean;
     is_rental?: boolean;
   }) => {
@@ -99,10 +98,9 @@ export default function AdminServices() {
         name: data.name,
         description: data.description,
         category: data.category,
-        price_range: data.price_range || null,
         photos,
-        default_vendor_id: data.default_vendor_id || null,
-        price: data.price || null,
+        price_min: data.price_min ?? null,
+        price_max: data.price_max ?? null,
         is_for_sale: data.is_for_sale ?? false,
         is_rental: data.is_rental ?? false,
       };
