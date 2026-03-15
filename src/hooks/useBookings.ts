@@ -4,6 +4,10 @@ import type { Database } from "@/integrations/supabase/types";
 
 export type BookingWithProperty = Database["public"]["Tables"]["bookings"]["Row"] & {
   properties: { name: string; location: string } | null;
+  booking_services: {
+    service_id: string;
+    services: { name: string } | null;
+  }[];
 };
 
 interface UseBookingsOptions {
@@ -16,7 +20,7 @@ export function useBookings({ searchTerm = "" }: UseBookingsOptions = {}) {
     queryFn: async () => {
       let query = supabase
         .from("bookings")
-        .select("*, properties(name, location)")
+        .select("*, properties(name, location), booking_services(service_id, services(name))")
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {

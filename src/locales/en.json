@@ -299,7 +299,14 @@
       "description": "Read-only list of submitted inquiries.",
       "override": "Override Status",
       "statusUpdated": "Status updated successfully",
-      "error": "Failed to update status"
+      "error": "Failed to update status",
+      "tripPlan": "Trip Plan",
+      "noServices": "No services selected",
+      "submitted": "Submitted",
+      "emailSent": "Email Sent",
+      "emailSentTo": "Confirmation sent to {{email}} on {{date}}",
+      "copyDetails": "Copy Lead Details",
+      "detailsCopied": "Lead details copied to clipboard"
     },
     "properties": {
       "title": "Properties Management",
