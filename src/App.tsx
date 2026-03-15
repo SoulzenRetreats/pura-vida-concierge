@@ -60,7 +60,7 @@ function App(): React.JSX.Element {
                 <Route path="vendors" element={<AdminVendors />} />
                 <Route path="services" element={<AdminServices />} />
                 <Route path="categories" element={<AdminCategories />} />
-                <Route path="revenue" element={<AdminRevenue />} />
+                
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
