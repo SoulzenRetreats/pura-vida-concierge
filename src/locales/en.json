@@ -600,10 +600,10 @@
       "backToAdmin": "Back to Admin"
     },
     "bookings": {
-      "title": "Bookings",
-      "description": "Manage and track all booking requests.",
+      "title": "Requests",
+      "description": "Manage and track all service requests.",
       "searchPlaceholder": "Search by name or email...",
-      "noBookings": "No bookings found.",
+      "noBookings": "No requests found.",
       "guests": "guests",
       "view": "View",
       "tabs": {
