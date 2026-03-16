@@ -323,8 +323,7 @@ const Experiences = () => {
 
   const handleFinalize = () => {
     setReviewOpen(false);
-    const basePath = slug ? `/${slug}/booking` : "/booking";
-    navigate(`${basePath}?services=${planItems.join(",")}`);
+    navigate(`/${slug}/booking?services=${planItems.join(",")}`);
   };
 
   // Detail view
