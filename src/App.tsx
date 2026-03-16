@@ -10,7 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import Experiences from "./pages/Experiences";
-import TripTypes from "./pages/TripTypes";
+
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
 import AdminAuth from "./pages/admin/Auth";
@@ -40,7 +40,7 @@ function App(): React.JSX.Element {
               <Route path="/" element={<Home />} />
               <Route path="/properties" element={<Properties />} />
               <Route path="/experiences" element={<Experiences />} />
-              <Route path="/trip-types" element={<TripTypes />} />
+              
               <Route path="/booking" element={<Booking />} />
 
               {/* Auth route */}

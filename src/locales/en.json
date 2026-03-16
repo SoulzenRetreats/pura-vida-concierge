@@ -8,8 +8,7 @@
   "nav": {
     "properties": "Properties",
     "experiences": "Experiences",
-    "tripTypes": "Trip Types",
-    "planMyTrip": "Plan My Trip"
+    "exploreExperiences": "Explore Experiences"
   },
   "footer": {
     "description": "Creating unforgettable luxury group vacation experiences in Costa Rica's most beautiful destinations.",
@@ -24,33 +23,35 @@
   },
   "home": {
     "hero": {
-      "title": "Luxury Group Retreats in Costa Rica",
-      "subtitle": "Personalized Concierge services for a stunning getaway",
+      "title": "Curate Your Pura Vida",
+      "subtitle": "Browse our exclusive collection of private chefs, luxury transfers, and hidden adventures. Build your plan and we'll handle the rest.",
+      "exploreExperiences": "Explore Experiences",
       "viewProperties": "View Properties"
     },
-    "features": {
-      "title": "Why Choose Pura Vida",
-      "villas": {
-        "title": "Luxury Villas",
-        "description": "Stunning properties in Jaco and La Fortuna with modern amenities"
+    "expertise": {
+      "title": "Our Expertise",
+      "localAdventures": {
+        "title": "Local Adventures",
+        "description": "Insider access to hidden waterfalls, jungle trails, and authentic Costa Rican experiences"
       },
-      "experiences": {
-        "title": "Group Experiences",
-        "description": "Private chefs, tours, transportation, and adventure activities"
+      "standardExcellence": {
+        "title": "Standard Excellence",
+        "description": "Curated trips with top-tier chefs, trusted guides, and seamless logistics"
       },
-      "locations": {
-        "title": "Prime Locations",
-        "description": "Access to beaches, rainforests, and natural hot springs"
+      "premiereService": {
+        "title": "Premiere Service",
+        "description": "Elevated planning with priority vendors, luxury villas, and personalized itineraries"
       },
-      "service": {
-        "title": "White-Glove Service",
-        "description": "Personalized concierge handling every detail of your stay"
+      "ultraLuxe": {
+        "title": "Ultra-Luxe Support",
+        "description": "White-glove concierge for VIP groups — every detail handled, nothing off-limits"
       }
     },
     "cta": {
       "title": "Ready for Your Pura Vida Adventure?",
       "subtitle": "Let us create the perfect Costa Rican getaway for your group",
-      "button": "Request a Customized Itinerary"
+      "badge": "Not sure where to start? Tell us your dates and we'll build a custom plan for you.",
+      "button": "Request Custom Itinerary"
     }
   },
   "properties": {
