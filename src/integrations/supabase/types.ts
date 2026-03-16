@@ -194,6 +194,30 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          id: string
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          id: string
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           amenities: string[] | null
@@ -509,6 +533,13 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
           role_created_at: string
           user_id: string
+        }[]
+      }
+      get_concierge_contact: {
+        Args: never
+        Returns: {
+          first_name: string
+          whatsapp_number: string
         }[]
       }
       get_users_with_roles: {
