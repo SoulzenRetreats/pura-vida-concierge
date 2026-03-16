@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Users, Loader2, Minus, Plus, BellRing } from "lucide-react";
+import { Calendar, Users, Loader2, Minus, Plus, ConciergeBell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTripPlan } from "@/contexts/TripPlanContext";
 
