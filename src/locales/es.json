@@ -633,9 +633,9 @@
       "assigned": "Asignada",
       "unassigned": "Sin asignar",
       "claim": "Reclamar",
-      "claimSuccess": "Reserva reclamada",
-      "claimSuccessDescription": "Esta reserva ahora está asignada a ti.",
-      "claimError": "Error al reclamar la reserva"
+      "claimSuccess": "Solicitud reclamada",
+      "claimSuccessDescription": "Esta solicitud ahora está asignada a ti.",
+      "claimError": "Error al reclamar la solicitud"
     },
     "bookingDetail": {
       "notFound": "Reserva no encontrada.",
