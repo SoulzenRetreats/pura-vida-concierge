@@ -1,14 +1,30 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, ChevronUp, BellRing, X, Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import servicesHero from "@/assets/services-hero.jpg";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
+import { useTripPlan } from "@/contexts/TripPlanContext";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+} from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Service {
   id: string;
@@ -29,7 +45,7 @@ interface Service {
 // Simple photo gallery component with manual navigation
 function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; serviceName: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   if (!photos || photos.length <= 1) {
     return (
       <img
@@ -96,12 +112,88 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
   );
 }
 
+function PriceDisplay({ service }: { service: Service }) {
+  const { t } = useTranslation();
+  if (service.price_min != null && service.price_max != null && service.price_min === service.price_max) {
+    return <p className="text-lg font-semibold text-accent font-body">${service.price_min.toFixed(2)}</p>;
+  }
+  if (service.price_min != null && service.price_max != null) {
+    return (
+      <p className="text-sm font-medium text-accent font-body">
+        ${service.price_min.toFixed(2)} – ${service.price_max.toFixed(2)}
+      </p>
+    );
+  }
+  if (service.price_min != null) {
+    return (
+      <p className="text-sm font-medium text-accent font-body">
+        {t("experiences.fromPrice", { price: service.price_min.toFixed(2) })}
+      </p>
+    );
+  }
+  return null;
+}
+
+// Service detail content (shared between Dialog and Drawer)
+function ServiceDetailContent({
+  service,
+  getLocalizedName,
+  getLocalizedDescription,
+}: {
+  service: Service;
+  getLocalizedName: (s: Service) => string;
+  getLocalizedDescription: (s: Service) => string;
+}) {
+  const { t } = useTranslation();
+  const { toggle, isInPlan } = useTripPlan();
+  const inPlan = isInPlan(service.id);
+  const photos = service.photos || [];
+
+  return (
+    <div className="space-y-4">
+      {/* Photo gallery */}
+      {photos.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+          {photos.map((photo, i) => (
+            <img
+              key={i}
+              src={photo}
+              alt={`${getLocalizedName(service)} ${i + 1}`}
+              className="h-48 w-auto rounded-lg object-cover flex-shrink-0"
+            />
+          ))}
+        </div>
+      )}
+      <p className="text-muted-foreground font-body leading-relaxed">{getLocalizedDescription(service)}</p>
+      <PriceDisplay service={service} />
+      <Button
+        onClick={() => toggle(service.id)}
+        variant={inPlan ? "secondary" : "default"}
+        className="w-full h-12 gap-2"
+      >
+        <BellRing
+          className={`h-5 w-5 ${inPlan ? "fill-amber-400 text-amber-400" : ""}`}
+        />
+        {inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
+      </Button>
+    </div>
+  );
+}
+
 const Experiences = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { toggle, isInPlan, planCount, planItems, remove } = useTripPlan();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const { data: categories = [] } = useCategories();
+
+  // Detail modal/drawer
+  const [detailService, setDetailService] = useState<Service | null>(null);
+  // Review drawer
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   useEffect(() => {
     fetchServices();
@@ -125,16 +217,12 @@ const Experiences = () => {
   };
 
   const getLocalizedName = (service: Service) => {
-    if (i18n.language === "es") {
-      return service.name_es || service.name_en || service.name;
-    }
+    if (i18n.language === "es") return service.name_es || service.name_en || service.name;
     return service.name_en || service.name;
   };
 
   const getLocalizedDescription = (service: Service) => {
-    if (i18n.language === "es") {
-      return service.description_es || service.description_en || service.description;
-    }
+    if (i18n.language === "es") return service.description_es || service.description_en || service.description;
     return service.description_en || service.description;
   };
 
@@ -145,6 +233,22 @@ const Experiences = () => {
       label: getCategoryName(cat, i18n.language),
     })),
   ];
+
+  const plannedServices = services.filter((s) => planItems.includes(s.id));
+
+  const handleFinalize = () => {
+    setReviewOpen(false);
+    navigate(`/booking?services=${planItems.join(",")}`);
+  };
+
+  // Detail view
+  const detailContent = detailService ? (
+    <ServiceDetailContent
+      service={detailService}
+      getLocalizedName={getLocalizedName}
+      getLocalizedDescription={getLocalizedDescription}
+    />
+  ) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -199,43 +303,146 @@ const Experiences = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service) => (
-                <Card key={service.id} className="overflow-hidden hover:shadow-luxury transition-spring group">
-                  <div className="relative h-56 overflow-hidden">
-                    <ServicePhotoGallery photos={service.photos || []} serviceName={getLocalizedName(service)} />
-                    <Badge className="absolute top-4 right-4 gradient-secondary z-10">
-                      {getCategoryNameBySlug(categories, service.category, i18n.language)}
-                    </Badge>
-                    <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
-                      {service.is_for_sale && (
-                        <Badge className="bg-accent text-accent-foreground">{t("experiences.forSale")}</Badge>
-                      )}
-                      {service.is_rental && (
-                        <Badge variant="outline" className="bg-background/80">{t("experiences.rental")}</Badge>
-                      )}
+              {services.map((service) => {
+                const inPlan = isInPlan(service.id);
+                return (
+                  <Card key={service.id} className="overflow-hidden hover:shadow-luxury transition-spring group">
+                    <div className="relative h-56 overflow-hidden">
+                      <ServicePhotoGallery photos={service.photos || []} serviceName={getLocalizedName(service)} />
+
+                      {/* Top-left badges */}
+                      <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
+                        <Badge className="gradient-secondary">
+                          {getCategoryNameBySlug(categories, service.category, i18n.language)}
+                        </Badge>
+                        {service.is_for_sale && (
+                          <Badge className="bg-accent text-accent-foreground">{t("experiences.forSale")}</Badge>
+                        )}
+                        {service.is_rental && (
+                          <Badge variant="outline" className="bg-background/80">{t("experiences.rental")}</Badge>
+                        )}
+                      </div>
+
+                      {/* Bell icon top-right */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggle(service.id);
+                        }}
+                        aria-label={inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
+                        className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95"
+                      >
+                        <BellRing
+                          className={`h-5 w-5 transition-all ${
+                            inPlan
+                              ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
+                              : "text-white"
+                          }`}
+                        />
+                      </button>
                     </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-heading font-semibold mb-2">{getLocalizedName(service)}</h3>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">{getLocalizedDescription(service)}</p>
-                    {service.price_min != null && service.price_max != null && service.price_min === service.price_max ? (
-                      <p className="text-lg font-semibold text-accent">${service.price_min.toFixed(2)}</p>
-                    ) : service.price_min != null && service.price_max != null ? (
-                      <p className="text-sm font-medium text-accent">
-                        ${service.price_min.toFixed(2)} – ${service.price_max.toFixed(2)}
-                      </p>
-                    ) : service.price_min != null ? (
-                      <p className="text-sm font-medium text-accent">
-                        {t("experiences.fromPrice", { price: service.price_min.toFixed(2) })}
-                      </p>
-                    ) : null}
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-heading font-semibold mb-2">{getLocalizedName(service)}</h3>
+                      <p className="text-muted-foreground mb-4 line-clamp-3 font-body">{getLocalizedDescription(service)}</p>
+                      <div className="flex items-center justify-between">
+                        <PriceDisplay service={service} />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDetailService(service)}
+                          className="text-primary gap-1.5"
+                        >
+                          <Eye className="h-4 w-4" />
+                          {t("tripPlan.moreDetails")}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
       </section>
+
+      {/* Sticky bottom bar */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ${
+          planCount > 0 ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0 pointer-events-none"
+        }`}
+      >
+        <button
+          onClick={() => setReviewOpen(true)}
+          className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground shadow-luxury font-body font-medium text-sm hover:bg-primary/90 active:scale-[0.97] transition-all"
+        >
+          <BellRing className="h-4 w-4" />
+          {t("tripPlan.servicesInPlan", { count: planCount })}
+          <ChevronUp className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Review Drawer */}
+      <Drawer open={reviewOpen} onOpenChange={setReviewOpen}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader>
+            <DrawerTitle className="font-heading">{t("tripPlan.reviewPlan")}</DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4 pb-2 overflow-y-auto flex-1">
+            {plannedServices.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8 font-body">{t("tripPlan.emptyPlan")}</p>
+            ) : (
+              <ul className="space-y-3">
+                {plannedServices.map((service) => (
+                  <li key={service.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/50">
+                    <img
+                      src={service.photos?.[0] || "/placeholder.svg"}
+                      alt={getLocalizedName(service)}
+                      className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-heading font-semibold text-sm truncate">{getLocalizedName(service)}</p>
+                      <PriceDisplay service={service} />
+                    </div>
+                    <button
+                      onClick={() => remove(service.id)}
+                      aria-label={t("tripPlan.removeFromPlan")}
+                      className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <DrawerFooter>
+            <Button onClick={handleFinalize} disabled={planCount === 0} className="w-full h-12">
+              {t("tripPlan.finalizePlan")}
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Service detail - Drawer on mobile, Dialog on desktop */}
+      {isMobile ? (
+        <Drawer open={!!detailService} onOpenChange={(open) => !open && setDetailService(null)}>
+          <DrawerContent className="max-h-[90vh]">
+            <DrawerHeader>
+              <DrawerTitle className="font-heading">{detailService ? getLocalizedName(detailService) : ""}</DrawerTitle>
+            </DrawerHeader>
+            <div className="px-4 pb-6 overflow-y-auto">{detailContent}</div>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={!!detailService} onOpenChange={(open) => !open && setDetailService(null)}>
+          <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="font-heading">{detailService ? getLocalizedName(detailService) : ""}</DialogTitle>
+            </DialogHeader>
+            {detailContent}
+          </DialogContent>
+        </Dialog>
+      )}
 
       <Footer />
     </div>
