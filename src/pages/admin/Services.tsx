@@ -107,6 +107,7 @@ export default function AdminServices() {
         price_max: data.price_max ?? null,
         is_for_sale: data.is_for_sale ?? false,
         is_rental: data.is_rental ?? false,
+        concierge_id: data.concierge_id || null,
       };
 
       if (editingService) {
