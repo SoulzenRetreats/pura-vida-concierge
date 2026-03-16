@@ -49,24 +49,3 @@ export function useBookings({ searchTerm = "" }: UseBookingsOptions = {}) {
     },
   });
 }
-  return useQuery({
-    queryKey: ["bookings", searchTerm],
-    queryFn: async () => {
-      let query = supabase
-        .from("bookings")
-        .select("*, properties(name, location), booking_services(service_id, services(name))")
-        .order("created_at", { ascending: false });
-
-      if (searchTerm.trim()) {
-        query = query.or(
-          `customer_name.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`
-        );
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      return data as BookingWithProperty[];
-    },
-  });
-}
