@@ -430,7 +430,13 @@
       "deleteConfirm": {
         "title": "Delete Service",
         "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
-      }
+      },
+      "unassigned": "Unassigned",
+      "allConcierges": "All Concierges",
+      "bulkAssign": "Assign Concierge",
+      "assignSelected": "Assign",
+      "bulkAssigned": "Concierge assigned successfully",
+      "selected": "selected"
     },
     "users": {
       "title": "User Management",
