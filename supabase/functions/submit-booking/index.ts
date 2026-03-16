@@ -200,9 +200,7 @@ Deno.serve(async (req) => {
           notificationEmail = (settingRow?.value as string) || null;
         }
 
-        const conciergeName = conciergeProfile?.first_name || "Concierge";
-
-        // 1) Internal notification to concierge
+        // Internal notification to concierge
         if (notificationEmail) {
           const internalHtml = `
             <h2>New Trip Plan Request</h2>
