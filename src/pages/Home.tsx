@@ -24,7 +24,7 @@ const Home = () => {
 
   const activeSlug = slug || conciergeSlug;
   const experiencesPath = activeSlug ? `/${activeSlug}/experiences` : "/experiences";
-  const bookingPath = activeSlug ? `/${activeSlug}/booking` : "/booking";
+  const bookingPath = activeSlug ? `/${activeSlug}/booking` : null;
 
   const expertise = [
     {
@@ -134,14 +134,16 @@ const Home = () => {
           <p className="text-sm mb-8 text-primary-foreground/70">
             {t('home.cta.badge')}
           </p>
-          <Link to={bookingPath}>
-            <Button
-              size="lg"
-              className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"
-            >
-              {t('home.cta.button')}
-            </Button>
-          </Link>
+          {bookingPath && (
+            <Link to={bookingPath}>
+              <Button
+                size="lg"
+                className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"
+              >
+                {t('home.cta.button')}
+              </Button>
+            </Link>
+          )}
         </div>
       </section>
 

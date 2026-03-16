@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 export const Footer = () => {
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
   return <footer className="bg-primary text-primary-foreground py-12 mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -34,11 +34,13 @@ export const Footer = () => {
               </li>
 
 
-              <li>
-                <Link to="/booking" className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
-                  {t('footer.bookNow')}
-                </Link>
-              </li>
+              {conciergeSlug && (
+                <li>
+                  <Link to={`/${conciergeSlug}/booking`} className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
+                    {t('footer.bookNow')}
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 

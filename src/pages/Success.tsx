@@ -1,20 +1,19 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, MessageCircle, Loader2 } from "lucide-react";
-import { useTripPlan } from "@/contexts/TripPlanContext";
-import { useUserProfile } from "@/hooks/useProfiles";
+import { useProfileBySlug } from "@/hooks/useProfiles";
 
 const Success = () => {
   const { t } = useTranslation();
-  const { conciergeId } = useTripPlan();
+  const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
   const serviceNames: string[] = (location.state as any)?.serviceNames || [];
 
-  const { data: conciergeProfile, isLoading } = useUserProfile(conciergeId || "");
+  const { data: conciergeProfile, isLoading } = useProfileBySlug(slug || "");
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 

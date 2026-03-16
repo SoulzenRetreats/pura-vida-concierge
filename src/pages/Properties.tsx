@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Users, Bed, Bath, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import propertiesHero from "@/assets/properties-hero.jpg";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 interface Property {
   id: string;
@@ -24,6 +25,7 @@ interface Property {
 
 const Properties = () => {
   const { t } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
@@ -125,9 +127,11 @@ const Properties = () => {
               <p className="text-muted-foreground mb-8">
                 Check back soon for our luxury villas or contact us for availability
               </p>
-              <Link to="/booking">
-                <Button className="gradient-secondary">Request Information</Button>
-              </Link>
+              {conciergeSlug && (
+                <Link to={`/${conciergeSlug}/booking`}>
+                  <Button className="gradient-secondary">Request Information</Button>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -171,11 +175,17 @@ const Properties = () => {
                       </div>
                     </div>
 
-                    <Link to={`/booking?property=${property.id}`}>
-                      <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
+                    {conciergeSlug ? (
+                      <Link to={`/${conciergeSlug}/booking?property=${property.id}`}>
+                        <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
+                          {t('properties.requestTrip')}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth" disabled>
                         {t('properties.requestTrip')}
                       </Button>
-                    </Link>
+                    )}
                   </CardContent>
                 </Card>
               ))}

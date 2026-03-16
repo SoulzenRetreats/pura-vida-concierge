@@ -51,9 +51,6 @@ function App(): React.JSX.Element {
               <Route path="/:slug/booking" element={<Booking />} />
               <Route path="/:slug/success" element={<Success />} />
 
-              {/* Legacy booking/success redirect using context */}
-              <Route path="/booking" element={<Booking />} />
-              <Route path="/success" element={<Success />} />
 
               {/* Auth route */}
               <Route path="/login/auth" element={<AdminAuth />} />
