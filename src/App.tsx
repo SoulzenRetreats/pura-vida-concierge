@@ -69,6 +69,7 @@ function App(): React.JSX.Element {
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </TripPlanProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
