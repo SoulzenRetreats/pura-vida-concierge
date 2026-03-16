@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <Routes>
+            <TripPlanProvider>
               {/* Public routes */}
               <Route path="/" element={<Home />} />
               <Route path="/properties" element={<Properties />} />
