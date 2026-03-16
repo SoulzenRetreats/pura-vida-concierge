@@ -175,11 +175,17 @@ const Properties = () => {
                       </div>
                     </div>
 
-                    <Link to={`/booking?property=${property.id}`}>
-                      <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
+                    {conciergeSlug ? (
+                      <Link to={`/${conciergeSlug}/booking?property=${property.id}`}>
+                        <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
+                          {t('properties.requestTrip')}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth" disabled>
                         {t('properties.requestTrip')}
                       </Button>
-                    </Link>
+                    )}
                   </CardContent>
                 </Card>
               ))}

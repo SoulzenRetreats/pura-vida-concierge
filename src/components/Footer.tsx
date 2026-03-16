@@ -34,11 +34,13 @@ export const Footer = () => {
               </li>
 
 
-              <li>
-                <Link to="/booking" className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
-                  {t('footer.bookNow')}
-                </Link>
-              </li>
+              {conciergeSlug && (
+                <li>
+                  <Link to={`/${conciergeSlug}/booking`} className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
+                    {t('footer.bookNow')}
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
