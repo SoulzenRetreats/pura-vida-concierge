@@ -306,9 +306,9 @@
     "dashboard": {
       "title": "Panel de Administración",
       "welcome": "Bienvenido al Panel de Administración",
-      "welcomeDescription": "Administra tus propiedades, reservas, proveedores e ingresos desde aquí.",
-      "gettingStarted": "Navega usando la barra lateral para gestionar reservas, proveedores e ingresos.",
-      "totalBookings": "Total de Reservas",
+      "welcomeDescription": "Administra tus propiedades, solicitudes, proveedores e ingresos desde aquí.",
+      "gettingStarted": "Navega usando la barra lateral para gestionar solicitudes, proveedores e ingresos.",
+      "totalBookings": "Total de Solicitudes",
       "properties": "Propiedades",
       "vendors": "Proveedores",
       "revenue": "Ingresos"
