@@ -32,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useCategories, getCategoryName } from "@/hooks/useCategories";
+import { useConciergeProfiles } from "@/hooks/useProfiles";
 import type { Service } from "@/hooks/useServices";
 
 const serviceSchema = z.object({
@@ -45,6 +46,7 @@ const serviceSchema = z.object({
   photo_urls: z.string().optional().nullable(),
   is_for_sale: z.boolean().default(false),
   is_rental: z.boolean().default(false),
+  concierge_id: z.string().optional().nullable(),
 });
 
 export type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -66,6 +68,7 @@ export function ServiceForm({
 }: ServiceFormProps) {
   const { t, i18n } = useTranslation();
   const { data: categories = [] } = useCategories();
+  const { data: conciergeProfiles = [] } = useConciergeProfiles();
 
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
@@ -80,6 +83,7 @@ export function ServiceForm({
       photo_urls: "",
       is_for_sale: false,
       is_rental: false,
+      concierge_id: null,
     },
   });
 
@@ -98,6 +102,7 @@ export function ServiceForm({
           photo_urls: photoUrlsString,
           is_for_sale: service.is_for_sale ?? false,
           is_rental: service.is_rental ?? false,
+          concierge_id: (service as any).concierge_id ?? null,
         });
       } else {
         form.reset({
@@ -111,6 +116,7 @@ export function ServiceForm({
           photo_urls: "",
           is_for_sale: false,
           is_rental: false,
+          concierge_id: null,
         });
       }
     }
@@ -222,6 +228,38 @@ export function ServiceForm({
                       {categories.map((category) => (
                         <SelectItem key={category.slug} value={category.slug}>
                           {getCategoryName(category, i18n.language)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Assigned Concierge */}
+            <FormField
+              control={form.control}
+              name="concierge_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("admin.services.form.concierge")}</FormLabel>
+                  <Select
+                    onValueChange={(val) => field.onChange(val === "none" ? null : val)}
+                    value={field.value ?? "none"}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("admin.services.form.selectConcierge")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        {t("admin.services.form.noConcierge")}
+                      </SelectItem>
+                      {conciergeProfiles.map((profile: any) => (
+                        <SelectItem key={profile.id} value={profile.id}>
+                          {profile.first_name || profile.email || profile.id}
                         </SelectItem>
                       ))}
                     </SelectContent>

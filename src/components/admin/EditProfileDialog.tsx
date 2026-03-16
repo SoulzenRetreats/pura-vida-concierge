@@ -28,16 +28,32 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
 
   const [firstName, setFirstName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [slug, setSlug] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
 
   useEffect(() => {
     if (profile) {
       setFirstName(profile.first_name ?? "");
       setWhatsappNumber(profile.whatsapp_number ?? "");
+      setSlug(profile.slug ?? "");
+      setContactEmail(profile.contact_email ?? "");
     } else {
       setFirstName("");
       setWhatsappNumber("");
+      setSlug("");
+      setContactEmail("");
     }
   }, [profile]);
+
+  const handleSlugChange = (value: string) => {
+    // Auto-slugify: lowercase, replace spaces/special chars with hyphens
+    const slugified = value
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    setSlug(slugified);
+  };
 
   const handleSave = () => {
     if (!user) return;
@@ -46,6 +62,8 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
         userId: user.user_id,
         firstName: firstName.trim() || null,
         whatsappNumber: whatsappNumber.trim() || null,
+        slug: slug.trim() || null,
+        contactEmail: contactEmail.trim() || null,
       },
       {
         onSuccess: () => {
@@ -88,6 +106,28 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
                 value={whatsappNumber}
                 onChange={(e) => setWhatsappNumber(e.target.value)}
                 placeholder={t("admin.users.profile.whatsappPlaceholder")}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label>{t("admin.users.profile.slug")}</Label>
+              <Input
+                value={slug}
+                onChange={(e) => handleSlugChange(e.target.value)}
+                placeholder={t("admin.users.profile.slugPlaceholder")}
+                className="mt-1.5"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("admin.users.profile.slugHelp")}
+              </p>
+            </div>
+            <div>
+              <Label>{t("admin.users.profile.contactEmail")}</Label>
+              <Input
+                type="email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                placeholder={t("admin.users.profile.contactEmailPlaceholder")}
                 className="mt-1.5"
               />
             </div>

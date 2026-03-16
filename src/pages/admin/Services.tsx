@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Search, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, MoreHorizontal, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
