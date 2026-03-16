@@ -63,9 +63,9 @@ export const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link to="/booking">
+            <Link to="/experiences">
               <Button className="gradient-secondary hover:opacity-90 transition-smooth">
-                {t('nav.planMyTrip')}
+                {t('nav.exploreExperiences')}
               </Button>
             </Link>
           </div>
