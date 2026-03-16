@@ -273,6 +273,10 @@ export default function AdminServices() {
                           <Pencil className="mr-2 h-4 w-4" />
                           {t("admin.services.edit")}
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicate(service)}>
+                          <Copy className="mr-2 h-4 w-4" />
+                          {t("admin.services.duplicate")}
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDeleteClick(service)}
                           className="text-destructive"
