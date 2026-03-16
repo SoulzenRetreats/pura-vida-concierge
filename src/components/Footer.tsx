@@ -32,11 +32,8 @@ export const Footer = () => {
                   {t('nav.experiences')}
                 </Link>
               </li>
-              <li>
-                <Link to="/trip-types" className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
-                  {t('nav.tripTypes')}
-                </Link>
-              </li>
+
+
               <li>
                 <Link to="/booking" className="text-primary-foreground/80 hover:text-primary-foreground transition-smooth">
                   {t('footer.bookNow')}

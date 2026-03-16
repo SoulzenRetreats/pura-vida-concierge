@@ -23,33 +23,35 @@
   },
   "home": {
     "hero": {
-      "title": "Vacaciones Grupales de Lujo en Costa Rica",
-      "subtitle": "Experimenta servicios de conserje personalizados en villas impresionantes",
+      "title": "Cura Tu Pura Vida",
+      "subtitle": "Explora nuestra colección exclusiva de chefs privados, traslados de lujo y aventuras ocultas. Arma tu plan y nosotros nos encargamos del resto.",
+      "exploreExperiences": "Explorar Experiencias",
       "viewProperties": "Ver Propiedades"
     },
-    "features": {
-      "title": "Por Qué Elegir Pura Vida",
-      "villas": {
-        "title": "Villas de Lujo",
-        "description": "Propiedades impresionantes en Jacó y La Fortuna con comodidades modernas"
+    "expertise": {
+      "title": "Nuestra Experiencia",
+      "localAdventures": {
+        "title": "Aventuras Locales",
+        "description": "Acceso privilegiado a cascadas ocultas, senderos selváticos y experiencias auténticas costarricenses"
       },
-      "experiences": {
-        "title": "Experiencias Grupales",
-        "description": "Chefs privados, tours, transporte y actividades de aventura"
+      "standardExcellence": {
+        "title": "Excelencia Estándar",
+        "description": "Viajes curados con chefs de primer nivel, guías confiables y logística impecable"
       },
-      "locations": {
-        "title": "Ubicaciones Premium",
-        "description": "Acceso a playas, selvas tropicales y aguas termales naturales"
+      "premiereService": {
+        "title": "Servicio Premiere",
+        "description": "Planificación elevada con proveedores prioritarios, villas de lujo e itinerarios personalizados"
       },
-      "service": {
-        "title": "Servicio de Primera Clase",
-        "description": "Conserje personalizado manejando cada detalle de tu estadía"
+      "ultraLuxe": {
+        "title": "Soporte Ultra-Lujo",
+        "description": "Conserje de guante blanco para grupos VIP — cada detalle cubierto, sin límites"
       }
     },
     "cta": {
       "title": "¿Listo para Tu Aventura Pura Vida?",
       "subtitle": "Déjanos crear la escapada perfecta a Costa Rica para tu grupo",
-      "button": "Solicitar un Itinerario Personalizado"
+      "badge": "¿No sabes por dónde empezar? Danos tus fechas y te armamos un plan personalizado.",
+      "button": "Solicitar Itinerario Personalizado"
     }
   },
   "properties": {

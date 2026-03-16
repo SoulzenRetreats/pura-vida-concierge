@@ -118,9 +118,9 @@ export const Navigation = () => {
                 🇨🇷 Español
               </Button>
             </div>
-            <Link to="/booking" onClick={() => setIsOpen(false)}>
+            <Link to="/experiences" onClick={() => setIsOpen(false)}>
               <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
-                {t('nav.planMyTrip')}
+                {t('nav.exploreExperiences')}
               </Button>
             </Link>
           </div>

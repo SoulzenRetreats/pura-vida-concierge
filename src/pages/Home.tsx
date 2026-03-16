@@ -2,13 +2,40 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { Sparkles, Users, MapPin, Heart } from "lucide-react";
+import { Compass, Award, Crown, Gem } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-main.jpg";
 
 const Home = () => {
   const { t } = useTranslation();
-  
+
+  const expertise = [
+    {
+      icon: Compass,
+      titleKey: "home.expertise.localAdventures.title",
+      descKey: "home.expertise.localAdventures.description",
+      color: "bg-accent/10 text-accent",
+    },
+    {
+      icon: Award,
+      titleKey: "home.expertise.standardExcellence.title",
+      descKey: "home.expertise.standardExcellence.description",
+      color: "bg-secondary/10 text-secondary",
+    },
+    {
+      icon: Crown,
+      titleKey: "home.expertise.premiereService.title",
+      descKey: "home.expertise.premiereService.description",
+      color: "bg-primary/10 text-primary",
+    },
+    {
+      icon: Gem,
+      titleKey: "home.expertise.ultraLuxe.title",
+      descKey: "home.expertise.ultraLuxe.description",
+      color: "bg-accent/10 text-accent",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -32,12 +59,12 @@ const Home = () => {
             {t('home.hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            <Link to="/booking">
+            <Link to="/experiences">
               <Button
                 size="lg"
                 className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-8 py-6 shadow-luxury"
               >
-                {t('nav.planMyTrip')}
+                {t('home.hero.exploreExperiences')}
               </Button>
             </Link>
             <Link to="/properties">
@@ -53,61 +80,27 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Our Expertise Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
           <h2 className="text-4xl sm:text-5xl font-heading font-bold text-center mb-16">
-            {t('home.features.title')}
+            {t('home.expertise.title')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-spring">
-                <Sparkles className="w-8 h-8 text-primary" />
+            {expertise.map((item, index) => (
+              <div key={index} className="text-center group">
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-full ${item.color} flex items-center justify-center group-hover:scale-110 transition-spring`}>
+                  <item.icon className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-heading font-semibold mb-3">
+                  {t(item.titleKey)}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t(item.descKey)}
+                </p>
               </div>
-              <h3 className="text-xl font-heading font-semibold mb-3">
-                {t('home.features.villas.title')}
-              </h3>
-              <p className="text-muted-foreground">
-                {t('home.features.villas.description')}
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-spring">
-                <Users className="w-8 h-8 text-secondary" />
-              </div>
-              <h3 className="text-xl font-heading font-semibold mb-3">
-                {t('home.features.experiences.title')}
-              </h3>
-              <p className="text-muted-foreground">
-                {t('home.features.experiences.description')}
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-spring">
-                <MapPin className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-xl font-heading font-semibold mb-3">
-                {t('home.features.locations.title')}
-              </h3>
-              <p className="text-muted-foreground">
-                {t('home.features.locations.description')}
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-spring">
-                <Heart className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-heading font-semibold mb-3">
-                {t('home.features.service.title')}
-              </h3>
-              <p className="text-muted-foreground">
-                {t('home.features.service.description')}
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -118,8 +111,11 @@ const Home = () => {
           <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-6">
             {t('home.cta.title')}
           </h2>
-          <p className="text-xl mb-8 text-primary-foreground/90">
+          <p className="text-xl mb-4 text-primary-foreground/90">
             {t('home.cta.subtitle')}
+          </p>
+          <p className="text-sm mb-8 text-primary-foreground/70">
+            {t('home.cta.badge')}
           </p>
           <Link to="/booking">
             <Button
