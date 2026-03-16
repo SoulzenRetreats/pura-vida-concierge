@@ -118,9 +118,10 @@ const Booking = () => {
       if (error) throw error;
 
       if (data?.success) {
+        const serviceNames = [...selectedServiceNames];
         clearTripPlan();
         const successPath = activeSlug ? `/${activeSlug}/success` : "/success";
-        navigate(successPath);
+        navigate(successPath, { state: { serviceNames } });
       } else {
         throw new Error(data?.error || "Submission failed");
       }

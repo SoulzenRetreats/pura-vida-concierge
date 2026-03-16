@@ -227,45 +227,6 @@ Deno.serve(async (req) => {
           else console.log("Internal notification sent to:", notificationEmail);
         }
 
-        // 2) Customer confirmation email
-        const replyTo = notificationEmail || "hello@soulzenwellness.com";
-        const customerHtml = `
-          <h2>We received your trip plan request!</h2>
-          <p>Hi ${customerName.trim()},</p>
-          <p>Thank you for reaching out to Pura Vida Concierge! We've received your request and ${conciergeName} will be in touch soon to start planning your perfect Costa Rica experience.</p>
-          <p><strong>Your trip details:</strong></p>
-          <ul>
-            <li><strong>Dates:</strong> ${checkIn} → ${checkOut}</li>
-            <li><strong>Guests:</strong> ${guestCount}</li>
-            ${serviceNamesList.length > 0 ? `<li><strong>Selected Experiences:</strong> ${serviceNamesList.join(", ")}</li>` : ""}
-          </ul>
-          ${trimmed["Special notes"] ? `<p><strong>Your notes:</strong> ${trimmed["Special notes"]}</p>` : ""}
-          <p>If you have any questions in the meantime, just reply to this email.</p>
-          <p>Pura Vida! 🌴</p>
-        `;
-
-        const customerRes = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${resendApiKey}` },
-          body: JSON.stringify({
-            from: "Pura Vida Concierge <bookings@soulzenwellness.com>",
-            to: [customerEmail.trim().toLowerCase()],
-            reply_to: replyTo,
-            subject: "We received your trip plan request! 🌴",
-            html: customerHtml,
-          }),
-        });
-
-        if (!customerRes.ok) {
-          console.error("Customer email failed:", await customerRes.text());
-        } else {
-          console.log("Customer confirmation sent to:", customerEmail.trim().toLowerCase());
-          // Update customer_email_sent_at
-          await supabase
-            .from("bookings")
-            .update({ customer_email_sent_at: new Date().toISOString() })
-            .eq("id", booking.id);
-        }
       }
     } catch (emailError) {
       console.error("Email notification error (non-blocking):", emailError);
