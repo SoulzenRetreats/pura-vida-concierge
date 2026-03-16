@@ -392,6 +392,7 @@
       "error": "An error occurred",
       "edit": "Edit",
       "delete": "Delete",
+      "duplicate": "Duplicate",
       "forSale": "For Sale",
       "rental": "Rental",
       "columns": {
