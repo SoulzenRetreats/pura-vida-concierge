@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -8,6 +9,8 @@ import { useConciergeContact } from "@/hooks/useProfiles";
 const Success = () => {
   const { t } = useTranslation();
   const { data: concierge, isLoading } = useConciergeContact();
+
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const whatsappUrl = concierge?.whatsapp_number
     ? `https://wa.me/${concierge.whatsapp_number.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(

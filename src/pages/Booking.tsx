@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Users, Loader2, Minus, Plus, BellRing } from "lucide-react";
+import { Calendar, Users, Loader2, Minus, Plus, ConciergeBell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTripPlan } from "@/contexts/TripPlanContext";
 
@@ -19,6 +19,8 @@ const Booking = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { clear: clearTripPlan } = useTripPlan();
+
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   // Selected services from Trip Plan
   const serviceIds = useMemo(() => {
@@ -143,7 +145,7 @@ const Booking = () => {
           {selectedServiceNames.length > 0 && (
             <Card className="mb-6 border-primary/20 bg-primary/5">
               <CardContent className="p-4 flex items-start gap-3">
-                <BellRing className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <ConciergeBell className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-heading font-semibold text-sm mb-1">{t("tripPlan.selectedExperiences")}</p>
                   <p className="text-sm text-muted-foreground font-body">{selectedServiceNames.join(", ")}</p>

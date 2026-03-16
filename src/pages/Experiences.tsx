@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ChevronLeft, ChevronRight, ChevronUp, BellRing, X, Eye } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, ChevronUp, ConciergeBell, X, Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import servicesHero from "@/assets/services-hero.jpg";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
@@ -159,7 +159,7 @@ function SparklingBell({
       aria-label={ariaLabel}
       className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95 overflow-visible"
     >
-      <BellRing
+      <ConciergeBell
         className={`h-5 w-5 transition-all ${sparkling ? "animate-bell-pulse" : ""} ${
           active
             ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
@@ -239,7 +239,7 @@ function ServiceDetailContent({
         variant={inPlan ? "secondary" : "default"}
         className="w-full h-12 gap-2"
       >
-        <BellRing
+        <ConciergeBell
           className={`h-5 w-5 ${inPlan ? "fill-amber-400 text-amber-400" : ""}`}
         />
         {inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
@@ -432,7 +432,7 @@ const Experiences = () => {
           onClick={() => setReviewOpen(true)}
           className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground shadow-luxury font-body font-medium text-sm hover:bg-primary/90 active:scale-[0.97] transition-all"
         >
-          <BellRing className="h-4 w-4" />
+          <ConciergeBell className="h-4 w-4" />
           {t("tripPlan.servicesInPlan", { count: planCount })}
           <ChevronUp className="h-4 w-4" />
         </button>
