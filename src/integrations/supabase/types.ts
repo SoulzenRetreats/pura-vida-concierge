@@ -542,6 +542,14 @@ export type Database = {
           whatsapp_number: string
         }[]
       }
+      get_notification_recipient: {
+        Args: never
+        Returns: {
+          email: string
+          first_name: string
+          whatsapp_number: string
+        }[]
+      }
       get_users_with_roles: {
         Args: never
         Returns: {

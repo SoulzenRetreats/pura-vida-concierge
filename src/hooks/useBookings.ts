@@ -14,6 +14,19 @@ interface UseBookingsOptions {
   searchTerm?: string;
 }
 
+export function useNotificationRecipient() {
+  return useQuery({
+    queryKey: ["notification-recipient"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_notification_recipient");
+      if (error) throw error;
+      const row = (data as { email: string; first_name: string; whatsapp_number: string }[])?.[0];
+      return row ?? null;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useBookings({ searchTerm = "" }: UseBookingsOptions = {}) {
   return useQuery({
     queryKey: ["bookings", searchTerm],

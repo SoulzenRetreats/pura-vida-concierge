@@ -13,8 +13,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useBookings } from "@/hooks/useBookings";
+import { useBookings, useNotificationRecipient } from "@/hooks/useBookings";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
 
 export default function AdminBookings() {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ export default function AdminBookings() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const { data: bookings, isLoading } = useBookings({ searchTerm });
+  const { data: recipient } = useNotificationRecipient();
 
   const handleCopy = async (booking: NonNullable<typeof bookings>[number]) => {
     const services = booking.booking_services
@@ -149,28 +151,48 @@ export default function AdminBookings() {
                             <Clock className="h-3.5 w-3.5" />
                             {t("admin.bookings.submitted")}: {submittedAt}
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <Mail className="h-3.5 w-3.5" />
-                            {t("admin.bookings.emailSentTo", {
-                              email: booking.customer_email,
-                              date: submittedAt,
-                            })}
-                          </div>
+                          {recipient?.email && (
+                            <div className="flex items-center gap-1.5">
+                              <Mail className="h-3.5 w-3.5" />
+                              {t("admin.bookings.emailSentTo", {
+                                email: recipient.email,
+                                date: submittedAt,
+                              })}
+                            </div>
+                          )}
                         </div>
 
-                        {/* Copy button */}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleCopy(booking)}
-                        >
-                          {copiedId === booking.id ? (
-                            <Check className="h-4 w-4 mr-1" />
-                          ) : (
-                            <Copy className="h-4 w-4 mr-1" />
+                        {/* Action buttons */}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCopy(booking)}
+                          >
+                            {copiedId === booking.id ? (
+                              <Check className="h-4 w-4 mr-1" />
+                            ) : (
+                              <Copy className="h-4 w-4 mr-1" />
+                            )}
+                            {t("admin.bookings.copyDetails")}
+                          </Button>
+                          {recipient?.whatsapp_number && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                            >
+                              <a
+                                href={`https://wa.me/${recipient.whatsapp_number.replace(/\D/g, "")}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <MessageCircle className="h-4 w-4 mr-1" />
+                                {t("admin.bookings.whatsappConcierge")}
+                              </a>
+                            </Button>
                           )}
-                          {t("admin.bookings.copyDetails")}
-                        </Button>
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
