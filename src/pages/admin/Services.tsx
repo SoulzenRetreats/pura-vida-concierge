@@ -52,6 +52,7 @@ export default function AdminServices() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
 
