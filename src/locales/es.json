@@ -501,6 +501,16 @@
           "cancel": "Cancelar",
           "confirm": "Revocar"
         }
+      },
+      "profile": {
+        "title": "Editar Perfil",
+        "firstName": "Nombre",
+        "firstNamePlaceholder": "ej. Carlos",
+        "whatsapp": "Número de WhatsApp",
+        "whatsappPlaceholder": "+506 8888-8888",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "updated": "Perfil actualizado exitosamente"
       }
     },
     "settings": {
