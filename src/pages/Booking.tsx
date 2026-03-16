@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -17,6 +17,7 @@ const Booking = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const { clear: clearTripPlan } = useTripPlan();
 
   // Selected services from Trip Plan
@@ -110,22 +111,8 @@ const Booking = () => {
       if (error) throw error;
 
       if (data?.success) {
-        toast({
-          title: t("booking.success.title"),
-          description: t("booking.success.message"),
-        });
-        setFormData({
-          checkIn: "",
-          checkOut: "",
-          adults: 2,
-          kids: 0,
-          vision: "",
-          customerName: "",
-          customerEmail: "",
-          customerPhone: "",
-          honeypot: "",
-        });
         clearTripPlan();
+        navigate("/success");
       } else {
         throw new Error(data?.error || "Submission failed");
       }

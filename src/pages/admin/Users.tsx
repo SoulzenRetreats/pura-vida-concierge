@@ -51,6 +51,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { InviteUserDialog } from "@/components/admin/InviteUserDialog";
 import { AddRoleDialog } from "@/components/admin/AddRoleDialog";
+import { EditProfileDialog } from "@/components/admin/EditProfileDialog";
 import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -67,6 +68,7 @@ export default function AdminUsers() {
   const [revokingInvitation, setRevokingInvitation] = useState<{ id: string; email: string } | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [addRoleUser, setAddRoleUser] = useState<{ user_id: string; email: string; existingRoles: AppRole[] } | null>(null);
+  const [editProfileUser, setEditProfileUser] = useState<{ user_id: string; email: string } | null>(null);
 
   const handleRemoveRole = () => {
     if (!removingUser) return;
@@ -201,6 +203,14 @@ export default function AdminUsers() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
+                              onClick={() => setEditProfileUser({
+                                user_id: user.user_id,
+                                email: user.email,
+                              })}
+                            >
+                              {t("admin.users.editProfile")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
                               onClick={() => setAddRoleUser({
                                 user_id: user.user_id,
                                 email: user.email,
@@ -322,6 +332,13 @@ export default function AdminUsers() {
       <InviteUserDialog 
         open={inviteDialogOpen} 
         onOpenChange={setInviteDialogOpen} 
+      />
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={!!editProfileUser}
+        onOpenChange={(open) => !open && setEditProfileUser(null)}
+        user={editProfileUser}
       />
 
       {/* Add Role Dialog */}

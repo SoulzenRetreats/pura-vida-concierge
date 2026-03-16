@@ -12,6 +12,7 @@ import Properties from "./pages/Properties";
 import Experiences from "./pages/Experiences";
 
 import Booking from "./pages/Booking";
+import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
 import AdminAuth from "./pages/admin/Auth";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -42,6 +43,7 @@ function App(): React.JSX.Element {
               <Route path="/experiences" element={<Experiences />} />
               
               <Route path="/booking" element={<Booking />} />
+              <Route path="/success" element={<Success />} />
 
               {/* Auth route */}
               <Route path="/login/auth" element={<AdminAuth />} />

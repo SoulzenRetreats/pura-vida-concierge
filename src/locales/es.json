@@ -440,6 +440,7 @@
       "addRoleBtn": "Agregar Rol",
       "assignRole": "Asignar Rol",
       "inviteUser": "Invitar Usuario",
+      "editProfile": "Editar Perfil",
       "columns": {
         "email": "Correo Electrónico",
         "role": "Rol",
@@ -500,6 +501,16 @@
           "cancel": "Cancelar",
           "confirm": "Revocar"
         }
+      },
+      "profile": {
+        "title": "Editar Perfil",
+        "firstName": "Nombre",
+        "firstNamePlaceholder": "ej. Carlos",
+        "whatsapp": "Número de WhatsApp",
+        "whatsappPlaceholder": "+506 8888-8888",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "updated": "Perfil actualizado exitosamente"
       }
     },
     "settings": {
@@ -554,6 +565,13 @@
         "update": "Actualizar Entrada"
       }
     }
+  },
+  "success": {
+    "headline": "Tu aventura Pura Vida comienza.",
+    "subtext": "Nuestro equipo está revisando tu Plan de Viaje. Para asistencia inmediata o preguntas, conecta directamente con tu concierge personal.",
+    "messageOnWhatsApp": "Escríbele a {{name}} por WhatsApp",
+    "fallback": "Nos pondremos en contacto pronto para comenzar a planificar tu viaje perfecto.",
+    "whatsappGreeting": "¡Hola! Acabo de enviar una solicitud de Plan de Viaje en Pura Vida Concierge y quería conectar."
   },
   "concierge": {
     "sidebar": {
