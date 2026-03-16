@@ -143,7 +143,7 @@ const Booking = () => {
           {selectedServiceNames.length > 0 && (
             <Card className="mb-6 border-primary/20 bg-primary/5">
               <CardContent className="p-4 flex items-start gap-3">
-                <BellRing className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <ConciergeBell className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-heading font-semibold text-sm mb-1">{t("tripPlan.selectedExperiences")}</p>
                   <p className="text-sm text-muted-foreground font-body">{selectedServiceNames.join(", ")}</p>
