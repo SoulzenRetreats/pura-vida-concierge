@@ -112,6 +112,72 @@ function ServicePhotoGallery({ photos, serviceName }: { photos: string[]; servic
   );
 }
 
+// Sparkling bell button with gold particle burst on activation
+function SparklingBell({
+  active,
+  onToggle,
+  ariaLabel,
+}: {
+  active: boolean;
+  onToggle: () => void;
+  ariaLabel: string;
+}) {
+  const [sparkling, setSparkling] = useState(false);
+  const wasActive = React.useRef(active);
+
+  const PARTICLES = 6;
+  const particleOffsets = React.useMemo(
+    () =>
+      Array.from({ length: PARTICLES }, () => ({
+        tx: `${(Math.random() - 0.5) * 40}px`,
+        ty: `${(Math.random() - 0.5) * 40}px`,
+      })),
+    // regenerate on each burst
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sparkling],
+  );
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Only sparkle when adding (going from inactive → active)
+    if (!active) {
+      setSparkling(true);
+      setTimeout(() => setSparkling(false), 500);
+    }
+    onToggle();
+  };
+
+  React.useEffect(() => {
+    wasActive.current = active;
+  }, [active]);
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label={ariaLabel}
+      className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95"
+    >
+      <BellRing
+        className={`h-5 w-5 transition-all ${sparkling ? "animate-bell-pulse" : ""} ${
+          active
+            ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
+            : "text-white"
+        }`}
+      />
+      {sparkling &&
+        particleOffsets.map((offset, i) => (
+          <span
+            key={i}
+            className="absolute w-1.5 h-1.5 rounded-full bg-amber-400 animate-sparkle-burst pointer-events-none"
+            style={
+              { "--tx": offset.tx, "--ty": offset.ty } as React.CSSProperties
+            }
+          />
+        ))}
+    </button>
+  );
+}
+
 function PriceDisplay({ service }: { service: Service }) {
   const { t } = useTranslation();
   if (service.price_min != null && service.price_max != null && service.price_min === service.price_max) {
