@@ -319,7 +319,7 @@ Deno.serve(async (req) => {
               "Authorization": `Bearer ${resendApiKey}`,
             },
             body: JSON.stringify({
-              from: "Pura Vida Concierge <notifications@pura-vida-concierge.lovable.app>",
+              from: "Pura Vida Concierge <bookings@soulzenwellness.com>",
               to: [notificationEmail],
               subject: `New Trip Plan Request — ${customerName.trim()}`,
               html: emailHtml,
