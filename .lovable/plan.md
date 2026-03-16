@@ -1,36 +1,73 @@
 
 
-## Backfill Spanish Translations for All Services
+## Trip Plan Wishlist with Concierge Bell Icon
 
-### Current State
-17 services exist, all with `name_es` and `description_es` as NULL. When toggled to Spanish, the site falls back to English text.
+### Overview
+Implement a mobile-first "Trip Plan" wishlist on the Experiences page using a **Bell** icon (`BellRing` from lucide-react) instead of a heart. Users tap the bell to "ring" a service into their plan, review selections in a bottom drawer, and finalize to the Booking form.
 
-### Plan
+### New Files
 
-**Single database migration** to UPDATE all 17 rows with Spanish translations:
+**`src/contexts/TripPlanContext.tsx`**
+- React context with `Set<string>` of service IDs, persisted to `localStorage` key `tripPlan`
+- Methods: `toggle(id)`, `remove(id)`, `clear()`, `isInPlan(id)`, `planItems` (array), `planCount`
 
-| name_en | name_es | description_es (summary) |
-|---|---|---|
-| Cake | Pastel | Pasteles personalizados para cualquier ocasión |
-| Private Chef Experience | Experiencia de Chef Privado | Cocina costarricense auténtica... |
-| Luxury Airport Transfer | Traslado de Lujo al Aeropuerto | Servicio premium de transporte... |
-| In-Villa Spa & Wellness | Spa y Bienestar en la Villa | Lleve el spa a su villa... |
-| Special Celebration Setup | Montaje para Celebración Especial | Transforme su villa para cumpleaños... |
-| ATV Jungle Adventure | Aventura en ATV por la Selva | Explore Costa Rica fuera de lo común... |
-| La Fortuna Waterfall Hike | Caminata a la Catarata La Fortuna | Caminata guiada... |
-| Private Catamaran | Catamarán Privado | Crucero exclusivo al atardecer... |
-| Surfing (Advanced) | Surf (Avanzado) | Excursión de surf para surfistas avanzados |
-| Beach Club VIP Access | Acceso VIP al Club de Playa | Acceso exclusivo a club de playa premium... |
-| Fishing Tours | Tours de Pesca | Tours de pesca a su medida |
-| Zip-lining Adventure | Aventura de Tirolesa | Emocionante recorrido de canopy... |
-| Coffee Tours | Tours de Café | Recorra fincas de café de manera interactiva |
-| Golf Carts | Carritos de Golf | Alquiler de carritos de golf |
-| Arenal Volcano & Hot Springs | Volcán Arenal y Aguas Termales | Tour guiado de día completo... |
-| Local Performers | Artistas Locales | Desde músicos hasta magos |
-| Flower Arrangements | Arreglos Florales | Arreglos florales, grandes o pequeños |
+### Modified Files
+
+**`src/App.tsx`**
+- Wrap routes with `<TripPlanProvider>`
+
+**`src/pages/Experiences.tsx`** — Major changes:
+
+1. **Bell icon on cards** — Top-right of image area (where category badge currently sits). Category badge moves to top-left alongside sale/rental badges. Bell button: 44x44px touch target, `bg-black/20 backdrop-blur-sm rounded-full`. 
+   - Inactive: `BellRing` outline icon, white stroke
+   - Active (rung): `BellRing` with `fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]` — a gold glow effect
+   - `aria-label="Add to Trip Plan"` / `"Remove from Trip Plan"`
+
+2. **"More Details" button** in `CardContent` — Opens a responsive detail view:
+   - Mobile (`useIsMobile`): `Drawer` (Vaul) sliding up from bottom
+   - Desktop: `Dialog` (Radix)
+   - Content: scrollable photo gallery, full localized description, price, and an "Add to Plan" / "Remove from Plan" toggle button with bell icon
+
+3. **Sticky bottom bar** — `fixed bottom-6 left-1/2 -translate-x-1/2 z-40`, `bg-primary text-primary-foreground rounded-full px-6 py-3 shadow-luxury font-body`. Shows `"[X] Services in Plan"` + `ChevronUp`. Only visible when `planCount >= 1`. Animated slide-up entry via CSS transition.
+
+4. **Review Drawer** — Tapping sticky bar opens a Vaul `Drawer`:
+   - Itemized list: thumbnail (h-16 w-16 rounded), localized name, price range, `X` remove button
+   - All data text uses `font-body`
+   - "Finalize Plan" primary button → navigates to `/booking?services=id1,id2,...`
+
+**`src/pages/Booking.tsx`**
+- Read `services` search param, fetch service names by IDs
+- Display a summary card at top: "Your selected experiences: Chef, Catamaran, Spa"
+- Pass service IDs into the `selectedServices` array in the submit payload
+
+**`src/locales/en.json`** — Add `tripPlan` section:
+- `addToPlan`: "Add to Trip Plan"
+- `removeFromPlan`: "Remove from Trip Plan"  
+- `servicesInPlan`: "{{count}} Services in Plan"
+- `moreDetails`: "More Details"
+- `reviewPlan`: "Your Trip Plan"
+- `finalizePlan`: "Finalize Plan"
+- `selectedExperiences`: "Your Selected Experiences"
+
+**`src/locales/es.json`** — Spanish equivalents:
+- `addToPlan`: "Agregar al Plan"
+- `removeFromPlan`: "Quitar del Plan"
+- `servicesInPlan`: "{{count}} Servicios en el Plan"
+- `moreDetails`: "Más Detalles"
+- `reviewPlan`: "Tu Plan de Viaje"
+- `finalizePlan`: "Finalizar Plan"
+- `selectedExperiences`: "Experiencias Seleccionadas"
+
+### Key Design Decisions
+- **Bell icon**: `BellRing` from lucide-react (has the concierge bell shape with ringing lines). Active state uses `fill-amber-400` with a gold `drop-shadow` glow — fits the luxury brand.
+- No database changes needed — all client-side with localStorage.
+- Booking integration is lightweight: service IDs passed via URL, displayed as a summary, included in the existing submit payload.
 
 ### Files Changed
-- **Migration SQL**: One `UPDATE` per service row, setting `name_es` and `description_es`
-
-No code changes needed — the Experiences page already reads `name_es`/`description_es` and falls back to English.
+1. **New**: `src/contexts/TripPlanContext.tsx`
+2. `src/App.tsx`
+3. `src/pages/Experiences.tsx`
+4. `src/pages/Booking.tsx`
+5. `src/locales/en.json`
+6. `src/locales/es.json`
 
