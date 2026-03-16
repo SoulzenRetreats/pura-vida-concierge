@@ -600,10 +600,10 @@
       "backToAdmin": "Volver al Admin"
     },
     "bookings": {
-      "title": "Reservas",
-      "description": "Gestiona y rastrea todas las solicitudes de reserva.",
+      "title": "Solicitudes",
+      "description": "Gestiona y rastrea todas las solicitudes de servicio.",
       "searchPlaceholder": "Buscar por nombre o correo...",
-      "noBookings": "No se encontraron reservas.",
+      "noBookings": "No se encontraron solicitudes.",
       "guests": "huéspedes",
       "view": "Ver",
       "tabs": {
