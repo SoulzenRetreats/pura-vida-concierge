@@ -161,7 +161,7 @@ export default function AdminServices() {
         concierge_id: data.concierge_id || null,
       };
 
-      if (editingService) {
+      if (editingService && !isDuplicating) {
         await updateService.mutateAsync({
           id: editingService.id,
           ...serviceData,
