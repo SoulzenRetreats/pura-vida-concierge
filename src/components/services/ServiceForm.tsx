@@ -65,6 +65,7 @@ export function ServiceForm({
   open,
   onOpenChange,
   service,
+  initialData,
   onSubmit,
   isSubmitting = false,
 }: ServiceFormProps) {
