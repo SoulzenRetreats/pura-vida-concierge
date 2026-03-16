@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil, Copy } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,8 @@ interface EditProfileDialogProps {
   user: { user_id: string; email: string } | null;
 }
 
+const LIVE_DOMAIN = "https://puravidaconcierge.co";
+
 export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialogProps) {
   const { t } = useTranslation();
   const { data: profile, isLoading } = useUserProfile(user?.user_id ?? "");
@@ -30,29 +32,50 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [slug, setSlug] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+  const [slugEditing, setSlugEditing] = useState(false);
+  const [originalSlug, setOriginalSlug] = useState("");
 
   useEffect(() => {
     if (profile) {
       setFirstName(profile.first_name ?? "");
       setWhatsappNumber(profile.whatsapp_number ?? "");
       setSlug(profile.slug ?? "");
+      setOriginalSlug(profile.slug ?? "");
       setContactEmail(profile.contact_email ?? "");
     } else {
       setFirstName("");
       setWhatsappNumber("");
       setSlug("");
+      setOriginalSlug("");
       setContactEmail("");
     }
+    setSlugEditing(false);
   }, [profile]);
 
+  // Reset editing state when dialog closes
+  useEffect(() => {
+    if (!open) setSlugEditing(false);
+  }, [open]);
+
   const handleSlugChange = (value: string) => {
-    // Auto-slugify: lowercase, replace spaces/special chars with hyphens
     const slugified = value
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "");
     setSlug(slugified);
+  };
+
+  const fullUrl = slug ? `${LIVE_DOMAIN}/${slug}` : "";
+
+  const handleCopyUrl = async () => {
+    if (!fullUrl) return;
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      toast.success(t("admin.users.profile.urlCopied"));
+    } catch {
+      toast.error(t("admin.users.error"));
+    }
   };
 
   const handleSave = () => {
@@ -76,6 +99,8 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
       }
     );
   };
+
+  const slugChanged = slugEditing && slug !== originalSlug;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,16 +135,53 @@ export function EditProfileDialog({ open, onOpenChange, user }: EditProfileDialo
               />
             </div>
             <div>
-              <Label>{t("admin.users.profile.slug")}</Label>
+              <div className="flex items-center gap-2">
+                <Label>{t("admin.users.profile.slug")}</Label>
+                {!slugEditing && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => setSlugEditing(true)}
+                    aria-label={t("admin.users.profile.editSlug")}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
               <Input
                 value={slug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 placeholder={t("admin.users.profile.slugPlaceholder")}
-                className="mt-1.5"
+                className={`mt-1.5 ${!slugEditing ? "opacity-60" : ""}`}
+                readOnly={!slugEditing}
               />
+              {slugChanged && (
+                <p className="text-xs text-destructive mt-1 font-medium">
+                  {t("admin.users.profile.slugWarning")}
+                </p>
+              )}
               <p className="text-xs text-muted-foreground mt-1">
                 {t("admin.users.profile.slugHelp")}
               </p>
+              {slug && (
+                <div className="flex items-center gap-2 mt-2 p-2 rounded-md bg-muted/50">
+                  <span className="text-xs text-muted-foreground font-mono truncate flex-1">
+                    {fullUrl}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 flex-shrink-0"
+                    onClick={handleCopyUrl}
+                    aria-label={t("admin.users.profile.copyUrl")}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              )}
             </div>
             <div>
               <Label>{t("admin.users.profile.contactEmail")}</Label>

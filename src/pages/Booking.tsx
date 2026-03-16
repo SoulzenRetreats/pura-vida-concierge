@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Loader2, Minus, Plus, ConciergeBell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTripPlan } from "@/contexts/TripPlanContext";
+import { useProfileBySlug } from "@/hooks/useProfiles";
 
 const Booking = () => {
   const { t, i18n } = useTranslation();
@@ -20,10 +21,10 @@ const Booking = () => {
   const { slug } = useParams<{ slug: string }>();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { clear: clearTripPlan, conciergeId, conciergeSlug } = useTripPlan();
+  const { clear: clearTripPlan } = useTripPlan();
 
-  // Use slug from URL or fall back to context
-  const activeSlug = slug || conciergeSlug;
+  // Fetch concierge profile directly from URL slug
+  const { data: conciergeProfile } = useProfileBySlug(slug || "");
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
@@ -116,7 +117,7 @@ const Booking = () => {
           propertyId: null,
           selectedServices: serviceIds,
           honeypot: formData.honeypot,
-          conciergeId: conciergeId,
+          conciergeId: conciergeProfile?.id || null,
         },
       });
 
@@ -125,8 +126,7 @@ const Booking = () => {
       if (data?.success) {
         const serviceNames = [...selectedServiceNames];
         clearTripPlan();
-        const successPath = activeSlug ? `/${activeSlug}/success` : "/success";
-        navigate(successPath, { state: { serviceNames } });
+        navigate(`/${slug}/success`, { state: { serviceNames } });
       } else {
         throw new Error(data?.error || "Submission failed");
       }
