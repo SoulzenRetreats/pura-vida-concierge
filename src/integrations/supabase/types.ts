@@ -196,23 +196,29 @@ export type Database = {
       }
       profiles: {
         Row: {
+          contact_email: string | null
           created_at: string
           first_name: string | null
           id: string
+          slug: string | null
           updated_at: string
           whatsapp_number: string | null
         }
         Insert: {
+          contact_email?: string | null
           created_at?: string
           first_name?: string | null
           id: string
+          slug?: string | null
           updated_at?: string
           whatsapp_number?: string | null
         }
         Update: {
+          contact_email?: string | null
           created_at?: string
           first_name?: string | null
           id?: string
+          slug?: string | null
           updated_at?: string
           whatsapp_number?: string | null
         }
@@ -357,6 +363,7 @@ export type Database = {
       services: {
         Row: {
           category: string
+          concierge_id: string | null
           created_at: string | null
           default_vendor_id: string | null
           description: string
@@ -377,6 +384,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          concierge_id?: string | null
           created_at?: string | null
           default_vendor_id?: string | null
           description: string
@@ -397,6 +405,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          concierge_id?: string | null
           created_at?: string | null
           default_vendor_id?: string | null
           description?: string
@@ -416,6 +425,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "services_concierge_id_fkey"
+            columns: ["concierge_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "services_default_vendor_id_fkey"
             columns: ["default_vendor_id"]
