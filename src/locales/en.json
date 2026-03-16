@@ -638,8 +638,8 @@
       "claimError": "Failed to claim request"
     },
     "bookingDetail": {
-      "notFound": "Booking not found.",
-      "backToList": "Back to bookings",
+      "notFound": "Request not found.",
+      "backToList": "Back to requests",
       "statusUpdated": "Status updated successfully",
       "error": "An error occurred",
       "customer": {
