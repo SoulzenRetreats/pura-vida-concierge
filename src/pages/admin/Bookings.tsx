@@ -23,6 +23,7 @@ export default function AdminBookings() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const { data: bookings, isLoading } = useBookings({ searchTerm });
+  const { data: recipient } = useNotificationRecipient();
 
   const handleCopy = async (booking: NonNullable<typeof bookings>[number]) => {
     const services = booking.booking_services
