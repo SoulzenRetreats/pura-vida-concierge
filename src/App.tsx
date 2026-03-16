@@ -12,6 +12,7 @@ import Properties from "./pages/Properties";
 import Experiences from "./pages/Experiences";
 
 import Booking from "./pages/Booking";
+import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
 import AdminAuth from "./pages/admin/Auth";
 import { AdminLayout } from "./components/admin/AdminLayout";
