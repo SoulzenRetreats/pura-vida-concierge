@@ -586,9 +586,9 @@
     "dashboard": {
       "title": "Panel",
       "welcome": "Bienvenido de Vuelta",
-      "welcomeDescription": "Gestiona solicitudes de reserva, coordina con proveedores y rastrea tus reservas activas.",
+      "welcomeDescription": "Gestiona solicitudes de servicio, coordina con proveedores y rastrea tus solicitudes activas.",
       "placeholder": "Selecciona una opción del menú lateral para comenzar.",
-      "gettingStarted": "Navega usando el menú lateral para gestionar reservas y proveedores.",
+      "gettingStarted": "Navega usando el menú lateral para gestionar solicitudes y proveedores.",
       "pendingRequests": "Solicitudes Pendientes",
       "pendingDescription": "Nuevas y en revisión",
       "upcomingBookings": "Próximas Reservas",
