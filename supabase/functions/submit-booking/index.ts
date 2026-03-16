@@ -276,6 +276,69 @@ Deno.serve(async (req) => {
 
     console.log(`Booking created successfully: ${booking.id} from IP: ${clientIP}`);
 
+    // Send email notification (non-blocking)
+    try {
+      const resendApiKey = Deno.env.get("RESEND_API_KEY");
+      if (resendApiKey) {
+        // Fetch service names for the email
+        let serviceNamesList: string[] = [];
+        if (selectedServices?.length > 0 && booking) {
+          const { data: serviceRows } = await supabase
+            .from("services")
+            .select("name_en")
+            .in("id", selectedServices);
+          if (serviceRows) {
+            serviceNamesList = serviceRows.map((s: { name_en: string }) => s.name_en);
+          }
+        }
+
+        // Fetch notification email from app_settings or use fallback
+        const { data: settingRow } = await supabase
+          .from("app_settings")
+          .select("value")
+          .eq("key", "notification_email")
+          .maybeSingle();
+        const notificationEmail = (settingRow?.value as string) || null;
+
+        if (notificationEmail) {
+          const emailHtml = `
+            <h2>New Trip Plan Request</h2>
+            <p><strong>Name:</strong> ${customerName.trim()}</p>
+            <p><strong>Email:</strong> ${customerEmail.trim().toLowerCase()}</p>
+            ${trimmedCustomerPhone ? `<p><strong>Phone:</strong> ${trimmedCustomerPhone}</p>` : ""}
+            <p><strong>Dates:</strong> ${checkIn} → ${checkOut}</p>
+            <p><strong>Guests:</strong> ${guestCount}</p>
+            ${serviceNamesList.length > 0 ? `<p><strong>Selected Experiences:</strong> ${serviceNamesList.join(", ")}</p>` : ""}
+            ${trimmedSpecialNotes ? `<p><strong>Notes:</strong> ${trimmedSpecialNotes}</p>` : ""}
+          `;
+
+          const emailRes = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${resendApiKey}`,
+            },
+            body: JSON.stringify({
+              from: "Pura Vida Concierge <notifications@pura-vida-concierge.lovable.app>",
+              to: [notificationEmail],
+              subject: `New Trip Plan Request — ${customerName.trim()}`,
+              html: emailHtml,
+            }),
+          });
+
+          if (!emailRes.ok) {
+            console.error("Resend email failed:", await emailRes.text());
+          } else {
+            console.log("Notification email sent successfully");
+          }
+        } else {
+          console.log("No notification_email configured in app_settings, skipping email");
+        }
+      }
+    } catch (emailError) {
+      console.error("Email notification error (non-blocking):", emailError);
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
