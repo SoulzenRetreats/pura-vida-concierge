@@ -157,7 +157,7 @@ function SparklingBell({
     <button
       onClick={handleClick}
       aria-label={ariaLabel}
-      className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95"
+      className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95 overflow-visible"
     >
       <BellRing
         className={`h-5 w-5 transition-all ${sparkling ? "animate-bell-pulse" : ""} ${
