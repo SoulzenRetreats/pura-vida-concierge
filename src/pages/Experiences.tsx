@@ -125,12 +125,14 @@ function SparklingBell({
   const [sparkling, setSparkling] = useState(false);
   const wasActive = React.useRef(active);
 
-  const PARTICLES = 6;
+  const PARTICLES = 10;
   const particleOffsets = React.useMemo(
     () =>
       Array.from({ length: PARTICLES }, () => ({
-        tx: `${(Math.random() - 0.5) * 40}px`,
-        ty: `${(Math.random() - 0.5) * 40}px`,
+        tx: `${(Math.random() - 0.5) * 120}px`,
+        ty: `${(Math.random() - 0.5) * 120}px`,
+        size: Math.random() > 0.5 ? "w-1.5 h-1.5" : "w-1 h-1",
+        delay: `${Math.random() * 150}ms`,
       })),
     // regenerate on each burst
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +157,7 @@ function SparklingBell({
     <button
       onClick={handleClick}
       aria-label={ariaLabel}
-      className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95"
+      className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95 overflow-visible"
     >
       <BellRing
         className={`h-5 w-5 transition-all ${sparkling ? "animate-bell-pulse" : ""} ${
@@ -168,9 +170,9 @@ function SparklingBell({
         particleOffsets.map((offset, i) => (
           <span
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-amber-400 animate-sparkle-burst pointer-events-none"
+            className={`absolute ${offset.size} rounded-full bg-amber-400 animate-sparkle-burst pointer-events-none`}
             style={
-              { "--tx": offset.tx, "--ty": offset.ty } as React.CSSProperties
+              { "--tx": offset.tx, "--ty": offset.ty, animationDelay: offset.delay } as React.CSSProperties
             }
           />
         ))}

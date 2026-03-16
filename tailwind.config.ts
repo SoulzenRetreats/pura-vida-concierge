@@ -84,14 +84,15 @@ export default {
         },
         "sparkle-burst": {
           "0%": { opacity: "1", transform: "translate(0,0) scale(1)" },
-          "100%": { opacity: "0", transform: "translate(var(--tx),var(--ty)) scale(0.5)" },
+          "40%": { opacity: "1" },
+          "100%": { opacity: "0", transform: "translate(var(--tx),var(--ty)) scale(0.3)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "bell-pulse": "bell-pulse 0.4s ease-out",
-        "sparkle-burst": "sparkle-burst 0.5s ease-out forwards",
+        "sparkle-burst": "sparkle-burst 0.7s ease-out forwards",
       },
     },
   },
