@@ -46,12 +46,8 @@ export const Navigation = () => {
             >
               {t('nav.experiences')}
             </Link>
-            <Link
-              to="/trip-types"
-              className="text-foreground hover:text-primary transition-smooth font-medium"
-            >
-              {t('nav.tripTypes')}
-            </Link>
+
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-foreground">
