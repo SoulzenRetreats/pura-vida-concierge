@@ -68,6 +68,7 @@ export default function AdminUsers() {
   const [revokingInvitation, setRevokingInvitation] = useState<{ id: string; email: string } | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [addRoleUser, setAddRoleUser] = useState<{ user_id: string; email: string; existingRoles: AppRole[] } | null>(null);
+  const [editProfileUser, setEditProfileUser] = useState<{ user_id: string; email: string } | null>(null);
 
   const handleRemoveRole = () => {
     if (!removingUser) return;
