@@ -74,6 +74,15 @@ export default function AdminServices() {
   const handleCloseForm = () => {
     setFormOpen(false);
     setEditingService(null);
+    setIsDuplicating(false);
+  };
+
+  const handleDuplicate = (service: Service) => {
+    // Pre-fill with source service data but clear concierge_id for reassignment
+    const duplicated = { ...service, concierge_id: null } as any as Service;
+    setEditingService(duplicated);
+    setIsDuplicating(true);
+    setFormOpen(true);
   };
 
   const handleSubmit = async (data: ServiceFormData) => {
