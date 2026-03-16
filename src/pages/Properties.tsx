@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Users, Bed, Bath, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import propertiesHero from "@/assets/properties-hero.jpg";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 interface Property {
   id: string;
