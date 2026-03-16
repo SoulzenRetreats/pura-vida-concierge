@@ -66,6 +66,32 @@ const Booking = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { clear: clearTripPlan } = useTripPlan();
+
+  // Selected services from Trip Plan
+  const serviceIds = useMemo(() => {
+    const param = searchParams.get("services");
+    return param ? param.split(",").filter(Boolean) : [];
+  }, [searchParams]);
+
+  const [selectedServiceNames, setSelectedServiceNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (serviceIds.length === 0) return;
+    supabase
+      .from("services")
+      .select("id, name_en, name_es")
+      .in("id", serviceIds)
+      .then(({ data }) => {
+        if (data) {
+          setSelectedServiceNames(
+            data.map((s) =>
+              i18n.language === "es" ? (s.name_es || s.name_en) : s.name_en
+            )
+          );
+        }
+      });
+  }, [serviceIds, i18n.language]);
 
   const [formData, setFormData] = useState({
     checkIn: "",
