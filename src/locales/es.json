@@ -510,6 +510,11 @@
         "firstNamePlaceholder": "ej. Carlos",
         "whatsapp": "Número de WhatsApp",
         "whatsappPlaceholder": "+506 8888-8888",
+        "slug": "Slug de URL",
+        "slugPlaceholder": "ej. costa-rica",
+        "slugHelp": "Esto crea una URL de tienda única: /tu-slug/experiences",
+        "contactEmail": "Correo de Contacto",
+        "contactEmailPlaceholder": "concierge@ejemplo.com",
         "cancel": "Cancelar",
         "save": "Guardar",
         "updated": "Perfil actualizado exitosamente"

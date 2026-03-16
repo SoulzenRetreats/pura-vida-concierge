@@ -124,7 +124,7 @@ export function ServiceForm({
         });
       }
     }
-  }, [open, service, form]);
+  }, [open, service, initialData, form]);
 
   const handleSubmit = (data: ServiceFormData) => {
     onSubmit(data);
