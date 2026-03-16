@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Compass, Award, Crown, Gem } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-main.jpg";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 const Home = () => {
   const { t } = useTranslation();
