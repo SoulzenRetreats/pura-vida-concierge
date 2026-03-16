@@ -323,9 +323,10 @@
       "noServices": "No services selected",
       "submitted": "Submitted",
       "emailSent": "Email Sent",
-      "emailSentTo": "Confirmation sent to {{email}} on {{date}}",
+"emailSentTo": "Lead emailed to {{email}} on {{date}}",
       "copyDetails": "Copy Lead Details",
-      "detailsCopied": "Lead details copied to clipboard"
+      "detailsCopied": "Lead details copied to clipboard",
+      "whatsappConcierge": "WhatsApp"
     },
     "properties": {
       "title": "Properties Management",

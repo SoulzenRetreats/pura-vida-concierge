@@ -13,8 +13,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useBookings } from "@/hooks/useBookings";
+import { useBookings, useNotificationRecipient } from "@/hooks/useBookings";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
 
 export default function AdminBookings() {
   const { t } = useTranslation();
