@@ -130,17 +130,8 @@ export default function AdminServices() {
     setDeleteDialogOpen(true);
   };
 
-  const handleDuplicate = (service: Service) => {
-    // Open form pre-filled with source service data but no concierge_id
-    const duplicated = { ...service, concierge_id: null } as Service;
-    setEditingService(null); // Force "create" mode
-    setFormOpen(true);
-    // Use setTimeout to let form mount before resetting
-    setTimeout(() => {
-      // The form will be in "create" mode but we need to pre-fill via the service prop
-      // Instead, set editingService to null and open with a special duplicated service
-    }, 0);
-  };
+
+
 
   const handleConfirmDelete = async () => {
     if (!serviceToDelete) return;
