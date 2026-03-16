@@ -590,7 +590,9 @@
     "subtext": "Our team is reviewing your Trip Plan. For immediate assistance or questions, connect with your personal concierge directly.",
     "messageOnWhatsApp": "Message {{name}} on WhatsApp",
     "fallback": "We'll be in touch shortly to start planning your perfect trip.",
-    "whatsappGreeting": "Hi! I just submitted a Trip Plan request on Pura Vida Concierge and wanted to connect."
+    "yourExperiences": "Your Requested Experiences",
+    "whatsappGreeting": "Hi {{name}}, I just submitted a request for my trip! My requested experiences are: {{services}}.",
+    "whatsappGreetingNoServices": "Hi {{name}}, I just submitted a request for my trip on Pura Vida Concierge and wanted to connect."
   },
   "concierge": {
     "sidebar": {

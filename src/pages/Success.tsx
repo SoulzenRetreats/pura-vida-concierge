@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,16 +11,24 @@ import { useUserProfile } from "@/hooks/useProfiles";
 const Success = () => {
   const { t } = useTranslation();
   const { conciergeId } = useTripPlan();
+  const location = useLocation();
+  const serviceNames: string[] = (location.state as any)?.serviceNames || [];
 
-  // Fetch the specific concierge's profile from context
   const { data: conciergeProfile, isLoading } = useUserProfile(conciergeId || "");
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  const whatsappMessage = conciergeProfile?.first_name
+    ? serviceNames.length > 0
+      ? t("success.whatsappGreeting", {
+          name: conciergeProfile.first_name,
+          services: serviceNames.join(", "),
+        })
+      : t("success.whatsappGreetingNoServices", { name: conciergeProfile.first_name })
+    : "";
+
   const whatsappUrl = conciergeProfile?.whatsapp_number
-    ? `https://wa.me/${conciergeProfile.whatsapp_number.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-        t("success.whatsappGreeting")
-      )}`
+    ? `https://wa.me/${conciergeProfile.whatsapp_number.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(whatsappMessage)}`
     : null;
 
   return (
@@ -44,6 +53,23 @@ const Success = () => {
               {t("success.subtext")}
             </p>
           </div>
+
+          {/* Requested services list */}
+          {serviceNames.length > 0 && (
+            <div className="text-left bg-muted/50 rounded-lg p-4 space-y-2">
+              <p className="font-heading font-semibold text-sm text-foreground">
+                {t("success.yourExperiences")}
+              </p>
+              <ul className="space-y-1">
+                {serviceNames.map((name, i) => (
+                  <li key={i} className="text-sm text-muted-foreground font-body flex items-start gap-2">
+                    <span className="text-primary mt-0.5">•</span>
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* WhatsApp CTA */}
           {isLoading ? (
