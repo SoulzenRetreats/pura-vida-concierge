@@ -10,7 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import Experiences from "./pages/Experiences";
-import TripTypes from "./pages/TripTypes";
+
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
 import AdminAuth from "./pages/admin/Auth";
