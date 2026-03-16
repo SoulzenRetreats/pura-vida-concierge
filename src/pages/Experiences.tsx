@@ -324,22 +324,11 @@ const Experiences = () => {
                       </div>
 
                       {/* Bell icon top-right */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggle(service.id);
-                        }}
-                        aria-label={inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
-                        className="absolute top-4 right-4 z-10 h-11 w-11 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30 active:scale-95"
-                      >
-                        <BellRing
-                          className={`h-5 w-5 transition-all ${
-                            inPlan
-                              ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
-                              : "text-white"
-                          }`}
-                        />
-                      </button>
+                      <SparklingBell
+                        active={inPlan}
+                        onToggle={() => toggle(service.id)}
+                        ariaLabel={inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
+                      />
                     </div>
                     <CardContent className="p-6">
                       <h3 className="text-xl font-heading font-semibold mb-2">{getLocalizedName(service)}</h3>
