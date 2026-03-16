@@ -586,9 +586,9 @@
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome Back",
-      "welcomeDescription": "Manage booking requests, coordinate with vendors, and track your active bookings.",
+      "welcomeDescription": "Manage service requests, coordinate with vendors, and track your active requests.",
       "placeholder": "Select an option from the sidebar to get started.",
-      "gettingStarted": "Navigate using the sidebar to manage bookings and vendors.",
+      "gettingStarted": "Navigate using the sidebar to manage requests and vendors.",
       "pendingRequests": "Pending Requests",
       "pendingDescription": "New & in review",
       "upcomingBookings": "Upcoming Bookings",
