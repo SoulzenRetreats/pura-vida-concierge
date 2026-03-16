@@ -566,6 +566,13 @@
       }
     }
   },
+  "success": {
+    "headline": "Your Pura Vida journey begins.",
+    "subtext": "Our team is reviewing your Trip Plan. For immediate assistance or questions, connect with your personal concierge directly.",
+    "messageOnWhatsApp": "Message {{name}} on WhatsApp",
+    "fallback": "We'll be in touch shortly to start planning your perfect trip.",
+    "whatsappGreeting": "Hi! I just submitted a Trip Plan request on Pura Vida Concierge and wanted to connect."
+  },
   "concierge": {
     "sidebar": {
       "title": "Concierge",
