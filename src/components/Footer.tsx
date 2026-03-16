@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 export const Footer = () => {
   const {
     t
