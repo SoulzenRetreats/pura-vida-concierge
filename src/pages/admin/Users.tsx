@@ -203,6 +203,14 @@ export default function AdminUsers() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
+                              onClick={() => setEditProfileUser({
+                                user_id: user.user_id,
+                                email: user.email,
+                              })}
+                            >
+                              {t("admin.users.editProfile")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
                               onClick={() => setAddRoleUser({
                                 user_id: user.user_id,
                                 email: user.email,
