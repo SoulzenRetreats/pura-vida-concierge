@@ -125,12 +125,14 @@ function SparklingBell({
   const [sparkling, setSparkling] = useState(false);
   const wasActive = React.useRef(active);
 
-  const PARTICLES = 6;
+  const PARTICLES = 10;
   const particleOffsets = React.useMemo(
     () =>
       Array.from({ length: PARTICLES }, () => ({
-        tx: `${(Math.random() - 0.5) * 40}px`,
-        ty: `${(Math.random() - 0.5) * 40}px`,
+        tx: `${(Math.random() - 0.5) * 120}px`,
+        ty: `${(Math.random() - 0.5) * 120}px`,
+        size: Math.random() > 0.5 ? "w-1.5 h-1.5" : "w-1 h-1",
+        delay: `${Math.random() * 150}ms`,
       })),
     // regenerate on each burst
     // eslint-disable-next-line react-hooks/exhaustive-deps
