@@ -5,10 +5,10 @@ import { Loader2 } from "lucide-react";
 import { useTripPlan } from "@/contexts/TripPlanContext";
 
 /**
- * Redirects /experiences to /:slug/experiences.
+ * Redirects to /:slug${targetPath}.
  * Uses the concierge slug from context, or falls back to the first profile with a slug.
  */
-const SlugRedirect = () => {
+const SlugRedirect = ({ targetPath = "/experiences" }: { targetPath?: string }) => {
   const { conciergeSlug } = useTripPlan();
   const [defaultSlug, setDefaultSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(!conciergeSlug);
