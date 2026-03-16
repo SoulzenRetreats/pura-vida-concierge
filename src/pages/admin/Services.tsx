@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, Search, Pencil, Trash2, MoreHorizontal, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -42,29 +43,80 @@ import {
   useCreateService,
   useUpdateService,
   useDeleteService,
+  useBulkUpdateConcierge,
   type Service,
 } from "@/hooks/useServices";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
+import { useConciergeProfiles } from "@/hooks/useProfiles";
 
 export default function AdminServices() {
   const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [conciergeFilter, setConciergeFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isDuplicating, setIsDuplicating] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkConciergeId, setBulkConciergeId] = useState("");
 
   const { data: services = [], isLoading } = useServices({
     searchTerm,
     categoryFilter,
+    conciergeFilter,
   });
   const { data: categories = [] } = useCategories();
+  const { data: conciergeProfiles = [] } = useConciergeProfiles();
 
   const createService = useCreateService();
   const updateService = useUpdateService();
   const deleteService = useDeleteService();
+  const bulkUpdateConcierge = useBulkUpdateConcierge();
+
+  const conciergeMap = useMemo(() => {
+    const map = new Map<string, string>();
+    conciergeProfiles.forEach((p: any) => {
+      map.set(p.id, p.first_name || p.email || p.id);
+    });
+    return map;
+  }, [conciergeProfiles]);
+
+  const allSelected = services.length > 0 && selectedIds.size === services.length;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(services.map((s) => s.id)));
+    }
+  };
+
+  const toggleOne = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleBulkAssign = async () => {
+    if (selectedIds.size === 0 || !bulkConciergeId) return;
+    try {
+      const conciergeId = bulkConciergeId === "unassigned" ? null : bulkConciergeId;
+      await bulkUpdateConcierge.mutateAsync({
+        serviceIds: [...selectedIds],
+        conciergeId,
+      });
+      toast.success(t("admin.services.bulkAssigned"));
+      setSelectedIds(new Set());
+      setBulkConciergeId("");
+    } catch {
+      toast.error(t("admin.services.error"));
+    }
+  };
 
   const handleOpenForm = (service?: Service) => {
     setEditingService(service || null);
@@ -78,7 +130,6 @@ export default function AdminServices() {
   };
 
   const handleDuplicate = (service: Service) => {
-    // Pre-fill with source service data but clear concierge_id for reassignment
     const duplicated = { ...service, concierge_id: null } as any as Service;
     setEditingService(duplicated);
     setIsDuplicating(true);
@@ -131,9 +182,6 @@ export default function AdminServices() {
     setDeleteDialogOpen(true);
   };
 
-
-
-
   const handleConfirmDelete = async () => {
     if (!serviceToDelete) return;
 
@@ -171,6 +219,7 @@ export default function AdminServices() {
         </Button>
       </div>
 
+      {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -194,15 +243,64 @@ export default function AdminServices() {
             ))}
           </SelectContent>
         </Select>
+        <Select value={conciergeFilter} onValueChange={setConciergeFilter}>
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue placeholder={t("admin.services.allConcierges")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("admin.services.allConcierges")}</SelectItem>
+            <SelectItem value="unassigned">{t("admin.services.unassigned")}</SelectItem>
+            {conciergeProfiles.map((p: any) => (
+              <SelectItem key={p.id} value={p.id}>
+                {p.first_name || p.email || p.id}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
+      {/* Bulk action toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 p-3 rounded-md border bg-muted/50">
+          <span className="text-sm font-medium">
+            {selectedIds.size} {t("admin.services.selected")}
+          </span>
+          <Select value={bulkConciergeId} onValueChange={setBulkConciergeId}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder={t("admin.services.bulkAssign")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unassigned">{t("admin.services.unassigned")}</SelectItem>
+              {conciergeProfiles.map((p: any) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.first_name || p.email || p.id}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            size="sm"
+            onClick={handleBulkAssign}
+            disabled={!bulkConciergeId || bulkUpdateConcierge.isPending}
+          >
+            {t("admin.services.assignSelected")}
+          </Button>
+        </div>
+      )}
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[40px]">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={toggleAll}
+                />
+              </TableHead>
               <TableHead>{t("admin.services.columns.name")}</TableHead>
               <TableHead>{t("admin.services.columns.category")}</TableHead>
-              <TableHead>{t("admin.services.columns.status")}</TableHead>
+              <TableHead>{t("admin.services.columns.concierge")}</TableHead>
               <TableHead>{t("admin.services.columns.priceRange")}</TableHead>
               <TableHead className="w-[100px]">
                 {t("admin.services.columns.actions")}
@@ -212,37 +310,39 @@ export default function AdminServices() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   {t("experiences.loading")}
                 </TableCell>
               </TableRow>
             ) : services.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   {t("admin.services.noServices")}
                 </TableCell>
               </TableRow>
             ) : (
               services.map((service) => (
                 <TableRow key={service.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedIds.has(service.id)}
+                      onCheckedChange={() => toggleOne(service.id)}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">{getServiceName(service)}</TableCell>
                   <TableCell>
                     {getCategoryNameBySlug(categories, service.category, i18n.language)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-1 flex-wrap">
-                      {service.is_for_sale && (
-                        <Badge variant="secondary">
-                          {t("admin.services.forSale")}
-                        </Badge>
-                      )}
-                      {service.is_rental && (
-                        <Badge variant="outline">
-                          {t("admin.services.rental")}
-                        </Badge>
-                      )}
-                      {!service.is_for_sale && !service.is_rental && "-"}
-                    </div>
+                    {service.concierge_id ? (
+                      <Badge variant="secondary">
+                        {conciergeMap.get(service.concierge_id) || service.concierge_id}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-muted-foreground">
+                        {t("admin.services.unassigned")}
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell>
                     {service.price_min != null && service.price_max != null

@@ -399,7 +399,7 @@
       "columns": {
         "name": "Nombre",
         "category": "Categoría",
-        "status": "Estado",
+         "concierge": "Concierge",
         "priceRange": "Rango de Precio",
         "defaultVendor": "Proveedor Predeterminado",
         "actions": "Acciones"
@@ -430,7 +430,13 @@
       "deleteConfirm": {
         "title": "Eliminar Servicio",
         "description": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer."
-      }
+      },
+      "unassigned": "Sin Asignar",
+      "allConcierges": "Todos los Concierges",
+      "bulkAssign": "Asignar Concierge",
+      "assignSelected": "Asignar",
+      "bulkAssigned": "Concierge asignado exitosamente",
+      "selected": "seleccionados"
     },
     "users": {
       "title": "Gestión de Usuarios",

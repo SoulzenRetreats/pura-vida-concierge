@@ -79,6 +79,9 @@ function App(): React.JSX.Element {
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
 
+              {/* Slug-based root storefront — must be LAST before catch-all */}
+              <Route path="/:slug" element={<Home />} />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -6,11 +7,24 @@ import { Compass, Award, Crown, Gem } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-main.jpg";
 import { useTripPlan } from "@/contexts/TripPlanContext";
+import { useProfileBySlug } from "@/hooks/useProfiles";
 
 const Home = () => {
   const { t } = useTranslation();
-  const { conciergeSlug } = useTripPlan();
-  const experiencesPath = conciergeSlug ? `/${conciergeSlug}/experiences` : "/experiences";
+  const { slug } = useParams<{ slug?: string }>();
+  const { conciergeSlug, setConcierge } = useTripPlan();
+  const { data: slugProfile } = useProfileBySlug(slug || "");
+
+  // Bind concierge context when visiting /:slug
+  useEffect(() => {
+    if (slug && slugProfile?.id && slugProfile?.slug) {
+      setConcierge(slugProfile.id, slugProfile.slug);
+    }
+  }, [slug, slugProfile, setConcierge]);
+
+  const activeSlug = slug || conciergeSlug;
+  const experiencesPath = activeSlug ? `/${activeSlug}/experiences` : "/experiences";
+  const bookingPath = activeSlug ? `/${activeSlug}/booking` : "/booking";
 
   const expertise = [
     {
@@ -120,7 +134,7 @@ const Home = () => {
           <p className="text-sm mb-8 text-primary-foreground/70">
             {t('home.cta.badge')}
           </p>
-          <Link to={conciergeSlug ? `/${conciergeSlug}/booking` : "/booking"}>
+          <Link to={bookingPath}>
             <Button
               size="lg"
               className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"

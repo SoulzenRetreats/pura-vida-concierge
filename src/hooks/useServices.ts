@@ -9,11 +9,12 @@ export type ServiceUpdate = TablesUpdate<"services">;
 interface UseServicesOptions {
   searchTerm?: string;
   categoryFilter?: string;
+  conciergeFilter?: string;
 }
 
-export function useServices({ searchTerm = "", categoryFilter = "" }: UseServicesOptions = {}) {
+export function useServices({ searchTerm = "", categoryFilter = "", conciergeFilter = "" }: UseServicesOptions = {}) {
   return useQuery({
-    queryKey: ["services", searchTerm, categoryFilter],
+    queryKey: ["services", searchTerm, categoryFilter, conciergeFilter],
     queryFn: async () => {
       let query = supabase
         .from("services")
@@ -26,6 +27,14 @@ export function useServices({ searchTerm = "", categoryFilter = "" }: UseService
 
       if (categoryFilter && categoryFilter !== "all") {
         query = query.eq("category", categoryFilter);
+      }
+
+      if (conciergeFilter && conciergeFilter !== "all") {
+        if (conciergeFilter === "unassigned") {
+          query = query.is("concierge_id", null);
+        } else {
+          query = query.eq("concierge_id", conciergeFilter);
+        }
       }
 
       const { data, error } = await query;
@@ -84,6 +93,24 @@ export function useDeleteService() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("services").delete().eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+    },
+  });
+}
+
+export function useBulkUpdateConcierge() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ serviceIds, conciergeId }: { serviceIds: string[]; conciergeId: string | null }) => {
+      const { error } = await supabase
+        .from("services")
+        .update({ concierge_id: conciergeId })
+        .in("id", serviceIds);
 
       if (error) throw error;
     },
