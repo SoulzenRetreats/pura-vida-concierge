@@ -654,7 +654,7 @@
       },
       "vendors": {
         "title": "Servicios y Proveedores",
-        "noServices": "No hay servicios solicitados para esta reserva.",
+        "noServices": "No hay servicios solicitados.",
         "assignVendor": "Proveedor",
         "selectVendor": "Seleccionar proveedor...",
         "noVendor": "Sin proveedor asignado",
