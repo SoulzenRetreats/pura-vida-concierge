@@ -306,9 +306,9 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "welcome": "Welcome to the Admin Dashboard",
-      "welcomeDescription": "Manage your properties, bookings, vendors, and revenue from here.",
-      "gettingStarted": "Navigate using the sidebar to manage bookings, vendors, and revenue.",
-      "totalBookings": "Total Bookings",
+      "welcomeDescription": "Manage your properties, requests, vendors, and revenue from here.",
+      "gettingStarted": "Navigate using the sidebar to manage requests, vendors, and revenue.",
+      "totalBookings": "Total Requests",
       "properties": "Properties",
       "vendors": "Vendors",
       "revenue": "Revenue"
