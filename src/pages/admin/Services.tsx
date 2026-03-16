@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Search, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, MoreHorizontal, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +52,7 @@ export default function AdminServices() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
 
@@ -73,6 +74,15 @@ export default function AdminServices() {
   const handleCloseForm = () => {
     setFormOpen(false);
     setEditingService(null);
+    setIsDuplicating(false);
+  };
+
+  const handleDuplicate = (service: Service) => {
+    // Pre-fill with source service data but clear concierge_id for reassignment
+    const duplicated = { ...service, concierge_id: null } as any as Service;
+    setEditingService(duplicated);
+    setIsDuplicating(true);
+    setFormOpen(true);
   };
 
   const handleSubmit = async (data: ServiceFormData) => {
@@ -119,6 +129,9 @@ export default function AdminServices() {
     setServiceToDelete(service);
     setDeleteDialogOpen(true);
   };
+
+
+
 
   const handleConfirmDelete = async () => {
     if (!serviceToDelete) return;
@@ -251,6 +264,10 @@ export default function AdminServices() {
                           <Pencil className="mr-2 h-4 w-4" />
                           {t("admin.services.edit")}
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicate(service)}>
+                          <Copy className="mr-2 h-4 w-4" />
+                          {t("admin.services.duplicate")}
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDeleteClick(service)}
                           className="text-destructive"
@@ -271,7 +288,8 @@ export default function AdminServices() {
       <ServiceForm
         open={formOpen}
         onOpenChange={handleCloseForm}
-        service={editingService}
+        service={isDuplicating ? undefined : editingService}
+        initialData={isDuplicating && editingService ? editingService : undefined}
         onSubmit={handleSubmit}
         isSubmitting={createService.isPending || updateService.isPending}
       />
