@@ -140,6 +140,9 @@
   "booking": {
     "title": "Planifica Tu Viaje",
     "stepOf": "Paso {{current}} de {{total}}",
+    "datesAndGuests": "Fechas e Invitados",
+    "specialNotesTitle": "Notas Especiales u Ocasiones",
+    "specialNotesPlaceholder": "Cuéntanos sobre ocasiones especiales, necesidades dietéticas o solicitudes específicas...",
     "step1": {
       "dates": "¿Cuándo viajas?",
       "checkIn": "Llegada",
@@ -213,6 +216,7 @@
       "next": "Siguiente: Personaliza tu Estilo",
       "back": "Atrás",
       "submit": "Solicitar Itinerario",
+      "submitRequest": "Enviar Solicitud",
       "submitting": "Enviando..."
     },
     "success": {
@@ -224,7 +228,11 @@
       "message": "Algo salió mal. Por favor, intenta de nuevo."
     },
     "validation": {
-      "locationRequired": "Por favor ingresa dónde te hospedas"
+      "locationRequired": "Por favor ingresa dónde te hospedas",
+      "datesRequired": "Por favor selecciona las fechas de llegada y salida",
+      "adultsRequired": "Se requiere al menos 1 adulto",
+      "nameRequired": "Por favor ingresa tu nombre",
+      "emailRequired": "Por favor ingresa un correo electrónico válido"
     }
   },
   "auth": {

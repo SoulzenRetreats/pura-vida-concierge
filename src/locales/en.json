@@ -140,6 +140,9 @@
   "booking": {
     "title": "Plan Your Trip",
     "stepOf": "Step {{current}} of {{total}}",
+    "datesAndGuests": "Dates & Guests",
+    "specialNotesTitle": "Special Notes or Occasions",
+    "specialNotesPlaceholder": "Tell us about any special occasions, dietary needs, or specific requests...",
     "step1": {
       "dates": "When are you traveling?",
       "checkIn": "Arrival",
@@ -213,6 +216,7 @@
       "next": "Next: Customize Vibe",
       "back": "Back",
       "submit": "Request Itinerary",
+      "submitRequest": "Submit Request",
       "submitting": "Submitting..."
     },
     "success": {
@@ -224,7 +228,11 @@
       "message": "Something went wrong. Please try again."
     },
     "validation": {
-      "locationRequired": "Please enter where you're staying"
+      "locationRequired": "Please enter where you're staying",
+      "datesRequired": "Please select check-in and check-out dates",
+      "adultsRequired": "At least 1 adult is required",
+      "nameRequired": "Please enter your name",
+      "emailRequired": "Please enter a valid email address"
     }
   },
   "auth": {
