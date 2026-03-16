@@ -98,13 +98,8 @@ export const Navigation = () => {
             >
               {t('nav.experiences')}
             </Link>
-            <Link
-              to="/trip-types"
-              className="block py-2 text-foreground hover:text-primary transition-smooth font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              {t('nav.tripTypes')}
-            </Link>
+
+
             <div className="flex gap-2 py-2">
               <Button
                 variant="outline"
