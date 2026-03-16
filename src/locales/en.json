@@ -654,7 +654,7 @@
       },
       "vendors": {
         "title": "Services & Vendors",
-        "noServices": "No services requested for this booking.",
+        "noServices": "No services requested.",
         "assignVendor": "Vendor",
         "selectVendor": "Select vendor...",
         "noVendor": "No vendor assigned",
