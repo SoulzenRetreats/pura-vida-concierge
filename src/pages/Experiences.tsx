@@ -239,7 +239,7 @@ function ServiceDetailContent({
         variant={inPlan ? "secondary" : "default"}
         className="w-full h-12 gap-2"
       >
-        <BellRing
+        <ConciergeBell
           className={`h-5 w-5 ${inPlan ? "fill-amber-400 text-amber-400" : ""}`}
         />
         {inPlan ? t("tripPlan.removeFromPlan") : t("tripPlan.addToPlan")}
