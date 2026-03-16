@@ -140,6 +140,9 @@
   "booking": {
     "title": "Plan Your Trip",
     "stepOf": "Step {{current}} of {{total}}",
+    "datesAndGuests": "Dates & Guests",
+    "specialNotesTitle": "Special Notes or Occasions",
+    "specialNotesPlaceholder": "Tell us about any special occasions, dietary needs, or specific requests...",
     "step1": {
       "dates": "When are you traveling?",
       "checkIn": "Arrival",
