@@ -127,9 +127,11 @@ const Properties = () => {
               <p className="text-muted-foreground mb-8">
                 Check back soon for our luxury villas or contact us for availability
               </p>
-              <Link to="/booking">
-                <Button className="gradient-secondary">Request Information</Button>
-              </Link>
+              {conciergeSlug && (
+                <Link to={`/${conciergeSlug}/booking`}>
+                  <Button className="gradient-secondary">Request Information</Button>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
