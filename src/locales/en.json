@@ -662,7 +662,7 @@
       },
       "notes": {
         "title": "Internal Notes",
-        "placeholder": "Add internal notes about this booking...",
+        "placeholder": "Add internal notes about this request...",
         "saving": "Saving...",
         "customerNotes": "Customer Notes",
         "surpriseElements": "Surprise Elements"
