@@ -202,7 +202,7 @@ const Booking = () => {
           surpriseElements: null,
           specialNotes: validated.vision || null,
           propertyId: null,
-          selectedServices: [],
+          selectedServices: serviceIds,
           honeypot: formData.honeypot,
         },
       });
