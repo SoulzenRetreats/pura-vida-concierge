@@ -595,7 +595,7 @@
       "upcomingDescription": "Cotizadas y confirmadas",
       "activeVendors": "Proveedores Activos",
       "vendorsDescription": "Proveedores disponibles",
-      "completedBookings": "Completadas",
+      "completedBookings": "Solicitudes Completadas",
       "completedDescription": "Entregadas exitosamente",
       "backToAdmin": "Volver al Admin"
     },
