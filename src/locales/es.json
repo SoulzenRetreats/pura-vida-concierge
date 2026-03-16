@@ -228,7 +228,11 @@
       "message": "Algo salió mal. Por favor, intenta de nuevo."
     },
     "validation": {
-      "locationRequired": "Por favor ingresa dónde te hospedas"
+      "locationRequired": "Por favor ingresa dónde te hospedas",
+      "datesRequired": "Por favor selecciona las fechas de llegada y salida",
+      "adultsRequired": "Se requiere al menos 1 adulto",
+      "nameRequired": "Por favor ingresa tu nombre",
+      "emailRequired": "Por favor ingresa un correo electrónico válido"
     }
   },
   "auth": {
