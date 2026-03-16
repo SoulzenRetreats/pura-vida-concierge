@@ -638,8 +638,8 @@
       "claimError": "Error al reclamar la solicitud"
     },
     "bookingDetail": {
-      "notFound": "Reserva no encontrada.",
-      "backToList": "Volver a reservas",
+      "notFound": "Solicitud no encontrada.",
+      "backToList": "Volver a solicitudes",
       "statusUpdated": "Estado actualizado exitosamente",
       "error": "Ocurrió un error",
       "customer": {
