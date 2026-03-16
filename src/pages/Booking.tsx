@@ -126,7 +126,15 @@ const Booking = () => {
       if (data?.success) {
         const serviceNames = [...selectedServiceNames];
         clearTripPlan();
-        navigate(`/${slug}/success`, { state: { serviceNames } });
+        navigate(`/${slug}/success`, {
+          state: {
+            serviceNames,
+            customerName: formData.customerName.trim(),
+            checkIn: formData.checkIn,
+            checkOut: formData.checkOut,
+            guestCount: formData.adults + formData.kids,
+          },
+        });
       } else {
         throw new Error(data?.error || "Submission failed");
       }
