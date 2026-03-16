@@ -140,6 +140,9 @@
   "booking": {
     "title": "Planifica Tu Viaje",
     "stepOf": "Paso {{current}} de {{total}}",
+    "datesAndGuests": "Fechas e Invitados",
+    "specialNotesTitle": "Notas Especiales u Ocasiones",
+    "specialNotesPlaceholder": "Cuéntanos sobre ocasiones especiales, necesidades dietéticas o solicitudes específicas...",
     "step1": {
       "dates": "¿Cuándo viajas?",
       "checkIn": "Llegada",
