@@ -271,7 +271,10 @@ const Booking = () => {
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground mb-1.5 block">{t("booking.step2.whatsapp")}</label>
-                  <Input type="tel" value={formData.customerPhone} onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })} placeholder={t("booking.step2.whatsappPlaceholder")} className="h-12 text-base" />
+                  <InternationalPhoneInput
+                    value={formData.customerPhone}
+                    onChange={(phone) => setFormData({ ...formData, customerPhone: phone })}
+                  />
                 </div>
                 {/* Honeypot */}
                 <input type="text" name="website" value={formData.honeypot} onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })} className="absolute opacity-0 pointer-events-none" tabIndex={-1} autoComplete="off" />
