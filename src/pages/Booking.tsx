@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { InternationalPhoneInput, isValidPhone } from "@/components/ui/phone-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Loader2, Minus, Plus, ConciergeBell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -86,6 +87,10 @@ const Booking = () => {
       }
       if (!formData.customerEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customerEmail)) {
         toast({ title: t("booking.error.title"), description: t("booking.validation.emailRequired"), variant: "destructive" });
+        return;
+      }
+      if (!isValidPhone(formData.customerPhone)) {
+        toast({ title: t("booking.error.title"), description: t("booking.validation.phoneRequired"), variant: "destructive" });
         return;
       }
 
@@ -266,7 +271,10 @@ const Booking = () => {
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground mb-1.5 block">{t("booking.step2.whatsapp")}</label>
-                  <Input type="tel" value={formData.customerPhone} onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })} placeholder={t("booking.step2.whatsappPlaceholder")} className="h-12 text-base" />
+                  <InternationalPhoneInput
+                    value={formData.customerPhone}
+                    onChange={(phone) => setFormData({ ...formData, customerPhone: phone })}
+                  />
                 </div>
                 {/* Honeypot */}
                 <input type="text" name="website" value={formData.honeypot} onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })} className="absolute opacity-0 pointer-events-none" tabIndex={-1} autoComplete="off" />

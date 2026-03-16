@@ -233,7 +233,8 @@
       "datesRequired": "Please select check-in and check-out dates",
       "adultsRequired": "At least 1 adult is required",
       "nameRequired": "Please enter your name",
-      "emailRequired": "Please enter a valid email address"
+      "emailRequired": "Please enter a valid email address",
+      "phoneRequired": "Please enter a valid phone number with country code"
     }
   },
   "auth": {

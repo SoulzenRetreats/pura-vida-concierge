@@ -233,7 +233,8 @@
       "datesRequired": "Por favor selecciona las fechas de llegada y salida",
       "adultsRequired": "Se requiere al menos 1 adulto",
       "nameRequired": "Por favor ingresa tu nombre",
-      "emailRequired": "Por favor ingresa un correo electrónico válido"
+      "emailRequired": "Por favor ingresa un correo electrónico válido",
+      "phoneRequired": "Por favor ingresa un número de teléfono válido con código de país"
     }
   },
   "auth": {
