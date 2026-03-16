@@ -232,6 +232,7 @@ const Booking = () => {
           honeypot: "",
         });
         setStep(1);
+        clearTripPlan();
       } else {
         throw new Error(data?.error || "Submission failed");
       }
