@@ -216,6 +216,7 @@
       "next": "Next: Customize Vibe",
       "back": "Back",
       "submit": "Request Itinerary",
+      "submitRequest": "Submit Request",
       "submitting": "Submitting..."
     },
     "success": {
