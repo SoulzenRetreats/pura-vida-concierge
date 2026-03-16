@@ -179,14 +179,23 @@ Deno.serve(async (req) => {
     try {
       const resendApiKey = Deno.env.get("RESEND_API_KEY");
       if (resendApiKey) {
-        // Fetch service names
-        let serviceNamesList: string[] = [];
+        // Extract variables for the email template
+        const customerNotes = trimmed["Special notes"] || "";
+        const cleanPhone = (trimmed["Phone number"] || "").replace(/[^0-9]/g, "");
+        const conciergeName = conciergeProfile?.first_name || "Team";
+
+        // Fetch service names (bilingual)
+        let servicesList: { name: string }[] = [];
         if (selectedServices?.length > 0) {
           const { data: serviceRows } = await supabase
             .from("services")
-            .select("name_en")
+            .select("name_en, name_es")
             .in("id", selectedServices);
-          if (serviceRows) serviceNamesList = serviceRows.map((s: { name_en: string }) => s.name_en);
+          if (serviceRows) {
+            servicesList = serviceRows.map((s: { name_en: string; name_es: string | null }) => ({
+              name: `${s.name_en} / ${s.name_es || s.name_en}`,
+            }));
+          }
         }
 
         // Determine notification email: concierge contact_email first, then app_settings fallback
@@ -202,16 +211,120 @@ Deno.serve(async (req) => {
 
         // Internal notification to concierge
         if (notificationEmail) {
-          const internalHtml = `
-            <h2>New Trip Plan Request</h2>
-            <p><strong>Name:</strong> ${customerName.trim()}</p>
-            <p><strong>Email:</strong> ${customerEmail.trim().toLowerCase()}</p>
-            ${trimmed["Phone number"] ? `<p><strong>Phone:</strong> ${trimmed["Phone number"]}</p>` : ""}
-            <p><strong>Dates:</strong> ${checkIn} → ${checkOut}</p>
-            <p><strong>Guests:</strong> ${guestCount}</p>
-            ${serviceNamesList.length > 0 ? `<p><strong>Selected Experiences:</strong> ${serviceNamesList.join(", ")}</p>` : ""}
-            ${trimmed["Special notes"] ? `<p><strong>Notes:</strong> ${trimmed["Special notes"]}</p>` : ""}
-          `;
+          const internalHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;padding:0;background-color:#f4f1ec;font-family:'Outfit',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ec;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#2d5016 0%,#4a7c28 50%,#6b9b3a 100%);padding:40px 40px 30px;text-align:center;">
+              <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:600;color:#ffffff;margin:0 0 8px;">Pura Vida Concierge</h1>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.85);margin:0;letter-spacing:1px;">New Lead &nbsp;|&nbsp; Nuevo Contacto</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+
+              <!-- Traveler Details -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+                <tr>
+                  <td style="border-bottom:2px solid #2d5016;padding-bottom:12px;margin-bottom:20px;">
+                    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#2d5016;margin:0;">Traveler Details &nbsp;/ Detalles del Viajero</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:20px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding:8px 0;font-size:13px;font-weight:500;color:#6b7280;width:140px;vertical-align:top;">Name / Nombre:</td>
+                        <td style="padding:8px 0;font-size:15px;font-weight:500;color:#1f2937;">${customerName.trim()}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;font-size:13px;font-weight:500;color:#6b7280;width:140px;vertical-align:top;">Email / Correo:</td>
+                        <td style="padding:8px 0;font-size:15px;color:#1f2937;"><a href="mailto:${customerEmail.trim().toLowerCase()}" style="color:#2d5016;text-decoration:none;">${customerEmail.trim().toLowerCase()}</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;font-size:13px;font-weight:500;color:#6b7280;width:140px;vertical-align:top;">Phone / Teléfono:</td>
+                        <td style="padding:8px 0;font-size:15px;color:#1f2937;">${trimmed["Phone number"] || "—"}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Requested Experiences -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+                <tr>
+                  <td style="border-bottom:2px solid #2d5016;padding-bottom:12px;">
+                    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#2d5016;margin:0;">Requested Experiences &nbsp;/ Experiencias Solicitadas</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:20px;">
+                    ${servicesList.length > 0
+                      ? servicesList.map(service => `
+                        <div style="padding:10px 16px;margin-bottom:8px;background-color:#f0f7e6;border-radius:8px;border-left:3px solid #4a7c28;">
+                          <span style="font-size:14px;color:#2d5016;font-weight:500;">✓ ${service.name}</span>
+                        </div>
+                      `).join("")
+                      : `<p style="font-size:14px;color:#6b7280;font-style:italic;">No experiences selected. / Sin experiencias seleccionadas.</p>`
+                    }
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Notes -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+                <tr>
+                  <td style="border-bottom:2px solid #2d5016;padding-bottom:12px;">
+                    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#2d5016;margin:0;">Notes &nbsp;|&nbsp; Notas</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:20px;">
+                    <div style="padding:16px;background-color:#fafaf8;border-radius:8px;border:1px solid #e5e7eb;">
+                      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0;">${customerNotes ? customerNotes : "No additional notes. / Sin notas adicionales."}</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- WhatsApp CTA -->
+              ${cleanPhone ? `
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top:8px;">
+                    <a href="https://wa.me/${cleanPhone}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#25d366,#128c7e);color:#ffffff;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:500;padding:14px 32px;border-radius:50px;text-decoration:none;letter-spacing:0.5px;">Message on WhatsApp &nbsp;|&nbsp; Enviar Mensaje</a>
+                  </td>
+                </tr>
+              </table>
+              ` : ""}
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9fafb;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
+              <p style="font-size:12px;color:#9ca3af;margin:0;">Pura Vida Concierge — Costa Rica</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 
           const internalRes = await fetch("https://api.resend.com/emails", {
             method: "POST",
