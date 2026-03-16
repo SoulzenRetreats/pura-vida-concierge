@@ -92,7 +92,8 @@ export function ServiceForm({
 
   useEffect(() => {
     if (open) {
-      if (service) {
+      const source = service || initialData;
+      if (source) {
         const photoUrlsString = service.photos?.join("\n") || "";
         form.reset({
           name_en: (service as any).name_en || service.name || "",
