@@ -94,19 +94,19 @@ export function ServiceForm({
     if (open) {
       const source = service || initialData;
       if (source) {
-        const photoUrlsString = service.photos?.join("\n") || "";
+        const photoUrlsString = source.photos?.join("\n") || "";
         form.reset({
-          name_en: (service as any).name_en || service.name || "",
-          name_es: (service as any).name_es || "",
-          description_en: (service as any).description_en || service.description || "",
-          description_es: (service as any).description_es || "",
-          category: service.category,
-          price_min: service.price_min ?? null,
-          price_max: service.price_max ?? null,
+          name_en: (source as any).name_en || source.name || "",
+          name_es: (source as any).name_es || "",
+          description_en: (source as any).description_en || source.description || "",
+          description_es: (source as any).description_es || "",
+          category: source.category,
+          price_min: source.price_min ?? null,
+          price_max: source.price_max ?? null,
           photo_urls: photoUrlsString,
-          is_for_sale: service.is_for_sale ?? false,
-          is_rental: service.is_rental ?? false,
-          concierge_id: (service as any).concierge_id ?? null,
+          is_for_sale: source.is_for_sale ?? false,
+          is_rental: source.is_rental ?? false,
+          concierge_id: initialData ? null : (source as any).concierge_id ?? null,
         });
       } else {
         form.reset({
