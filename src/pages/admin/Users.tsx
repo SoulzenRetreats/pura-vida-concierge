@@ -51,6 +51,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { InviteUserDialog } from "@/components/admin/InviteUserDialog";
 import { AddRoleDialog } from "@/components/admin/AddRoleDialog";
+import { EditProfileDialog } from "@/components/admin/EditProfileDialog";
 import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
