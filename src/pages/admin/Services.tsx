@@ -313,6 +313,15 @@ export default function AdminServices() {
           >
             {t("admin.services.assignSelected")}
           </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleBulkDuplicate}
+            disabled={createService.isPending}
+          >
+            <Copy className="mr-2 h-4 w-4" />
+            {t("admin.services.duplicateSelected")}
+          </Button>
         </div>
       )}
 
