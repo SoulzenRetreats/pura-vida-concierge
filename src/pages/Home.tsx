@@ -5,9 +5,12 @@ import { Footer } from "@/components/Footer";
 import { Compass, Award, Crown, Gem } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-main.jpg";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 const Home = () => {
   const { t } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
+  const experiencesPath = conciergeSlug ? `/${conciergeSlug}/experiences` : "/experiences";
 
   const expertise = [
     {
@@ -59,7 +62,7 @@ const Home = () => {
             {t('home.hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            <Link to="/experiences">
+            <Link to={experiencesPath}>
               <Button
                 size="lg"
                 className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-8 py-6 shadow-luxury"
@@ -117,7 +120,7 @@ const Home = () => {
           <p className="text-sm mb-8 text-primary-foreground/70">
             {t('home.cta.badge')}
           </p>
-          <Link to="/booking">
+          <Link to={conciergeSlug ? `/${conciergeSlug}/booking` : "/booking"}>
             <Button
               size="lg"
               className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"

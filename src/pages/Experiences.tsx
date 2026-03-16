@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import servicesHero from "@/assets/services-hero.jpg";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
 import { useTripPlan } from "@/contexts/TripPlanContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useProfileBySlug } from "@/hooks/useProfiles";
 import {
   Drawer,
   DrawerContent,
@@ -251,12 +252,23 @@ function ServiceDetailContent({
 const Experiences = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const isMobile = useIsMobile();
-  const { toggle, isInPlan, planCount, planItems, remove } = useTripPlan();
+  const { toggle, isInPlan, planCount, planItems, remove, setConcierge } = useTripPlan();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const { data: categories = [] } = useCategories();
+
+  // Fetch the concierge profile by slug
+  const { data: conciergeProfile, isLoading: profileLoading } = useProfileBySlug(slug || "");
+
+  // Set concierge in context when profile loads
+  useEffect(() => {
+    if (conciergeProfile?.id && slug) {
+      setConcierge(conciergeProfile.id, slug);
+    }
+  }, [conciergeProfile?.id, slug, setConcierge]);
 
   // Detail modal/drawer
   const [detailService, setDetailService] = useState<Service | null>(null);
@@ -264,13 +276,18 @@ const Experiences = () => {
   const [reviewOpen, setReviewOpen] = useState(false);
 
   useEffect(() => {
+    if (profileLoading) return;
     fetchServices();
-  }, [filter]);
+  }, [filter, conciergeProfile?.id, profileLoading]);
 
   const fetchServices = async () => {
     setLoading(true);
     try {
       let query = supabase.from("services").select("*");
+      // Filter by concierge if profile exists
+      if (conciergeProfile?.id) {
+        query = query.eq("concierge_id", conciergeProfile.id);
+      }
       if (filter !== "all") {
         query = query.eq("category", filter);
       }
@@ -306,7 +323,8 @@ const Experiences = () => {
 
   const handleFinalize = () => {
     setReviewOpen(false);
-    navigate(`/booking?services=${planItems.join(",")}`);
+    const basePath = slug ? `/${slug}/booking` : "/booking";
+    navigate(`${basePath}?services=${planItems.join(",")}`);
   };
 
   // Detail view

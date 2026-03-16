@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -16,9 +16,13 @@ const Booking = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const { slug } = useParams<{ slug: string }>();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { clear: clearTripPlan } = useTripPlan();
+  const { clear: clearTripPlan, conciergeId, conciergeSlug } = useTripPlan();
+
+  // Use slug from URL or fall back to context
+  const activeSlug = slug || conciergeSlug;
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
@@ -107,6 +111,7 @@ const Booking = () => {
           propertyId: null,
           selectedServices: serviceIds,
           honeypot: formData.honeypot,
+          conciergeId: conciergeId,
         },
       });
 
@@ -114,7 +119,8 @@ const Booking = () => {
 
       if (data?.success) {
         clearTripPlan();
-        navigate("/success");
+        const successPath = activeSlug ? `/${activeSlug}/success` : "/success";
+        navigate(successPath);
       } else {
         throw new Error(data?.error || "Submission failed");
       }

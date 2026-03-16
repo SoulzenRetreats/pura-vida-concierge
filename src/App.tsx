@@ -25,6 +25,8 @@ import AdminServices from "./pages/admin/Services";
 import AdminProperties from "./pages/admin/Properties";
 import AdminUsers from "./pages/admin/Users";
 import AdminCategories from "./pages/admin/Categories";
+import SlugRedirect from "./pages/SlugRedirect";
+
 const queryClient = new QueryClient();
 
 function App(): React.JSX.Element {
@@ -40,8 +42,16 @@ function App(): React.JSX.Element {
               {/* Public routes */}
               <Route path="/" element={<Home />} />
               <Route path="/properties" element={<Properties />} />
-              <Route path="/experiences" element={<Experiences />} />
-              
+
+              {/* Legacy redirect */}
+              <Route path="/experiences" element={<SlugRedirect />} />
+
+              {/* Slug-based storefront routes */}
+              <Route path="/:slug/experiences" element={<Experiences />} />
+              <Route path="/:slug/booking" element={<Booking />} />
+              <Route path="/:slug/success" element={<Success />} />
+
+              {/* Legacy booking/success redirect using context */}
               <Route path="/booking" element={<Booking />} />
               <Route path="/success" element={<Success />} />
 

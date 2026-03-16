@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,9 @@ import {
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t, i18n } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
+
+  const experiencesPath = conciergeSlug ? `/${conciergeSlug}/experiences` : "/experiences";
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -41,12 +45,11 @@ export const Navigation = () => {
               {t('nav.properties')}
             </Link>
             <Link
-              to="/experiences"
+              to={experiencesPath}
               className="text-foreground hover:text-primary transition-smooth font-medium"
             >
               {t('nav.experiences')}
             </Link>
-
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -63,7 +66,7 @@ export const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link to="/experiences">
+            <Link to={experiencesPath}>
               <Button className="gradient-secondary hover:opacity-90 transition-smooth">
                 {t('nav.exploreExperiences')}
               </Button>
@@ -92,13 +95,12 @@ export const Navigation = () => {
               {t('nav.properties')}
             </Link>
             <Link
-              to="/experiences"
+              to={experiencesPath}
               className="block py-2 text-foreground hover:text-primary transition-smooth font-medium"
               onClick={() => setIsOpen(false)}
             >
               {t('nav.experiences')}
             </Link>
-
 
             <div className="flex gap-2 py-2">
               <Button
@@ -118,7 +120,7 @@ export const Navigation = () => {
                 🇨🇷 Español
               </Button>
             </div>
-            <Link to="/experiences" onClick={() => setIsOpen(false)}>
+            <Link to={experiencesPath} onClick={() => setIsOpen(false)}>
               <Button className="w-full gradient-secondary hover:opacity-90 transition-smooth">
                 {t('nav.exploreExperiences')}
               </Button>

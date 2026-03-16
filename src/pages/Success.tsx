@@ -4,16 +4,20 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, MessageCircle, Loader2 } from "lucide-react";
-import { useConciergeContact } from "@/hooks/useProfiles";
+import { useTripPlan } from "@/contexts/TripPlanContext";
+import { useUserProfile } from "@/hooks/useProfiles";
 
 const Success = () => {
   const { t } = useTranslation();
-  const { data: concierge, isLoading } = useConciergeContact();
+  const { conciergeId } = useTripPlan();
+
+  // Fetch the specific concierge's profile from context
+  const { data: conciergeProfile, isLoading } = useUserProfile(conciergeId || "");
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const whatsappUrl = concierge?.whatsapp_number
-    ? `https://wa.me/${concierge.whatsapp_number.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+  const whatsappUrl = conciergeProfile?.whatsapp_number
+    ? `https://wa.me/${conciergeProfile.whatsapp_number.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
         t("success.whatsappGreeting")
       )}`
     : null;
@@ -46,14 +50,14 @@ const Success = () => {
             <div className="flex justify-center py-4">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
-          ) : whatsappUrl && concierge?.first_name ? (
+          ) : whatsappUrl && conciergeProfile?.first_name ? (
             <Button
               size="lg"
               className="w-full h-14 text-base gap-2 bg-[hsl(142,70%,40%)] hover:bg-[hsl(142,70%,35%)] text-white"
               onClick={() => window.open(whatsappUrl, "_blank")}
             >
               <MessageCircle className="h-5 w-5" />
-              {t("success.messageOnWhatsApp", { name: concierge.first_name })}
+              {t("success.messageOnWhatsApp", { name: conciergeProfile.first_name })}
             </Button>
           ) : (
             <p className="text-muted-foreground font-body">
