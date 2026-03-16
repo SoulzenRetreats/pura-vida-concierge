@@ -84,7 +84,8 @@ export default {
         },
         "sparkle-burst": {
           "0%": { opacity: "1", transform: "translate(0,0) scale(1)" },
-          "100%": { opacity: "0", transform: "translate(var(--tx),var(--ty)) scale(0.5)" },
+          "40%": { opacity: "1" },
+          "100%": { opacity: "0", transform: "translate(var(--tx),var(--ty)) scale(0.3)" },
         },
       },
       animation: {
