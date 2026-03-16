@@ -17,6 +17,7 @@ const Booking = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const { clear: clearTripPlan } = useTripPlan();
 
   // Selected services from Trip Plan
