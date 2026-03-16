@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import servicesHero from "@/assets/services-hero.jpg";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
 import { useTripPlan } from "@/contexts/TripPlanContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useProfileBySlug } from "@/hooks/useProfiles";
 import {
   Drawer,
   DrawerContent,
