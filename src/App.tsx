@@ -40,7 +40,7 @@ function App(): React.JSX.Element {
             <TripPlanProvider>
             <Routes>
               {/* Public routes */}
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<SlugRedirect targetPath="" />} />
               <Route path="/properties" element={<Properties />} />
 
               {/* Legacy redirect */}

@@ -37,7 +37,7 @@ const SlugRedirect = ({ targetPath = "/experiences" }: { targetPath?: string }) 
   }
 
   if (slug) {
-    return <Navigate to={`/${slug}/experiences`} replace />;
+    return <Navigate to={`/${slug}${targetPath}`} replace />;
   }
 
   // No profiles with slugs exist yet — go home
