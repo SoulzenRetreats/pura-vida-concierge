@@ -16,9 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
+import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper, BellRing } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories, getCategoryName } from "@/hooks/useCategories";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, "Check-in date is required"),

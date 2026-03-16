@@ -90,6 +90,16 @@
     "forSale": "For Sale",
     "rental": "Rental"
   },
+  "tripPlan": {
+    "addToPlan": "Add to Trip Plan",
+    "removeFromPlan": "Remove from Trip Plan",
+    "servicesInPlan": "{{count}} Services in Plan",
+    "moreDetails": "More Details",
+    "reviewPlan": "Your Trip Plan",
+    "finalizePlan": "Finalize Plan",
+    "emptyPlan": "No services added yet",
+    "selectedExperiences": "Your Selected Experiences"
+  },
   "tripTypes": {
     "hero": {
       "title": "Perfect for Every Celebration",
