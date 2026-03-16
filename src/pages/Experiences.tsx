@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ChevronLeft, ChevronRight, ChevronUp, BellRing, X, Eye } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, ChevronUp, ConciergeBell, X, Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import servicesHero from "@/assets/services-hero.jpg";
 import { useCategories, getCategoryName, getCategoryNameBySlug } from "@/hooks/useCategories";
