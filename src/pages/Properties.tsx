@@ -25,6 +25,7 @@ interface Property {
 
 const Properties = () => {
   const { t } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
