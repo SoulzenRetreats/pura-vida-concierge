@@ -89,6 +89,10 @@ const Booking = () => {
         toast({ title: t("booking.error.title"), description: t("booking.validation.emailRequired"), variant: "destructive" });
         return;
       }
+      if (!isValidPhone(formData.customerPhone)) {
+        toast({ title: t("booking.error.title"), description: t("booking.validation.phoneRequired"), variant: "destructive" });
+        return;
+      }
 
       setLoading(true);
 
