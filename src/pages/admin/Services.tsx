@@ -288,7 +288,8 @@ export default function AdminServices() {
       <ServiceForm
         open={formOpen}
         onOpenChange={handleCloseForm}
-        service={editingService}
+        service={isDuplicating ? undefined : editingService}
+        initialData={isDuplicating && editingService ? editingService : undefined}
         onSubmit={handleSubmit}
         isSubmitting={createService.isPending || updateService.isPending}
       />
