@@ -432,7 +432,7 @@ const Experiences = () => {
           onClick={() => setReviewOpen(true)}
           className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground shadow-luxury font-body font-medium text-sm hover:bg-primary/90 active:scale-[0.97] transition-all"
         >
-          <BellRing className="h-4 w-4" />
+          <ConciergeBell className="h-4 w-4" />
           {t("tripPlan.servicesInPlan", { count: planCount })}
           <ChevronUp className="h-4 w-4" />
         </button>

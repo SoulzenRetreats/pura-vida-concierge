@@ -20,6 +20,8 @@ const Booking = () => {
   const navigate = useNavigate();
   const { clear: clearTripPlan } = useTripPlan();
 
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   // Selected services from Trip Plan
   const serviceIds = useMemo(() => {
     const param = searchParams.get("services");
