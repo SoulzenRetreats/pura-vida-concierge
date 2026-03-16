@@ -24,7 +24,7 @@ const Home = () => {
 
   const activeSlug = slug || conciergeSlug;
   const experiencesPath = activeSlug ? `/${activeSlug}/experiences` : "/experiences";
-  const bookingPath = activeSlug ? `/${activeSlug}/booking` : "/booking";
+  const bookingPath = activeSlug ? `/${activeSlug}/booking` : null;
 
   const expertise = [
     {
