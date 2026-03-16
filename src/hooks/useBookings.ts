@@ -8,6 +8,7 @@ export type BookingWithProperty = Database["public"]["Tables"]["bookings"]["Row"
     service_id: string;
     services: { name: string } | null;
   }[];
+  concierge_profile: { first_name: string | null; whatsapp_number: string | null; contact_email: string | null } | null;
 };
 
 interface UseBookingsOptions {
@@ -33,7 +34,7 @@ export function useBookings({ searchTerm = "" }: UseBookingsOptions = {}) {
     queryFn: async () => {
       let query = supabase
         .from("bookings")
-        .select("*, properties(name, location), booking_services(service_id, services(name))")
+        .select("*, properties(name, location), booking_services(service_id, services(name)), concierge_profile:profiles!bookings_concierge_id_fkey(first_name, whatsapp_number, contact_email)")
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {
@@ -45,7 +46,7 @@ export function useBookings({ searchTerm = "" }: UseBookingsOptions = {}) {
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as BookingWithProperty[];
+      return data as unknown as BookingWithProperty[];
     },
   });
 }
