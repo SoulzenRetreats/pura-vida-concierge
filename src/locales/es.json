@@ -216,6 +216,7 @@
       "next": "Siguiente: Personaliza tu Estilo",
       "back": "Atrás",
       "submit": "Solicitar Itinerario",
+      "submitRequest": "Enviar Solicitud",
       "submitting": "Enviando..."
     },
     "success": {
