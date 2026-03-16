@@ -334,6 +334,13 @@ export default function AdminUsers() {
         onOpenChange={setInviteDialogOpen} 
       />
 
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={!!editProfileUser}
+        onOpenChange={(open) => !open && setEditProfileUser(null)}
+        user={editProfileUser}
+      />
+
       {/* Add Role Dialog */}
       <AddRoleDialog
         open={!!addRoleUser}

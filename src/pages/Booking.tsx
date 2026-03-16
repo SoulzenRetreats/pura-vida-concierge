@@ -111,22 +111,8 @@ const Booking = () => {
       if (error) throw error;
 
       if (data?.success) {
-        toast({
-          title: t("booking.success.title"),
-          description: t("booking.success.message"),
-        });
-        setFormData({
-          checkIn: "",
-          checkOut: "",
-          adults: 2,
-          kids: 0,
-          vision: "",
-          customerName: "",
-          customerEmail: "",
-          customerPhone: "",
-          honeypot: "",
-        });
         clearTripPlan();
+        navigate("/success");
       } else {
         throw new Error(data?.error || "Submission failed");
       }

@@ -43,6 +43,7 @@ function App(): React.JSX.Element {
               <Route path="/experiences" element={<Experiences />} />
               
               <Route path="/booking" element={<Booking />} />
+              <Route path="/success" element={<Success />} />
 
               {/* Auth route */}
               <Route path="/login/auth" element={<AdminAuth />} />
