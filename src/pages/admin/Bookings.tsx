@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { Search, Copy, Check, Mail, Clock, ShoppingBag } from "lucide-react";
+import { Search, Copy, Check, Mail, Clock, ShoppingBag, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,9 +13,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useBookings, useNotificationRecipient } from "@/hooks/useBookings";
+import { useBookings } from "@/hooks/useBookings";
 import { toast } from "sonner";
-import { MessageCircle } from "lucide-react";
 
 export default function AdminBookings() {
   const { t } = useTranslation();
@@ -23,7 +22,6 @@ export default function AdminBookings() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const { data: bookings, isLoading } = useBookings({ searchTerm });
-  const { data: recipient } = useNotificationRecipient();
 
   const handleCopy = async (booking: NonNullable<typeof bookings>[number]) => {
     const services = booking.booking_services
@@ -96,6 +94,10 @@ export default function AdminBookings() {
                 const submittedAt = booking.created_at
                   ? format(new Date(booking.created_at), "MMM d, yyyy 'at' h:mm a")
                   : "–";
+                const customerEmailSentAt = booking.customer_email_sent_at
+                  ? format(new Date(booking.customer_email_sent_at), "MMM d, yyyy 'at' h:mm a")
+                  : null;
+                const concierge = booking.concierge_profile;
 
                 return (
                   <AccordionItem key={booking.id} value={booking.id}>
@@ -111,6 +113,11 @@ export default function AdminBookings() {
                         <span className="font-medium text-sm">
                           {booking.customer_name}
                         </span>
+                        {concierge?.first_name && (
+                          <Badge variant="outline" className="w-fit text-xs">
+                            {concierge.first_name}
+                          </Badge>
+                        )}
                         {booking.occasion_type && (
                           <Badge variant="secondary" className="w-fit text-xs">
                             {t(`booking.occasions.${booking.occasion_type}`)}
@@ -146,16 +153,22 @@ export default function AdminBookings() {
                         </div>
 
                         {/* Timestamps */}
-                        <div className="flex flex-col sm:flex-row gap-3 text-sm text-muted-foreground">
+                        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1.5">
                             <Clock className="h-3.5 w-3.5" />
                             {t("admin.bookings.submitted")}: {submittedAt}
                           </div>
-                          {recipient?.email && (
+                          {customerEmailSentAt && (
+                            <div className="flex items-center gap-1.5">
+                              <Mail className="h-3.5 w-3.5" />
+                              {t("admin.bookings.customerEmailSent", { date: customerEmailSentAt })}
+                            </div>
+                          )}
+                          {concierge?.contact_email && (
                             <div className="flex items-center gap-1.5">
                               <Mail className="h-3.5 w-3.5" />
                               {t("admin.bookings.emailSentTo", {
-                                email: recipient.email,
+                                email: concierge.contact_email,
                                 date: submittedAt,
                               })}
                             </div>
@@ -176,14 +189,10 @@ export default function AdminBookings() {
                             )}
                             {t("admin.bookings.copyDetails")}
                           </Button>
-                          {recipient?.whatsapp_number && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              asChild
-                            >
+                          {concierge?.whatsapp_number && (
+                            <Button variant="outline" size="sm" asChild>
                               <a
-                                href={`https://wa.me/${recipient.whatsapp_number.replace(/\D/g, "")}`}
+                                href={`https://wa.me/${concierge.whatsapp_number.replace(/\D/g, "")}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

@@ -323,7 +323,8 @@
       "noServices": "No services selected",
       "submitted": "Submitted",
       "emailSent": "Email Sent",
-"emailSentTo": "Lead emailed to {{email}} on {{date}}",
+      "customerEmailSent": "Customer confirmation sent on {{date}}",
+      "emailSentTo": "Lead emailed to {{email}} on {{date}}",
       "copyDetails": "Copy Lead Details",
       "detailsCopied": "Lead details copied to clipboard",
       "whatsappConcierge": "WhatsApp"

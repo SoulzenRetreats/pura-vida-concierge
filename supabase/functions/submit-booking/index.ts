@@ -5,245 +5,156 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// In-memory rate limit store (resets on function cold start, but good for burst protection)
+// In-memory rate limit store (resets on function cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-
-const RATE_LIMIT = 5; // Max submissions per window
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour window
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
 
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const record = rateLimitStore.get(ip);
-
   if (!record || now > record.resetTime) {
     rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_WINDOW_MS });
     return { allowed: true, remaining: RATE_LIMIT - 1 };
   }
-
   if (record.count >= RATE_LIMIT) {
     return { allowed: false, remaining: 0 };
   }
-
   record.count++;
   return { allowed: true, remaining: RATE_LIMIT - record.count };
 }
 
 function getClientIP(req: Request): string {
-  const forwardedFor = req.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    return forwardedFor.split(",")[0].trim();
+  return req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+    || req.headers.get("x-real-ip")
+    || "unknown";
+}
+
+/** Validate a string field: return trimmed value or error response */
+function validateStringField(
+  value: string | undefined | null,
+  fieldName: string,
+  maxLength: number,
+): { trimmed: string; error?: Response } {
+  const trimmed = (value?.trim() || "");
+  if (trimmed.length > maxLength) {
+    return {
+      trimmed,
+      error: new Response(
+        JSON.stringify({ error: `${fieldName} must be under ${maxLength} characters` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      ),
+    };
   }
-  const realIP = req.headers.get("x-real-ip");
-  if (realIP) {
-    return realIP;
-  }
-  return "unknown";
+  return { trimmed };
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const clientIP = getClientIP(req);
-    console.log(`Booking submission attempt from IP: ${clientIP}`);
-
-    // Check rate limit
     const { allowed, remaining } = checkRateLimit(clientIP);
-    
+
     if (!allowed) {
-      console.log(`Rate limit exceeded for IP: ${clientIP}`);
       return new Response(
-        JSON.stringify({ 
-          error: "Too many booking requests. Please try again later.",
-          code: "RATE_LIMIT_EXCEEDED"
-        }),
-        { 
-          status: 429, 
-          headers: { 
-            ...corsHeaders, 
-            "Content-Type": "application/json",
-            "X-RateLimit-Remaining": "0",
-            "Retry-After": "3600"
-          } 
-        }
+        JSON.stringify({ error: "Too many booking requests. Please try again later.", code: "RATE_LIMIT_EXCEEDED" }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "3600" } },
       );
     }
 
     const body = await req.json();
-    
-    // Extract all fields including new ones
-    const { 
-      customerName, 
-      customerEmail, 
-      customerPhone, 
-      checkIn, 
-      checkOut, 
-      guestCount,
-      budgetRange,
-      serviceDates,
-      preferredTime,
-      locationDetails,
-      occasionType,
-      dietaryPreferences,
-      vibePreferences,
-      surpriseElements,
-      specialNotes, 
-      propertyId, 
-      selectedServices,
-      honeypot
+    const {
+      customerName, customerEmail, customerPhone,
+      checkIn, checkOut, guestCount,
+      budgetRange, serviceDates, preferredTime, locationDetails,
+      occasionType, dietaryPreferences, vibePreferences, surpriseElements,
+      specialNotes, propertyId, selectedServices, honeypot,
+      conciergeId,
     } = body;
 
-    // Bot detection via honeypot
+    // Bot detection
     if (honeypot) {
-      console.log(`Bot detected (honeypot triggered) from IP: ${clientIP}`);
-      return new Response(
-        JSON.stringify({ success: true, bookingId: "fake-id" }),
-        { 
-          status: 200, 
-          headers: { ...corsHeaders, "Content-Type": "application/json" } 
-        }
-      );
+      return new Response(JSON.stringify({ success: true, bookingId: "fake-id" }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    // Server-side validation
+    // Required field validation
     if (!customerName || typeof customerName !== "string" || customerName.trim().length === 0 || customerName.length > 100) {
-      return new Response(
-        JSON.stringify({ error: "Invalid name" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid name" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!customerEmail || typeof customerEmail !== "string" || !emailRegex.test(customerEmail) || customerEmail.length > 255) {
-      return new Response(
-        JSON.stringify({ error: "Invalid email" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid email" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
     if (!checkIn || !checkOut) {
-      return new Response(
-        JSON.stringify({ error: "Check-in and check-out dates are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Check-in and check-out dates are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
     if (!guestCount || typeof guestCount !== "number" || guestCount < 1 || guestCount > 100) {
-      return new Response(
-        JSON.stringify({ error: "Invalid guest count" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid guest count" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Validate field lengths - reject oversized inputs with clear errors instead of silent truncation
-    const trimmedBudgetRange = budgetRange?.trim() || "";
-    if (trimmedBudgetRange.length > 100) {
-      return new Response(
-        JSON.stringify({ error: "Budget range must be under 100 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    // Validate optional string fields
+    const fields: [string | undefined | null, string, number][] = [
+      [budgetRange, "Budget range", 100],
+      [serviceDates, "Service dates", 200],
+      [locationDetails, "Location details", 500],
+      [dietaryPreferences, "Dietary preferences", 500],
+      [vibePreferences, "Vibe preferences", 200],
+      [surpriseElements, "Surprise elements", 500],
+      [specialNotes, "Special notes", 1000],
+      [occasionType, "Occasion type", 100],
+      [preferredTime, "Preferred time", 100],
+      [customerPhone, "Phone number", 50],
+    ];
+
+    const trimmed: Record<string, string> = {};
+    for (const [val, name, max] of fields) {
+      const result = validateStringField(val, name, max);
+      if (result.error) return result.error;
+      trimmed[name] = result.trimmed;
     }
 
-    const trimmedServiceDates = serviceDates?.trim() || "";
-    if (trimmedServiceDates.length > 200) {
-      return new Response(
-        JSON.stringify({ error: "Service dates must be under 200 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedLocationDetails = locationDetails?.trim() || "";
-    if (trimmedLocationDetails.length > 500) {
-      return new Response(
-        JSON.stringify({ error: "Location details must be under 500 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedDietaryPreferences = dietaryPreferences?.trim() || "";
-    if (trimmedDietaryPreferences.length > 500) {
-      return new Response(
-        JSON.stringify({ error: "Dietary preferences must be under 500 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedVibePreferences = vibePreferences?.trim() || "";
-    if (trimmedVibePreferences.length > 200) {
-      return new Response(
-        JSON.stringify({ error: "Vibe preferences must be under 200 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedSurpriseElements = surpriseElements?.trim() || "";
-    if (trimmedSurpriseElements.length > 500) {
-      return new Response(
-        JSON.stringify({ error: "Surprise elements must be under 500 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedSpecialNotes = specialNotes?.trim() || "";
-    if (trimmedSpecialNotes.length > 1000) {
-      return new Response(
-        JSON.stringify({ error: "Special notes must be under 1000 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedOccasionType = occasionType?.trim() || "";
-    if (trimmedOccasionType.length > 100) {
-      return new Response(
-        JSON.stringify({ error: "Occasion type must be under 100 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedPreferredTime = preferredTime?.trim() || "";
-    if (trimmedPreferredTime.length > 100) {
-      return new Response(
-        JSON.stringify({ error: "Preferred time must be under 100 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const trimmedCustomerPhone = customerPhone?.trim() || "";
-    if (trimmedCustomerPhone.length > 50) {
-      return new Response(
-        JSON.stringify({ error: "Phone number must be under 50 characters" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Create Supabase client with service role for inserting
+    // Create Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Create booking with validated fields (no silent truncation)
+    // Look up concierge profile for email routing
+    let conciergeProfile: { contact_email: string | null; first_name: string | null; whatsapp_number: string | null } | null = null;
+    if (conciergeId) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("contact_email, first_name, whatsapp_number")
+        .eq("id", conciergeId)
+        .maybeSingle();
+      conciergeProfile = profile;
+    }
+
+    // Create booking
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
         property_id: propertyId || null,
+        concierge_id: conciergeId || null,
         customer_name: customerName.trim(),
         customer_email: customerEmail.trim().toLowerCase(),
-        customer_phone: trimmedCustomerPhone || null,
+        customer_phone: trimmed["Phone number"] || null,
         check_in: checkIn,
         check_out: checkOut,
         guest_count: guestCount,
-        budget_range: trimmedBudgetRange || null,
-        service_dates: trimmedServiceDates || null,
-        preferred_time: trimmedPreferredTime || null,
-        location_details: trimmedLocationDetails || null,
-        occasion_type: trimmedOccasionType || null,
-        dietary_preferences: trimmedDietaryPreferences || null,
-        vibe_preferences: trimmedVibePreferences || null,
-        surprise_elements: trimmedSurpriseElements || null,
-        special_notes: trimmedSpecialNotes || null,
+        budget_range: trimmed["Budget range"] || null,
+        service_dates: trimmed["Service dates"] || null,
+        preferred_time: trimmed["Preferred time"] || null,
+        location_details: trimmed["Location details"] || null,
+        occasion_type: trimmed["Occasion type"] || null,
+        dietary_preferences: trimmed["Dietary preferences"] || null,
+        vibe_preferences: trimmed["Vibe preferences"] || null,
+        surprise_elements: trimmed["Surprise elements"] || null,
+        special_notes: trimmed["Special notes"] || null,
         status: "new_request",
       })
       .select()
@@ -251,88 +162,111 @@ Deno.serve(async (req) => {
 
     if (bookingError) {
       console.error("Error creating booking:", bookingError);
-      return new Response(
-        JSON.stringify({ error: "Failed to create booking" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Failed to create booking" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Add selected services if any
-    if (selectedServices && Array.isArray(selectedServices) && selectedServices.length > 0 && booking) {
+    // Add selected services
+    if (selectedServices?.length > 0 && booking) {
       const { error: servicesError } = await supabase
         .from("booking_services")
-        .insert(
-          selectedServices.map((serviceId: string) => ({
-            booking_id: booking.id,
-            service_id: serviceId,
-          }))
-        );
-
-      if (servicesError) {
-        console.error("Error adding booking services:", servicesError);
-        // Don't fail the whole request, booking is already created
-      }
+        .insert(selectedServices.map((serviceId: string) => ({ booking_id: booking.id, service_id: serviceId })));
+      if (servicesError) console.error("Error adding booking services:", servicesError);
     }
 
-    console.log(`Booking created successfully: ${booking.id} from IP: ${clientIP}`);
+    console.log(`Booking created: ${booking.id} from IP: ${clientIP}`);
 
-    // Send email notification (non-blocking)
+    // Send email notifications (non-blocking)
     try {
       const resendApiKey = Deno.env.get("RESEND_API_KEY");
       if (resendApiKey) {
-        // Fetch service names for the email
+        // Fetch service names
         let serviceNamesList: string[] = [];
-        if (selectedServices?.length > 0 && booking) {
+        if (selectedServices?.length > 0) {
           const { data: serviceRows } = await supabase
             .from("services")
             .select("name_en")
             .in("id", selectedServices);
-          if (serviceRows) {
-            serviceNamesList = serviceRows.map((s: { name_en: string }) => s.name_en);
-          }
+          if (serviceRows) serviceNamesList = serviceRows.map((s: { name_en: string }) => s.name_en);
         }
 
-        // Fetch notification email from app_settings or use fallback
-        const { data: settingRow } = await supabase
-          .from("app_settings")
-          .select("value")
-          .eq("key", "notification_email")
-          .maybeSingle();
-        const notificationEmail = (settingRow?.value as string) || null;
+        // Determine notification email: concierge contact_email first, then app_settings fallback
+        let notificationEmail: string | null = conciergeProfile?.contact_email || null;
+        if (!notificationEmail) {
+          const { data: settingRow } = await supabase
+            .from("app_settings")
+            .select("value")
+            .eq("key", "notification_email")
+            .maybeSingle();
+          notificationEmail = (settingRow?.value as string) || null;
+        }
 
+        const conciergeName = conciergeProfile?.first_name || "Concierge";
+
+        // 1) Internal notification to concierge
         if (notificationEmail) {
-          const emailHtml = `
+          const internalHtml = `
             <h2>New Trip Plan Request</h2>
             <p><strong>Name:</strong> ${customerName.trim()}</p>
             <p><strong>Email:</strong> ${customerEmail.trim().toLowerCase()}</p>
-            ${trimmedCustomerPhone ? `<p><strong>Phone:</strong> ${trimmedCustomerPhone}</p>` : ""}
+            ${trimmed["Phone number"] ? `<p><strong>Phone:</strong> ${trimmed["Phone number"]}</p>` : ""}
             <p><strong>Dates:</strong> ${checkIn} → ${checkOut}</p>
             <p><strong>Guests:</strong> ${guestCount}</p>
             ${serviceNamesList.length > 0 ? `<p><strong>Selected Experiences:</strong> ${serviceNamesList.join(", ")}</p>` : ""}
-            ${trimmedSpecialNotes ? `<p><strong>Notes:</strong> ${trimmedSpecialNotes}</p>` : ""}
+            ${trimmed["Special notes"] ? `<p><strong>Notes:</strong> ${trimmed["Special notes"]}</p>` : ""}
           `;
 
-          const emailRes = await fetch("https://api.resend.com/emails", {
+          const internalRes = await fetch("https://api.resend.com/emails", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${resendApiKey}`,
-            },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${resendApiKey}` },
             body: JSON.stringify({
               from: "Pura Vida Concierge <bookings@soulzenwellness.com>",
               to: [notificationEmail],
               subject: `New Trip Plan Request — ${customerName.trim()}`,
-              html: emailHtml,
+              html: internalHtml,
             }),
           });
+          if (!internalRes.ok) console.error("Internal email failed:", await internalRes.text());
+          else console.log("Internal notification sent to:", notificationEmail);
+        }
 
-          if (!emailRes.ok) {
-            console.error("Resend email failed:", await emailRes.text());
-          } else {
-            console.log("Notification email sent successfully");
-          }
+        // 2) Customer confirmation email
+        const replyTo = notificationEmail || "hello@soulzenwellness.com";
+        const customerHtml = `
+          <h2>We received your trip plan request!</h2>
+          <p>Hi ${customerName.trim()},</p>
+          <p>Thank you for reaching out to Pura Vida Concierge! We've received your request and ${conciergeName} will be in touch soon to start planning your perfect Costa Rica experience.</p>
+          <p><strong>Your trip details:</strong></p>
+          <ul>
+            <li><strong>Dates:</strong> ${checkIn} → ${checkOut}</li>
+            <li><strong>Guests:</strong> ${guestCount}</li>
+            ${serviceNamesList.length > 0 ? `<li><strong>Selected Experiences:</strong> ${serviceNamesList.join(", ")}</li>` : ""}
+          </ul>
+          ${trimmed["Special notes"] ? `<p><strong>Your notes:</strong> ${trimmed["Special notes"]}</p>` : ""}
+          <p>If you have any questions in the meantime, just reply to this email.</p>
+          <p>Pura Vida! 🌴</p>
+        `;
+
+        const customerRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${resendApiKey}` },
+          body: JSON.stringify({
+            from: "Pura Vida Concierge <bookings@soulzenwellness.com>",
+            to: [customerEmail.trim().toLowerCase()],
+            reply_to: replyTo,
+            subject: "We received your trip plan request! 🌴",
+            html: customerHtml,
+          }),
+        });
+
+        if (!customerRes.ok) {
+          console.error("Customer email failed:", await customerRes.text());
         } else {
-          console.log("No notification_email configured in app_settings, skipping email");
+          console.log("Customer confirmation sent to:", customerEmail.trim().toLowerCase());
+          // Update customer_email_sent_at
+          await supabase
+            .from("bookings")
+            .update({ customer_email_sent_at: new Date().toISOString() })
+            .eq("id", booking.id);
         }
       }
     } catch (emailError) {
@@ -340,26 +274,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        bookingId: booking.id,
-        rateLimit: { remaining }
-      }),
-      { 
-        status: 200, 
-        headers: { 
-          ...corsHeaders, 
-          "Content-Type": "application/json",
-          "X-RateLimit-Remaining": remaining.toString()
-        } 
-      }
+      JSON.stringify({ success: true, bookingId: booking.id, rateLimit: { remaining } }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json", "X-RateLimit-Remaining": remaining.toString() } },
     );
-
   } catch (error) {
     console.error("Error processing booking:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
