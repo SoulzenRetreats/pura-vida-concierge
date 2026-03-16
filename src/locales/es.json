@@ -566,6 +566,13 @@
       }
     }
   },
+  "success": {
+    "headline": "Tu aventura Pura Vida comienza.",
+    "subtext": "Nuestro equipo está revisando tu Plan de Viaje. Para asistencia inmediata o preguntas, conecta directamente con tu concierge personal.",
+    "messageOnWhatsApp": "Escríbele a {{name}} por WhatsApp",
+    "fallback": "Nos pondremos en contacto pronto para comenzar a planificar tu viaje perfecto.",
+    "whatsappGreeting": "¡Hola! Acabo de enviar una solicitud de Plan de Viaje en Pura Vida Concierge y quería conectar."
+  },
   "concierge": {
     "sidebar": {
       "title": "Concierge",
