@@ -264,7 +264,7 @@
       "title": "Admin",
       "menu": "Menu",
       "dashboard": "Dashboard",
-      "bookings": "Bookings",
+      "bookings": "Requests",
       "properties": "Properties",
       "vendors": "Vendors",
       "services": "Services",
@@ -306,9 +306,9 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "welcome": "Welcome to the Admin Dashboard",
-      "welcomeDescription": "Manage your properties, bookings, vendors, and revenue from here.",
-      "gettingStarted": "Navigate using the sidebar to manage bookings, vendors, and revenue.",
-      "totalBookings": "Total Bookings",
+      "welcomeDescription": "Manage your properties, requests, vendors, and revenue from here.",
+      "gettingStarted": "Navigate using the sidebar to manage requests, vendors, and revenue.",
+      "totalBookings": "Total Requests",
       "properties": "Properties",
       "vendors": "Vendors",
       "revenue": "Revenue"
@@ -530,14 +530,14 @@
     },
     "revenue": {
       "title": "Revenue Tracking",
-      "description": "Track revenue and concierge share for completed bookings.",
+      "description": "Track revenue and concierge share for completed requests.",
       "totalCharged": "Total Charged",
       "vendorCosts": "Vendor Costs",
       "conciergeShare": "Concierge Share",
       "fromEntries": "From {{count}} entries",
-      "completedBookings": "Completed Bookings",
-      "completedDescription": "Enter vendor costs and calculate revenue share for completed bookings.",
-      "noBookings": "No completed bookings yet.",
+      "completedBookings": "Completed Requests",
+      "completedDescription": "Enter vendor costs and calculate revenue share for completed requests.",
+      "noBookings": "No completed requests yet.",
       "pending": "Pending",
       "add": "Add",
       "edit": "Edit",
@@ -579,19 +579,19 @@
       "title": "Concierge",
       "menu": "Menu",
       "dashboard": "Dashboard",
-      "bookings": "Bookings",
+      "bookings": "Requests",
       "vendors": "Vendors",
       "settings": "Settings"
     },
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome Back",
-      "welcomeDescription": "Manage booking requests, coordinate with vendors, and track your active bookings.",
+      "welcomeDescription": "Manage service requests, coordinate with vendors, and track your active requests.",
       "placeholder": "Select an option from the sidebar to get started.",
-      "gettingStarted": "Navigate using the sidebar to manage bookings and vendors.",
+      "gettingStarted": "Navigate using the sidebar to manage requests and vendors.",
       "pendingRequests": "Pending Requests",
       "pendingDescription": "New & in review",
-      "upcomingBookings": "Upcoming Bookings",
+      "upcomingBookings": "Upcoming Requests",
       "upcomingDescription": "Quoted & confirmed",
       "activeVendors": "Active Vendors",
       "vendorsDescription": "Available vendors",
@@ -600,10 +600,10 @@
       "backToAdmin": "Back to Admin"
     },
     "bookings": {
-      "title": "Bookings",
-      "description": "Manage and track all booking requests.",
+      "title": "Requests",
+      "description": "Manage and track all service requests.",
       "searchPlaceholder": "Search by name or email...",
-      "noBookings": "No bookings found.",
+      "noBookings": "No requests found.",
       "guests": "guests",
       "view": "View",
       "tabs": {
@@ -633,13 +633,13 @@
       "assigned": "Assigned",
       "unassigned": "Unassigned",
       "claim": "Claim",
-      "claimSuccess": "Booking claimed",
-      "claimSuccessDescription": "This booking is now assigned to you.",
-      "claimError": "Failed to claim booking"
+      "claimSuccess": "Request claimed",
+      "claimSuccessDescription": "This request is now assigned to you.",
+      "claimError": "Failed to claim request"
     },
     "bookingDetail": {
-      "notFound": "Booking not found.",
-      "backToList": "Back to bookings",
+      "notFound": "Request not found.",
+      "backToList": "Back to requests",
       "statusUpdated": "Status updated successfully",
       "error": "An error occurred",
       "customer": {
@@ -654,7 +654,7 @@
       },
       "vendors": {
         "title": "Services & Vendors",
-        "noServices": "No services requested for this booking.",
+        "noServices": "No services requested.",
         "assignVendor": "Vendor",
         "selectVendor": "Select vendor...",
         "noVendor": "No vendor assigned",
@@ -662,7 +662,7 @@
       },
       "notes": {
         "title": "Internal Notes",
-        "placeholder": "Add internal notes about this booking...",
+        "placeholder": "Add internal notes about this request...",
         "saving": "Saving...",
         "customerNotes": "Customer Notes",
         "surpriseElements": "Surprise Elements"
@@ -672,7 +672,7 @@
         "sendQuote": "Send Quote",
         "markConfirmed": "Mark Confirmed",
         "markCompleted": "Mark Completed",
-        "completed": "Booking completed"
+        "completed": "Request completed"
       }
     },
     "vendors": {

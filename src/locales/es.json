@@ -264,7 +264,7 @@
       "title": "Admin",
       "menu": "Menú",
       "dashboard": "Panel",
-      "bookings": "Reservas",
+      "bookings": "Solicitudes",
       "properties": "Propiedades",
       "vendors": "Proveedores",
       "services": "Servicios",
@@ -306,9 +306,9 @@
     "dashboard": {
       "title": "Panel de Administración",
       "welcome": "Bienvenido al Panel de Administración",
-      "welcomeDescription": "Administra tus propiedades, reservas, proveedores e ingresos desde aquí.",
-      "gettingStarted": "Navega usando la barra lateral para gestionar reservas, proveedores e ingresos.",
-      "totalBookings": "Total de Reservas",
+      "welcomeDescription": "Administra tus propiedades, solicitudes, proveedores e ingresos desde aquí.",
+      "gettingStarted": "Navega usando la barra lateral para gestionar solicitudes, proveedores e ingresos.",
+      "totalBookings": "Total de Solicitudes",
       "properties": "Propiedades",
       "vendors": "Proveedores",
       "revenue": "Ingresos"
@@ -530,14 +530,14 @@
     },
     "revenue": {
       "title": "Seguimiento de Ingresos",
-      "description": "Rastrea los ingresos y la participación del concierge para reservas completadas.",
+      "description": "Rastrea los ingresos y la participación del concierge para solicitudes completadas.",
       "totalCharged": "Total Cobrado",
       "vendorCosts": "Costos de Proveedores",
       "conciergeShare": "Participación del Concierge",
       "fromEntries": "De {{count}} entradas",
-      "completedBookings": "Reservas Completadas",
-      "completedDescription": "Ingresa los costos de proveedores y calcula la participación de ingresos para reservas completadas.",
-      "noBookings": "Aún no hay reservas completadas.",
+      "completedBookings": "Solicitudes Completadas",
+      "completedDescription": "Ingresa los costos de proveedores y calcula la participación de ingresos para solicitudes completadas.",
+      "noBookings": "Aún no hay solicitudes completadas.",
       "pending": "Pendiente",
       "add": "Agregar",
       "edit": "Editar",
@@ -579,31 +579,31 @@
       "title": "Concierge",
       "menu": "Menú",
       "dashboard": "Panel",
-      "bookings": "Reservas",
+      "bookings": "Solicitudes",
       "vendors": "Proveedores",
       "settings": "Configuración"
     },
     "dashboard": {
       "title": "Panel",
       "welcome": "Bienvenido de Vuelta",
-      "welcomeDescription": "Gestiona solicitudes de reserva, coordina con proveedores y rastrea tus reservas activas.",
+      "welcomeDescription": "Gestiona solicitudes de servicio, coordina con proveedores y rastrea tus solicitudes activas.",
       "placeholder": "Selecciona una opción del menú lateral para comenzar.",
-      "gettingStarted": "Navega usando el menú lateral para gestionar reservas y proveedores.",
+      "gettingStarted": "Navega usando el menú lateral para gestionar solicitudes y proveedores.",
       "pendingRequests": "Solicitudes Pendientes",
       "pendingDescription": "Nuevas y en revisión",
-      "upcomingBookings": "Próximas Reservas",
+      "upcomingBookings": "Próximas Solicitudes",
       "upcomingDescription": "Cotizadas y confirmadas",
       "activeVendors": "Proveedores Activos",
       "vendorsDescription": "Proveedores disponibles",
-      "completedBookings": "Completadas",
+      "completedBookings": "Solicitudes Completadas",
       "completedDescription": "Entregadas exitosamente",
       "backToAdmin": "Volver al Admin"
     },
     "bookings": {
-      "title": "Reservas",
-      "description": "Gestiona y rastrea todas las solicitudes de reserva.",
+      "title": "Solicitudes",
+      "description": "Gestiona y rastrea todas las solicitudes de servicio.",
       "searchPlaceholder": "Buscar por nombre o correo...",
-      "noBookings": "No se encontraron reservas.",
+      "noBookings": "No se encontraron solicitudes.",
       "guests": "huéspedes",
       "view": "Ver",
       "tabs": {
@@ -633,13 +633,13 @@
       "assigned": "Asignada",
       "unassigned": "Sin asignar",
       "claim": "Reclamar",
-      "claimSuccess": "Reserva reclamada",
-      "claimSuccessDescription": "Esta reserva ahora está asignada a ti.",
-      "claimError": "Error al reclamar la reserva"
+      "claimSuccess": "Solicitud reclamada",
+      "claimSuccessDescription": "Esta solicitud ahora está asignada a ti.",
+      "claimError": "Error al reclamar la solicitud"
     },
     "bookingDetail": {
-      "notFound": "Reserva no encontrada.",
-      "backToList": "Volver a reservas",
+      "notFound": "Solicitud no encontrada.",
+      "backToList": "Volver a solicitudes",
       "statusUpdated": "Estado actualizado exitosamente",
       "error": "Ocurrió un error",
       "customer": {
@@ -654,7 +654,7 @@
       },
       "vendors": {
         "title": "Servicios y Proveedores",
-        "noServices": "No hay servicios solicitados para esta reserva.",
+        "noServices": "No hay servicios solicitados.",
         "assignVendor": "Proveedor",
         "selectVendor": "Seleccionar proveedor...",
         "noVendor": "Sin proveedor asignado",
@@ -662,7 +662,7 @@
       },
       "notes": {
         "title": "Notas Internas",
-        "placeholder": "Agregar notas internas sobre esta reserva...",
+        "placeholder": "Agregar notas internas sobre esta solicitud...",
         "saving": "Guardando...",
         "customerNotes": "Notas del Cliente",
         "surpriseElements": "Elementos Sorpresa"
@@ -672,7 +672,7 @@
         "sendQuote": "Enviar Cotización",
         "markConfirmed": "Marcar Confirmada",
         "markCompleted": "Marcar Completada",
-        "completed": "Reserva completada"
+        "completed": "Solicitud completada"
       }
     },
     "vendors": {
