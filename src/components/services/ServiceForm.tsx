@@ -55,6 +55,8 @@ interface ServiceFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   service?: Service | null;
+  /** Pre-fill data for duplication (form opens in "create" mode) */
+  initialData?: Service | null;
   onSubmit: (data: ServiceFormData) => void;
   isSubmitting?: boolean;
 }
