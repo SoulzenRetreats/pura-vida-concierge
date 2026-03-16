@@ -92,7 +92,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "bell-pulse": "bell-pulse 0.4s ease-out",
-        "sparkle-burst": "sparkle-burst 0.5s ease-out forwards",
+        "sparkle-burst": "sparkle-burst 0.7s ease-out forwards",
       },
     },
   },

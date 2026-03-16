@@ -170,9 +170,9 @@ function SparklingBell({
         particleOffsets.map((offset, i) => (
           <span
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-amber-400 animate-sparkle-burst pointer-events-none"
+            className={`absolute ${offset.size} rounded-full bg-amber-400 animate-sparkle-burst pointer-events-none`}
             style={
-              { "--tx": offset.tx, "--ty": offset.ty } as React.CSSProperties
+              { "--tx": offset.tx, "--ty": offset.ty, animationDelay: offset.delay } as React.CSSProperties
             }
           />
         ))}
