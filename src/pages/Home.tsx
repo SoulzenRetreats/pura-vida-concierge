@@ -120,7 +120,7 @@ const Home = () => {
           <p className="text-sm mb-8 text-primary-foreground/70">
             {t('home.cta.badge')}
           </p>
-          <Link to="/booking">
+          <Link to={conciergeSlug ? `/${conciergeSlug}/booking` : "/booking"}>
             <Button
               size="lg"
               className="gradient-secondary hover:opacity-90 transition-smooth text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-6 shadow-luxury w-full sm:w-auto"
