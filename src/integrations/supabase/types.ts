@@ -81,8 +81,10 @@ export type Database = {
           budget_range: string | null
           check_in: string
           check_out: string
+          concierge_id: string | null
           created_at: string | null
           customer_email: string
+          customer_email_sent_at: string | null
           customer_name: string
           customer_phone: string | null
           dietary_preferences: string | null
@@ -105,8 +107,10 @@ export type Database = {
           budget_range?: string | null
           check_in: string
           check_out: string
+          concierge_id?: string | null
           created_at?: string | null
           customer_email: string
+          customer_email_sent_at?: string | null
           customer_name: string
           customer_phone?: string | null
           dietary_preferences?: string | null
@@ -129,8 +133,10 @@ export type Database = {
           budget_range?: string | null
           check_in?: string
           check_out?: string
+          concierge_id?: string | null
           created_at?: string | null
           customer_email?: string
+          customer_email_sent_at?: string | null
           customer_name?: string
           customer_phone?: string | null
           dietary_preferences?: string | null
@@ -149,6 +155,13 @@ export type Database = {
           vibe_preferences?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_concierge_id_fkey"
+            columns: ["concierge_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_property_id_fkey"
             columns: ["property_id"]
