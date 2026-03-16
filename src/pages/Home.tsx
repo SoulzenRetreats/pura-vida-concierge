@@ -62,7 +62,7 @@ const Home = () => {
             {t('home.hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            <Link to="/experiences">
+            <Link to={experiencesPath}>
               <Button
                 size="lg"
                 className="gradient-secondary hover:opacity-90 transition-smooth text-lg px-8 py-6 shadow-luxury"
