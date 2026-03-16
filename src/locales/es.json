@@ -440,6 +440,7 @@
       "addRoleBtn": "Agregar Rol",
       "assignRole": "Asignar Rol",
       "inviteUser": "Invitar Usuario",
+      "editProfile": "Editar Perfil",
       "columns": {
         "email": "Correo Electrónico",
         "role": "Rol",
