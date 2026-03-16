@@ -440,6 +440,7 @@
       "addRoleBtn": "Add Role",
       "assignRole": "Assign Role",
       "inviteUser": "Invite User",
+      "editProfile": "Edit Profile",
       "columns": {
         "email": "Email",
         "role": "Role",
