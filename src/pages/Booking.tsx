@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -16,9 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper } from "lucide-react";
+import { Calendar, Users, Sparkles, ArrowLeft, ArrowRight, Loader2, Minus, Plus, MapPin, Hotel, Heart, PartyPopper, BellRing } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories, getCategoryName } from "@/hooks/useCategories";
+import { useTripPlan } from "@/contexts/TripPlanContext";
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, "Check-in date is required"),
@@ -65,6 +66,32 @@ const Booking = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { clear: clearTripPlan } = useTripPlan();
+
+  // Selected services from Trip Plan
+  const serviceIds = useMemo(() => {
+    const param = searchParams.get("services");
+    return param ? param.split(",").filter(Boolean) : [];
+  }, [searchParams]);
+
+  const [selectedServiceNames, setSelectedServiceNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (serviceIds.length === 0) return;
+    supabase
+      .from("services")
+      .select("id, name_en, name_es")
+      .in("id", serviceIds)
+      .then(({ data }) => {
+        if (data) {
+          setSelectedServiceNames(
+            data.map((s) =>
+              i18n.language === "es" ? (s.name_es || s.name_en) : s.name_en
+            )
+          );
+        }
+      });
+  }, [serviceIds, i18n.language]);
 
   const [formData, setFormData] = useState({
     checkIn: "",
@@ -175,7 +202,7 @@ const Booking = () => {
           surpriseElements: null,
           specialNotes: validated.vision || null,
           propertyId: null,
-          selectedServices: [],
+          selectedServices: serviceIds,
           honeypot: formData.honeypot,
         },
       });
@@ -205,6 +232,7 @@ const Booking = () => {
           honeypot: "",
         });
         setStep(1);
+        clearTripPlan();
       } else {
         throw new Error(data?.error || "Submission failed");
       }
@@ -578,6 +606,19 @@ const Booking = () => {
               {t("booking.stepOf", { current: step, total: 2 })}
             </p>
           </div>
+
+          {/* Selected experiences from Trip Plan */}
+          {selectedServiceNames.length > 0 && (
+            <Card className="mb-6 border-primary/20 bg-primary/5">
+              <CardContent className="p-4 flex items-start gap-3">
+                <BellRing className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-heading font-semibold text-sm mb-1">{t("tripPlan.selectedExperiences")}</p>
+                  <p className="text-sm text-muted-foreground font-body">{selectedServiceNames.join(", ")}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Form Content */}
           <form onSubmit={(e) => e.preventDefault()}>

@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TripPlanProvider } from "@/contexts/TripPlanContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
@@ -33,6 +34,7 @@ function App(): React.JSX.Element {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <TripPlanProvider>
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<Home />} />
@@ -68,6 +70,7 @@ function App(): React.JSX.Element {
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </TripPlanProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
