@@ -436,6 +436,8 @@
       "bulkAssign": "Assign Concierge",
       "assignSelected": "Assign",
       "bulkAssigned": "Concierge assigned successfully",
+      "duplicateSelected": "Duplicate Selected",
+      "bulkDuplicated": "{{count}} service(s) duplicated successfully",
       "selected": "selected"
     },
     "users": {
