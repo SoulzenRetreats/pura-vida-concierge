@@ -662,7 +662,7 @@
       },
       "notes": {
         "title": "Notas Internas",
-        "placeholder": "Agregar notas internas sobre esta reserva...",
+        "placeholder": "Agregar notas internas sobre esta solicitud...",
         "saving": "Guardando...",
         "customerNotes": "Notas del Cliente",
         "surpriseElements": "Elementos Sorpresa"
