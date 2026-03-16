@@ -9,6 +9,8 @@ import { useTripPlan } from "@/contexts/TripPlanContext";
 
 const Home = () => {
   const { t } = useTranslation();
+  const { conciergeSlug } = useTripPlan();
+  const experiencesPath = conciergeSlug ? `/${conciergeSlug}/experiences` : "/experiences";
 
   const expertise = [
     {
