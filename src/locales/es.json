@@ -399,7 +399,7 @@
       "columns": {
         "name": "Nombre",
         "category": "Categoría",
-        "status": "Estado",
+         "concierge": "Concierge",
         "priceRange": "Rango de Precio",
         "defaultVendor": "Proveedor Predeterminado",
         "actions": "Acciones"
