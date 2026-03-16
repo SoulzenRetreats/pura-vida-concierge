@@ -118,6 +118,34 @@ export default function AdminServices() {
     }
   };
 
+  const handleBulkDuplicate = async () => {
+    if (selectedIds.size === 0) return;
+    try {
+      const toDuplicate = services.filter((s) => selectedIds.has(s.id));
+      for (const service of toDuplicate) {
+        await createService.mutateAsync({
+          name: service.name,
+          name_en: (service as any).name_en || service.name,
+          name_es: (service as any).name_es || null,
+          description: service.description,
+          description_en: (service as any).description_en || service.description,
+          description_es: (service as any).description_es || null,
+          category: service.category,
+          photos: service.photos || null,
+          price_min: service.price_min ?? null,
+          price_max: service.price_max ?? null,
+          is_for_sale: service.is_for_sale ?? false,
+          is_rental: service.is_rental ?? false,
+          concierge_id: null,
+        });
+      }
+      toast.success(t("admin.services.bulkDuplicated", { count: toDuplicate.length }));
+      setSelectedIds(new Set());
+    } catch {
+      toast.error(t("admin.services.error"));
+    }
+  };
+
   const handleOpenForm = (service?: Service) => {
     setEditingService(service || null);
     setFormOpen(true);
